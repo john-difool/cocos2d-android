@@ -10,11 +10,11 @@ public class Action {
 	}
 	
 	public CocosNode target;
-	public ActionTag tag;
+	public CocosActionTag tag;
 	
 	public Action(){
 		target = null;
-		tag = ActionTag.kActionTagInvalid;
+		tag = CocosActionTag.kActionTagInvalid;
 	}
 	
 	public void start(){
@@ -34,5 +34,9 @@ public class Action {
 	}
 	
 	public void update(ccTime time){
+	}
+	
+	public enum CocosActionTag{
+		kActionTagInvalid
 	}
 }
