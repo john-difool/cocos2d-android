@@ -108,6 +108,7 @@ public class CocosNode {
 	}
 	
 	public CocosNode parent;
+
 	public CocosNode getParent(){
 		return parent;
 	}
@@ -131,9 +132,10 @@ public class CocosNode {
 	boolean isRunning;
 	
 	
-	ArrayList<Object> actions;
-	ArrayList<Object> actionsToRemove;
-	ArrayList<Object> actionsToAdd;
+	ArrayList<Action> actions;
+	ArrayList<Action> actionsToRemove;
+	ArrayList<Action> actionsToAdd;
+
 	HashMap<String,Object> scheduledSelectors;
 	
 	public static CocosNode node(){
@@ -392,45 +394,49 @@ public class CocosNode {
 	public void stopActionByTag(CocosActionTag tag){
 		assert tag != CocosActionTag.kActionTagInvalid:"Invalid tag";
 		
+
 		for(int i=0;i<actionsToAdd.size();i++){
-			Action a=(Action)actionsToAdd.get(i);
+			Action a=actionsToAdd.get(i);
 			if(a.tag == tag){
 				actionsToAdd.remove(a);
 				return;
 			}
 		}
 		for(int i=0;i<actions.size();i++){
-			Action a = (Action)actions.get(i);
+			Action a = actions.get(i);
 			if(a.tag == tag && !actionsToRemove.contains(a)){
 				actionsToRemove.add(a);
 				return;
 			}
 		}
 		System.out.print("stopActionByTag:Action not running or already scheduled for removal!");
+
 	}
 	
+
 	public Action getActionByTag(CocosActionTag tag){
 		assert tag != CocosActionTag.kActionTagInvalid:"Invalid tag";
 		for(int i=0;i<actionsToRemove.size();i++){
-			Action a = (Action)actionsToRemove.get(i);
+			Action a = actionsToRemove.get(i);
 			if(a.tag == tag){
 				System.out.print("getActionByTag:Action unavailable,scheduled for removal!");
 				return null;
 			}
 		}
 		for(int i=0;i<actions.size();i++){
-			Action a = (Action)actions.get(i);
+			Action a = actions.get(i);
 			if(a.tag == tag){
 				return a;
 			}
 		}
 		for(int i=0;i<actionsToAdd.size();i++){
-			Action a = (Action)actionsToAdd.get(i);
+			Action a = actionsToAdd.get(i);
 			if(a.tag == tag){
 				return a;
 			}
 		}
 		System.out.print("getActionByTag:Action not found");
+
 		return null;
 	}
 	
@@ -439,10 +445,15 @@ public class CocosNode {
 	}
 	
 	public void schedule(ccSelector s){
-		
+		schedule(s,new ccTime(0));
 	}
 	
-	public void schedual(ccSelector s, ccTime seconds){
+	public void schedule(ccSelector s, ccTime interval){
+		assert s!=null:"Argument must be non-nil";
+		assert interval.time>=0:"Argument must be positive";
+		if(scheduledSelectors==null){
+			timerAlloc();
+		}
 		
 	}
 	
@@ -511,7 +522,33 @@ public class CocosNode {
 	}
 	
 	private void step_(ccTime dt){
-		
+		for(int i=actionsToRemove.size()-1; i>=0;i--){
+			Action current=actionsToRemove.get(i);
+			actions.remove(current);
+			actionsToRemove.remove(i);
+		}
+		for(int i=0;i<actionsToAdd.size();i++){
+			Action current = actionsToAdd.get(i);
+			actions.add(current);
+		}
+		for(int i=actionsToAdd.size()-1;i>=0;i--){
+			actionsToAdd.remove(i);
+		}
+		if(actions.size()==0){
+			unschedule(new ccSelector(this,"step_"));
+			return;
+		}
+		for(int i=0;i<actions.size();i++){
+			Action current = actions.get(i);
+			current.step(dt);
+			if(actions == null){
+				break;
+			}
+			if(current.isDone()){
+				current.stop();
+				actionsToRemove.add(current);
+			}
+		}
 	}
 	
 	private void activateTimers(){
@@ -521,11 +558,12 @@ public class CocosNode {
 	private void deactivateTimers(){
 		
 	}
+
 	
 	private void actionAlloc(){
-		actions = new ArrayList<Object>();
-		actionsToRemove = new ArrayList<Object>();
-		actionsToAdd = new ArrayList<Object>();
+		actions = new ArrayList<Action>();
+		actionsToRemove = new ArrayList<Action>();
+		actionsToAdd = new ArrayList<Action>();
 	}
 	
 	private void childrenAlloc(){
@@ -533,7 +571,7 @@ public class CocosNode {
 	}
 	
 	private void timerAlloc(){
-	
+		scheduledSelectors = new HashMap<String,Object>();
 	}
 	
 	private void insertChild(CocosNode child,int z){
@@ -584,7 +622,7 @@ public class CocosNode {
 		return "<instance of "+this.getClass()+"|Tag = "+tag+">";
 	}
 	
-	private float getScale(){
+	public float getScale(){
 		if(scaleX == scaleY){
 			return scaleX;
 		}else{
@@ -593,7 +631,22 @@ public class CocosNode {
 		return 0;
 	}
 	
-	private void setScale(float s){
+	public void setScale(float s){
 		scaleX = scaleY = s;
 	}
+	
+	public float getParallaxRatio(){
+		if(parallaxRatioX == parallaxRatioY){
+			return parallaxRatioX;
+		}else{
+			System.out.print("CocosNode parallaxRatio:parallaxRatioX is " +
+					"different from parallaxRatioY");
+		}
+		return 0;
+	}
+	
+	public void setParallaxRatio(float p){
+		parallaxRatioX = parallaxRatioY = p;
+	}
+
 }
