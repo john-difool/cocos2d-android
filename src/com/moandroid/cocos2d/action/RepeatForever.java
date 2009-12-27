@@ -2,29 +2,24 @@ package com.moandroid.cocos2d.action;
 
 import com.moandroid.cocos2d.types.ccTime;
 
-public class RepeatForever extends Action {
-	
-	public static RepeatForever actionWithAction(IntervalAction action){
-		return new RepeatForever();
-	}
+public class RepeatForever extends IntervalAction {
 	
 	IntervalAction other;
 	
-	public RepeatForever initWithAction(IntervalAction action){
+	public RepeatForever(IntervalAction action){
 		other = action;
-		return this;
 	}
-	
+		
 	public void start(){
-		super.start();
+		super.start(this.target);
 		other.target = this.target;
-		other.start();
+		other.start(target);
 	}
 	
 	public void step(ccTime dt){
 		other.step(dt);
 		if(other.isDone())
-			other.start();
+			other.start(target);
 	}
 	
 	public boolean isDone(){
@@ -32,6 +27,12 @@ public class RepeatForever extends Action {
 	}
 	
 	public RepeatForever reverse(){
-		return RepeatForever.actionWithAction(other.reverse());
+		return new RepeatForever((IntervalAction)other.reverse());
+	}
+
+	@Override
+	public void update(ccTime time) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -3,25 +3,18 @@ package com.moandroid.cocos2d.action;
 import com.moandroid.cocos2d.types.ccTime;
 
 public class Speed extends Action {
-	public static Speed actionWithAction(IntervalAction action, float speedRate){
-		Speed sp = new Speed();
-		sp.initWithAction(action, speedRate);
-		return sp;
-	}	
-	
 	IntervalAction other;
 	public float speed;
 	
-	public Speed initWithAction(IntervalAction action, float speedRate){
+	public Speed(IntervalAction action, float speedRate){
 		other = action;
 		speed = speedRate;
-		return this;
 	}
 	
 	public void start(){
-		super.start();
+		super.start(this.target);
 		other.target = target;
-		other.start();
+		other.start(target);
 	}
 	
 	public void step(ccTime dt){
@@ -33,6 +26,11 @@ public class Speed extends Action {
 	}
 	
 	public Speed reverse(){
-		return Speed.actionWithAction(other.reverse(), speed);
+		return new Speed((IntervalAction)other.reverse(), speed);
+	}
+
+	@Override
+	public void update(ccTime time) {
+		// TODO: Nothing to do?
 	}
 }

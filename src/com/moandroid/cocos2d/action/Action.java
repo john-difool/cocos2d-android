@@ -3,22 +3,18 @@ package com.moandroid.cocos2d.action;
 import com.moandroid.cocos2d.nodes.CocosNode;
 import com.moandroid.cocos2d.types.ccTime;
 
-public class Action {
-	
-	public static Action action(){
-		return new Action();
-	}
+public abstract class Action {
 	
 	public CocosNode target;
-	public CocosActionTag tag;
+	public ActionTag tag;
 	
 	public Action(){
 		target = null;
-		tag = CocosActionTag.kActionTagInvalid;
+		tag = ActionTag.kActionTagInvalid;
 	}
 	
-	public void start(){
-		
+	public void start(CocosNode target){
+		this.target = target; 
 	}
 	
 	public boolean isDone(){
@@ -26,17 +22,10 @@ public class Action {
 	}
 	
 	public void stop(){
-	
+		target = null;
 	}
 	
-	public void step(ccTime dt){
-		
-	}
+	public abstract void step(ccTime dt);
 	
-	public void update(ccTime time){
-	}
-	
-	public enum CocosActionTag{
-		kActionTagInvalid
-	}
+	public abstract void update(ccTime time);
 }

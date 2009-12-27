@@ -10,7 +10,7 @@ import android.view.MotionEvent;
 
 import com.moandroid.cocos2d.Camera;
 import com.moandroid.cocos2d.action.Action;
-import com.moandroid.cocos2d.action.Action.CocosActionTag;
+import com.moandroid.cocos2d.action.ActionTag;
 import com.moandroid.cocos2d.effects.GridBase;
 import com.moandroid.cocos2d.types.AffineTransform;
 import com.moandroid.cocos2d.types.ccSelector;
@@ -252,7 +252,7 @@ public class CocosNode {
 		return null;
 	}
 	
-	private PointF absolutePosition(){
+	protected PointF absolutePosition(){
 		PointF  ret = new PointF(position.x, position.y);
 		CocosNode cn = this;
 		while(cn.parent != null){
@@ -357,7 +357,7 @@ public class CocosNode {
 			return action;
 		}
 		action.target = this;
-		action.start();
+		action.start(action.target);
 		if(actionsToAdd==null){
 			this.actionAlloc();
 		}
@@ -391,8 +391,8 @@ public class CocosNode {
 		}
 	}
 	
-	public void stopActionByTag(CocosActionTag tag){
-		assert tag != CocosActionTag.kActionTagInvalid:"Invalid tag";
+	public void stopActionByTag(ActionTag tag){
+		assert tag != ActionTag.kActionTagInvalid:"Invalid tag";
 		
 
 		for(int i=0;i<actionsToAdd.size();i++){
@@ -414,8 +414,8 @@ public class CocosNode {
 	}
 	
 
-	public Action getActionByTag(CocosActionTag tag){
-		assert tag != CocosActionTag.kActionTagInvalid:"Invalid tag";
+	public Action getActionByTag(ActionTag tag){
+		assert tag != ActionTag.kActionTagInvalid:"Invalid tag";
 		for(int i=0;i<actionsToRemove.size();i++){
 			Action a = actionsToRemove.get(i);
 			if(a.tag == tag){
@@ -521,7 +521,7 @@ public class CocosNode {
 		public void setAutoCenterFrames(boolean autoCenterFrames);
 	}
 	
-	private void step_(ccTime dt){
+	protected void step_(ccTime dt){
 		for(int i=actionsToRemove.size()-1; i>=0;i--){
 			Action current=actionsToRemove.get(i);
 			actions.remove(current);

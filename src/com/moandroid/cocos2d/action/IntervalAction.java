@@ -1,41 +1,49 @@
 package com.moandroid.cocos2d.action;
 
+import com.moandroid.cocos2d.nodes.CocosNode;
 import com.moandroid.cocos2d.types.ccTime;
 
-public class IntervalAction extends FiniteTimeAction {
-	
-	public static IntervalAction actionWithDuration(ccTime dt){
-		return null;
-	}
+public abstract class IntervalAction extends FiniteTimeAction {
 	
 	public ccTime elapsed;
-	long lastUpdate;
+	boolean firstTick;
 	
 	public IntervalAction(){
-		duration = new ccTime(0);
+		elapsed = new ccTime(0);
+		firstTick = true;
 	}
 	
-	public IntervalAction initWithDuration(ccTime d){
-		return null;
+	public IntervalAction(ccTime duration){
+		setDuration(duration);
+		elapsed = new ccTime(0);
+		firstTick = true;
 	}
 	
-	public void start(){
-		
+	public void start(CocosNode target){
+		super.start(target);
+		elapsed = new ccTime(0);
+		firstTick = true;
 	}
 	
 	public boolean isDone(){
-		return true;
+		return (elapsed.time >= getDuration().time);
 	}
-	
-	public IntervalAction reverse(){
-		return IntervalAction.actionWithDuration(this.duration);
+
+	@Override
+	public void step(ccTime dt) {
+		if( firstTick ) {
+			firstTick = false;
+			elapsed.time = 0;
+		} else
+			elapsed.time += dt.time;
+		update(new ccTime(Math.min(1, elapsed.time / getDuration().time)));
 	}
-	
-	public void step(ccTime dt){
-		update(new ccTime(1));
-	}
-	
-	public void update(ccTime t){
-		
+
+	@Override
+	public void setDuration(ccTime duration) {
+		if(getDuration().time == 0)
+			setDuration(new ccTime(0.00000001f));
+		else
+			super.setDuration(duration);
 	}
 }
