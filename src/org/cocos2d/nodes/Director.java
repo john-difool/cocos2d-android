@@ -13,7 +13,7 @@ import org.cocos2d.opengl.Texture2D;
 import org.cocos2d.types.CCPoint;
 import org.cocos2d.types.CCRect;
 import org.cocos2d.types.CCSize;
-import org.cocos2d.utils.Formatter;
+import org.cocos2d.utils.CCFormatter;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -753,7 +753,7 @@ public class Director implements GLSurfaceView.Renderer {
                 accumDt = 0;
             }
 
-            fpsLabel.setString(Formatter.format("%.1f", frameRate));
+            fpsLabel.setString(new CCFormatter().format("%.1f", frameRate));
             fpsLabel.draw(gl);
         } else {
             frames++;
@@ -765,7 +765,7 @@ public class Director implements GLSurfaceView.Renderer {
                 accumDt = 0;
             }
 
-            Texture2D texture = new Texture2D(Formatter.format("%.2f", frameRate), "DroidSans", 24);
+            Texture2D texture = new Texture2D(new CCFormatter().format("%.2f", frameRate), "DroidSans", 24);
             gl.glEnable(GL_TEXTURE_2D);
             gl.glEnableClientState(GL_VERTEX_ARRAY);
             gl.glEnableClientState(GL_TEXTURE_COORD_ARRAY);

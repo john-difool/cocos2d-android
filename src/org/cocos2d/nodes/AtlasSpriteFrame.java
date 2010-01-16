@@ -1,7 +1,7 @@
 package org.cocos2d.nodes;
 
 import org.cocos2d.types.CCRect;
-import org.cocos2d.utils.Formatter;
+import org.cocos2d.utils.CCFormatter;
 
 public class AtlasSpriteFrame {
     public CCRect rect;
@@ -11,7 +11,8 @@ public class AtlasSpriteFrame {
     }
 
     public String toString() {
-        return Formatter.format("<%s = %08X | Rect = (%.2f,%.2f,%.2f,%.2f)>", AtlasSpriteFrame.class.getSimpleName(), this,
+        return new CCFormatter().format("<%s = %08X | Rect = (%.2f,%.2f,%.2f,%.2f)>",
+                AtlasSpriteFrame.class.getSimpleName(), this,
                 rect.origin.x,
                 rect.origin.y,
                 rect.size.width,

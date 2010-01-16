@@ -4,7 +4,7 @@ import android.util.FloatMath;
 import android.util.Log;
 import org.cocos2d.opengl.TextureAtlas;
 import org.cocos2d.types.*;
-import org.cocos2d.utils.Formatter;
+import org.cocos2d.utils.CCFormatter;
 
 import java.util.HashMap;
 
@@ -95,7 +95,7 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
 
     @Override
     public String toString() {
-        return Formatter.format("<%s = %08X | Rect = (%.2f,%.2f,%.2f,%.2f) | tag = %i>", AtlasSprite.class.getSimpleName(),
+        return new CCFormatter().format("<%s = %08X | Rect = (%.2f,%.2f,%.2f,%.2f) | tag = %i>", AtlasSprite.class.getSimpleName(),
                 this, rect_.origin.x, rect_.origin.y, rect_.size.width, rect_.size.height, getTag());
     }
 

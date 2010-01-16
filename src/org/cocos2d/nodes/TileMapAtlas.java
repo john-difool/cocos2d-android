@@ -3,7 +3,7 @@ package org.cocos2d.nodes;
 import android.util.Log;
 import org.cocos2d.opengl.TGA;
 import org.cocos2d.types.*;
-import org.cocos2d.utils.Formatter;
+import org.cocos2d.utils.CCFormatter;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -137,7 +137,7 @@ public class TileMapAtlas extends AtlasNode {
 
             // TODO: this method consumes a lot of memory
             // a tree of something like that shall be implemented
-            int num = posToAtlasIndex.get(Formatter.format("%d,%d", pos.x, pos.y));
+            int num = posToAtlasIndex.get(new CCFormatter().format("%d,%d", pos.x, pos.y));
             updateAtlas(pos, tile, num);
         }
     }
@@ -191,7 +191,7 @@ public class TileMapAtlas extends AtlasNode {
                     if (value.r != 0) {
                         updateAtlas(CCGridSize.ccg(x, y), value, total);
 
-                        String key = Formatter.format("%d,%d", x, y);
+                        String key = new CCFormatter().format("%d,%d", x, y);
                         posToAtlasIndex.put(key, total);
 
                         total++;

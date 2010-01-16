@@ -10,7 +10,7 @@ import org.cocos2d.opengl.Texture2D;
 import org.cocos2d.types.CCGridSize;
 import org.cocos2d.types.CCPoint;
 import org.cocos2d.types.CCSize;
-import org.cocos2d.utils.Formatter;
+import org.cocos2d.utils.CCFormatter;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -66,7 +66,7 @@ public abstract class GridBase {
     }
 
     public String toString() {
-        return Formatter.format("<%s = %08X | Dimensions = %ix%i>", GridBase.class, this, gridSize.x, gridSize.y);
+        return new CCFormatter().format("<%s = %08X | Dimensions = %ix%i>", GridBase.class, this, gridSize.x, gridSize.y);
     }
 
     private static final boolean LANDSCAPE_LEFT = false;

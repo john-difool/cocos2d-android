@@ -4,7 +4,7 @@ import org.cocos2d.nodes.TextureManager;
 import org.cocos2d.types.CCColor4B;
 import org.cocos2d.types.CCQuad2;
 import org.cocos2d.types.CCQuad3;
-import org.cocos2d.utils.Formatter;
+import org.cocos2d.utils.CCFormatter;
 
 import javax.microedition.khronos.opengles.GL10;
 import static javax.microedition.khronos.opengles.GL10.*;
@@ -90,7 +90,7 @@ public class TextureAtlas {
     }
 
     public String toString() {
-        return Formatter.format("<%s = %08X | totalQuads = %i>", TextureAtlas.class, this, totalQuads_);
+        return new CCFormatter().format("<%s = %08X | totalQuads = %i>", TextureAtlas.class, this, totalQuads_);
     }
 
     public void initColorArray() {

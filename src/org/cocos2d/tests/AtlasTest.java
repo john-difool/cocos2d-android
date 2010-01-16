@@ -17,7 +17,7 @@ import org.cocos2d.opengl.CCGLSurfaceView;
 import org.cocos2d.opengl.Texture2D;
 import org.cocos2d.opengl.TextureAtlas;
 import org.cocos2d.types.*;
-import org.cocos2d.utils.Formatter;
+import org.cocos2d.utils.CCFormatter;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -242,7 +242,7 @@ public class AtlasTest extends Activity {
 
         public void step(float dt) {
             time += dt;
-            label.setString(Formatter.format("%2.2f Test", time));
+            label.setString(new CCFormatter().format("%2.2f Test", time));
         }
 
         @Override

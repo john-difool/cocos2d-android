@@ -2,7 +2,7 @@ package org.cocos2d.nodes;
 
 import android.opengl.GLU;
 import org.cocos2d.types.CCSize;
-import org.cocos2d.utils.Formatter;
+import org.cocos2d.utils.CCFormatter;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -34,7 +34,7 @@ public class Camera {
     }
 
     public String toString() {
-        return Formatter.format("<%s = %08X | center = (%.2f,%.2f,%.2f)>", this.getClass(), this, centerX, centerY, centerZ);
+        return new CCFormatter().format("<%s = %08X | center = (%.2f,%.2f,%.2f)>", this.getClass(), this, centerX, centerY, centerZ);
     }
 
 

@@ -17,7 +17,7 @@ import org.cocos2d.opengl.CCGLSurfaceView;
 import org.cocos2d.types.CCBezierConfig;
 import org.cocos2d.types.CCPoint;
 import org.cocos2d.types.CCSize;
-import org.cocos2d.utils.Formatter;
+import org.cocos2d.utils.CCFormatter;
 
 public class SpritesTest extends Activity {
     private static final String LOG_TAG = SpritesTest.class.getSimpleName();
@@ -378,7 +378,7 @@ public class SpritesTest extends Activity {
 
             Animation animation = new Animation("dance", 0.2f);
             for (int i = 1; i < 15; i++) {
-                animation.addFrame(Formatter.format("grossini_dance_%02d.png", i));
+                animation.addFrame(new CCFormatter().format("grossini_dance_%02d.png", i));
             }
 
             IntervalAction action = Animate.action(animation);
