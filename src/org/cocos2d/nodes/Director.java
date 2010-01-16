@@ -1,0 +1,784 @@
+package org.cocos2d.nodes;
+
+import android.app.Activity;
+import android.graphics.PixelFormat;
+import android.opengl.GLSurfaceView;
+import android.opengl.GLU;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import org.cocos2d.actions.ActionManager;
+import org.cocos2d.actions.Scheduler;
+import org.cocos2d.opengl.Texture2D;
+import org.cocos2d.types.CCPoint;
+import org.cocos2d.types.CCRect;
+import org.cocos2d.types.CCSize;
+import org.cocos2d.utils.Formatter;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+import static javax.microedition.khronos.opengles.GL10.*;
+import java.util.ArrayList;
+import java.util.Timer;
+
+public class Director implements GLSurfaceView.Renderer {
+    public static Activity me = null;
+
+    public Activity getActivity() {
+        return me;
+    }
+
+    private int width_, height_;
+
+    private static final double kDefaultFPS = 60.0f;    // 60 frames per second
+
+    public static final boolean kEventHandled = true;
+    public static final boolean kEventIgnored = false;
+
+    // Landscape is right or left ?
+    private static final boolean LANDSCAPE_LEFT = false;
+
+    // Fast FPS display. FPS are updated 10 times per second without consuming resources
+    // uncomment this line to use the old method that updated
+    private static final boolean FAST_FPS_DISPLAY = true;
+
+
+    // internal timer
+    private Timer animationTimer;
+    private double oldAnimationInterval;
+
+    private int pixelFormat_;
+
+    /* landscape mode ? */
+    private boolean landscape;
+
+    /* display FPS ? */
+    private int frames;
+    private float accumDt;
+    private float frameRate;
+
+    LabelAtlas fpsLabel;
+
+    /* is the running scene paused */
+    private boolean paused;
+
+    /* The running scene */
+    private Scene runningScene_;
+
+    /* will be the next 'runningScene' in the next frame */
+    private Scene nextScene;
+
+    /* event handler */
+    private ArrayList<TouchEventsDelegate> eventHandlers;
+
+    /* scheduled scenes */
+    private ArrayList<Scene> scenesStack_;
+
+    /* last time the main loop was updated */
+    private long lastUpdate;
+    /* delta time since last tick to main loop */
+    private float dt;
+    /* whether or not the next delta time will be zero */
+    private boolean nextDeltaTimeZero_;
+
+    private GLSurfaceView openGLView_;
+
+    /**
+     * The current running Scene. Director can only run one Scene at the time
+     */
+    public Scene runningScene() {
+        return runningScene_;
+    }
+
+    /**
+     * The FPS value
+     */
+    private double animationInterval;
+
+    public void getAnimationInterval(double interval) {
+        animationInterval = interval;
+    }
+
+    /**
+     * Whether or not to display the FPS on the bottom-left corner
+     */
+    private boolean displayFPS;
+
+    /**
+     * Whether or not to propagate the touch events to the running Scene. Default true
+     */
+    private boolean eventsEnabled;
+
+    /**
+     * The OpenGL view
+     */
+    private GLSurfaceView getOpenGLView() {
+        return openGLView_;
+    }
+
+    /**
+     * Pixel format used to create the context
+     */
+    private PixelFormat pixelFormat;
+
+    /**
+     * whether or not the next delta time will be zero
+     */
+    private boolean nextDeltaTimeZero;
+
+    public void setDisplayFPS(boolean value) {
+        displayFPS = value;
+    }
+
+    public void setEventsEnabled(boolean value) {
+        eventsEnabled = value;
+    }
+
+    private static Director _sharedDirector;
+
+    public static Director sharedDirector() {
+        synchronized (Director.class) {
+            if (_sharedDirector == null) {
+                _sharedDirector = new Director();
+            }
+            return _sharedDirector;
+        }
+    }
+
+//	public void useFaseDirector(){
+//		assert _sharedDirector == null : "A Director was allocated. setDirectorType must be the first call to Director";
+//
+//		FastDirector.sharedDirector();
+//	}
+
+    protected Director() {
+        synchronized (Director.class) {
+
+            //Create a full-screen window
+
+            // default values
+            pixelFormat_ = PixelFormat.RGB_565;
+
+            // scenes
+            runningScene_ = null;
+            nextScene = null;
+
+            oldAnimationInterval = animationInterval = 1.0 / kDefaultFPS;
+            eventHandlers = new ArrayList<TouchEventsDelegate>(8);
+            scenesStack_ = new ArrayList<Scene>(10);
+
+            // landscape
+            landscape = false;
+
+            // FPS
+            displayFPS = false;
+            frames = 0;
+
+            // paused?
+            paused = false;
+
+            // touch events enabled?
+            eventsEnabled = true;
+        }
+    }
+
+    private void initGLDefaultValues(GL10 gl) {
+//        assert openGLView_ != null : "openGLView_ must be initialized";
+
+        setAlphaBlending(gl, true);
+        gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+        setDepthTest(gl, false);
+
+        gl.glDisable(GL_LIGHTING);
+
+        gl.glShadeModel(GL_FLAT);
+
+        setTexture2D(gl, true);
+
+        // set other opengl default values
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 1f);
+
+        if (FAST_FPS_DISPLAY) {
+            fpsLabel = new LabelAtlas("00.0", "fps_images.png", 16, 24, '.');
+            fpsLabel.setPosition(50, 2);
+        }
+
+    }
+
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        width_ = width;
+        height_ = height;
+        gl.glViewport(0, 0, width, height);
+        setDefaultProjection(gl);
+    }
+
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+
+        /*
+         * By default, OpenGL enables features that improve quality
+         * but reduce performance. One might want to tweak that
+         * especially on software renderer.
+         */
+        gl.glDisable(GL_DITHER);
+
+        /*
+        * Some one-time OpenGL initialization can be made here
+        * probably based on features of this particular context
+        */
+        gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+
+
+        initGLDefaultValues(gl);
+    }
+
+    public void onDrawFrame(GL10 gl) {
+
+        synchronized (this) {
+            this.notify();
+        }
+        Thread.yield();
+
+        /* clear window */
+        gl.glClear(GL_COLOR_BUFFER_BIT /*| GL_DEPTH_BUFFER_BIT*/);
+
+        /* calculate "global" dt */
+        calculateDeltaTime();
+        if (!paused)
+            Scheduler.sharedScheduler().tick(dt);
+
+
+        /* to avoid flicker, nextScene MUST be here: after tick and before draw */
+        if (nextScene != null)
+            setNextScene();
+
+        gl.glPushMatrix();
+
+        applyLandscape(gl);
+
+        /*
+         * Now we're ready to draw some 3D objects
+         */
+
+        /* draw the scene */
+        if (runningScene_ != null)
+            runningScene_.visit(gl);
+        if (displayFPS)
+            showFPS(gl);
+
+        gl.glPopMatrix();
+
+    }
+
+    private void calculateDeltaTime() {
+        long now = System.currentTimeMillis();
+
+        // new delta time
+        if (nextDeltaTimeZero_) {
+            dt = 0;
+            nextDeltaTimeZero_ = false;
+        } else {
+            dt = (now - lastUpdate) / 1000.0f;
+            dt = Math.max(0, dt);
+        }
+
+        lastUpdate = now;
+    }
+
+    public void setPixelFormat(int format) {
+        pixelFormat_ = format;
+    }
+
+    private void setDefaultProjection(GL10 gl) {
+        set2Dprojection(gl);
+//      set3Dprojection(gl);
+    }
+
+    private void set2Dprojection(GL10 gl) {
+        gl.glMatrixMode(GL_PROJECTION);
+        GLU.gluOrtho2D(gl, 0, width_, height_, 0);
+        gl.glTranslatef(0, height_, 0);
+        gl.glScalef(1.0f, -1.0f, 1.0f);
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
+        gl.glLoadIdentity();
+    }
+
+    // set a 3d projection matrix
+    private void set3Dprojection(GL10 gl) {
+        gl.glMatrixMode(GL_PROJECTION);
+        gl.glLoadIdentity();
+        GLU.gluPerspective(gl, 60, width_ / height_, 0.5f, 1500.0f);
+
+        gl.glMatrixMode(GL_MODELVIEW);
+        gl.glLoadIdentity();
+        GLU.gluLookAt(gl, width_ / 2, height_ / 2, Camera.getZEye(),
+                width_ / 2, height_ / 2, 0, 0.0f, 1.0f, 0.0f);
+    }
+
+    public CCSize winSize() {
+        CCSize s = displaySize();
+        if (landscape) {
+            // swap x,y in landscape mode
+            s.width = height_;
+            s.height = width_;
+        }
+        return s;
+    }
+
+    public CCSize displaySize() {
+        return CCSize.make(width_, height_);
+    }
+
+    public boolean landscape() {
+        return landscape;
+    }
+
+    public void setLandscape(boolean on) {
+        if (on != landscape) {
+            landscape = on;
+        }
+    }
+
+    private void applyLandscape(GL10 gl) {
+        if (landscape) {
+            gl.glTranslatef(160, 240, 0);
+
+            if (LANDSCAPE_LEFT) {
+                gl.glRotatef(-90, 0, 0, 1);
+                gl.glTranslatef(-240, -160, 0);
+            } else {
+                // rotate left
+                gl.glRotatef(90, 0, 0, 1);
+                gl.glTranslatef(-240, -160, 0);
+            }
+        }
+    }
+
+    // Director Integration with a Android view
+    // is the view currently attached
+
+    public boolean isOpenGLAttached() {
+        return true;
+    }
+
+    // detach or attach to a view or a window
+    private boolean detach() {
+        try {
+//            // check if the view is attached
+//            if (!isOpenGLAttached()) {
+//                // the view is not attached
+//                throw new OpenGLViewNotAttachedException("Can't detach the OpenGL View, because it is not attached. Attach it first.");
+//            }
+//
+//            // remove from the superview
+//        openGLView_.removeFromSuperview();
+//
+//            // check if the view is not attached anymore
+//            if (!isOpenGLAttached()) {
+//                return true;
+//            }
+//
+//            // the view is still attached
+//            throw new OpenGLViewCantDetachException("Can't detach the OpenGL View, it is still attached to the superview.");
+
+            me.finish();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean attachInWindow(View window) {
+        return attachInView(window);
+    }
+
+    public boolean attachInView(View view) {
+
+//        CCRect rect = new CCRect(view.getScrollX(), view.getScrollY(), view.getWidth(), view.getHeight());
+        WindowManager w = me.getWindowManager();
+        CCRect rect = CCRect.make(0, 0, w.getDefaultDisplay().getWidth(), w.getDefaultDisplay().getHeight());
+
+        return initOpenGLViewWithView(view, rect);
+    }
+
+    public boolean attachInView(View view, CCRect rect) {
+        return initOpenGLViewWithView(view, rect);
+    }
+
+    private boolean initOpenGLViewWithView(View view, CCRect rect) {
+        width_ = (int) rect.size.width;
+        height_ = (int) rect.size.height;
+//        try {
+        openGLView_ = (GLSurfaceView) view;
+//
+//            // check if the view is not attached
+//            if(isOpenGLAttached())
+//            {
+//                // the view is already attached
+//                throw new OpenGLViewAlreadyAttached("Can't re-attach the OpenGL View, because it is already attached. Detach it first.");
+//                return false;
+//            }
+//
+//            // check if the view is not initialized
+        if (openGLView_ != null) {
+//                openGLView_.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+
+//                // define the pixel format
+//                NSString	*pFormat = kEAGLColorFormatRGB565;
+//                GLuint		depthFormat = 0;
+//
+//                if(pixelFormat_==kRGBA8)
+//                    pFormat = kEAGLColorFormatRGBA8;
+//
+//                // alloc and init the opengl view
+//                openGLView_ = [[EAGLView alloc] initWithFrame:rect pixelFormat:pFormat depthFormat:depthFormat preserveBackbuffer:NO];
+//
+//                // check if the view was alloced and initialized
+//                if(openGLView_ == null)
+//                {
+//                    // the view was not created
+//                    throw new OpenGLViewCantInit("Could not alloc and init the OpenGL View.");
+//                }
+//
+//                // set autoresizing enabled when attaching the glview to another view
+//                openGLView_.setAutoresizesEAGLSurface(true);
+//
+//                // set the touch delegate of the glview to self
+//                openGLView_.setTouchDelegate(this);
+        } else {
+//                // set the (new) frame of the glview
+//                openGLView_.setFrame(rect);
+        }
+//
+//            // check if the superview has touchs enabled and enable it in our view
+//            if([view isUserInteractionEnabled])
+//            {
+//                [openGLView_ setUserInteractionEnabled:YES];
+        setEventsEnabled(true);
+//            }
+//            else
+//            {
+//                [openGLView_ setUserInteractionEnabled:NO];
+//                setEventsEnabled(false);
+//            }
+//
+//            // check if multi touches are enabled and set them
+//            if([view isMultipleTouchEnabled])
+//            {
+//                [openGLView_ setMultipleTouchEnabled:YES];
+//            }
+//            else
+//            {
+//                [openGLView_ setMultipleTouchEnabled:NO];
+//            }
+//
+//            // add the glview to his (new) superview
+//            [view.addSubview(openGLView_);
+//
+//            // set the background color of the glview
+//            //	[backgroundColor setOpenGLClearColor];
+//
+//            // check if the glview is attached now
+//            if(isOpenGLAttached())
+//            {
+//                initGLDefaultValues();
+//                return true;
+//            }
+//
+//            // the glview is not attached, but it should have been
+//            throw new OpenGLViewCantAttach("Can't attach the OpenGL View.");
+//
+//        } catch (Exception e) {
+//        }
+        return true;
+    }
+
+
+    public CCPoint convertCoordinate(float x, float y) {
+        int newY = (int) (height_ - y);
+        CCPoint ret = CCPoint.ccp(x, newY);
+
+        if (landscape) {
+            if (LANDSCAPE_LEFT) {
+                ret.x = y;
+                ret.y = x;
+            } else {
+                ret.x = y;
+                ret.y = width_ - x;
+            }
+        }
+        return ret;
+    }
+
+    // Director Scene Management
+
+    public void runWithScene(Scene scene) {
+        assert scene != null : "Argument must be non-null";
+
+        assert runningScene_ == null : "You can't run a scene if another scene is running. Use replaceScene or pushScene instead";
+
+        pushScene(scene);
+        startAnimation();
+    }
+
+    public void replaceScene(Scene scene) {
+        assert scene != null : "Argument must be non-null";
+
+        int index = scenesStack_.size();
+
+        scenesStack_.set(index - 1, scene);
+        nextScene = scene;    // nextScene is a weak ref
+    }
+
+    public void pushScene(Scene scene) {
+        assert scene != null : "Argument must be non-null";
+
+        scenesStack_.add(scene);
+        nextScene = scene;
+    }
+
+    public void popScene() {
+        assert runningScene_ != null : "A running scene is needed";
+
+        scenesStack_.remove(scenesStack_.size() - 1);
+        int c = scenesStack_.size();
+
+        if (c == 0) {
+            end();
+        } else {
+            nextScene = scenesStack_.get(c - 1);
+        }
+    }
+
+    public void end() {
+        // remove all objects.
+        // runWithScene might be executed after 'end'.
+        scenesStack_.clear();
+
+        if (runningScene_ != null)
+            runningScene_.onExit();
+
+        runningScene_.cleanup();
+
+        runningScene_ = null;
+        nextScene = null;
+
+        eventHandlers.clear();
+
+        scenesStack_.clear();
+
+        stopAnimation();
+        detach();
+
+        ActionManager.sharedManager().removeAllActions();
+        TextureManager.sharedTextureManager();
+
+        // OpenGL view
+        openGLView_ = null;
+
+
+    }
+
+    public void setNextScene() {
+        if (runningScene_ != null)
+            runningScene_.onExit();
+
+        runningScene_ = nextScene;
+        nextScene = null;
+
+        if (runningScene_ != null)
+            runningScene_.onEnter();
+    }
+
+    public void pause() {
+        if (paused)
+            return;
+
+        oldAnimationInterval = animationInterval;
+
+        // when paused, don't consume CPU
+        setAnimationInterval(1 / 4.0);
+        paused = true;
+    }
+
+    public void resume() {
+        if (!paused)
+            return;
+
+        setAnimationInterval(oldAnimationInterval);
+
+        lastUpdate = System.currentTimeMillis();
+
+        paused = false;
+        dt = 0;
+    }
+
+    public void startAnimation() {
+        assert animationTimer != null : "AnimationTimer must be null. Calling startAnimation twice?";
+
+        lastUpdate = System.currentTimeMillis();
+
+        animationTimer = new Timer();
+
+//        animationTimer.scheduleAtFixedRate(new TimerTask() {
+//            public void run() { mainLoop(); } }, 0L, (long)(animationInterval * 1000L));
+    }
+
+    public void stopAnimation() {
+//        animationTimer.cancel();
+        animationTimer = null;
+    }
+
+    public void setAnimationInterval(double interval) {
+        animationInterval = interval;
+
+        if (animationTimer != null) {
+            stopAnimation();
+            startAnimation();
+        }
+    }
+
+
+    public void addEventHandler(TouchEventsDelegate delegate) {
+        assert delegate != null : "Director.addEventHandler: delegate must be non null";
+
+        eventHandlers.add(0, delegate);
+    }
+
+    public void removeEventHandler(TouchEventsDelegate delegate) {
+        assert delegate != null : "Director.removeEventHandler: delegate must be non null";
+
+        eventHandlers.remove(delegate);
+    }
+
+
+    //
+    // multi touch proxies
+    //
+
+    public void touchesBegan(MotionEvent event) {
+        if (eventsEnabled) {
+            ArrayList<TouchEventsDelegate> copyArray = (ArrayList<TouchEventsDelegate>) eventHandlers.clone();
+            for (TouchEventsDelegate eventHandler : copyArray) {
+                if (eventHandler.CCTouchesBegan(event) == kEventHandled)
+                    break;
+            }
+        }
+    }
+
+    public void touchesMoved(MotionEvent event) {
+        if (eventsEnabled) {
+            ArrayList<TouchEventsDelegate> copyArray = (ArrayList<TouchEventsDelegate>) eventHandlers.clone();
+            for (TouchEventsDelegate eventHandler : copyArray) {
+                eventHandler.CCTouchesMoved(event);
+            }
+        }
+    }
+
+    public void touchesEnded(MotionEvent event) {
+        if (eventsEnabled) {
+            ArrayList<TouchEventsDelegate> copyArray = (ArrayList<TouchEventsDelegate>) eventHandlers.clone();
+            for (TouchEventsDelegate eventHandler : copyArray) {
+                eventHandler.CCTouchesEnded(event);
+            }
+        }
+    }
+
+    public void touchesCancelled(MotionEvent event) {
+        if (eventsEnabled) {
+            ArrayList<TouchEventsDelegate> copyArray = (ArrayList<TouchEventsDelegate>) eventHandlers.clone();
+            for (TouchEventsDelegate eventHandler : copyArray) {
+                eventHandler.CCTouchesCancelled(event);
+            }
+        }
+    }
+
+
+    public void setAlphaBlending(GL10 gl, boolean on) {
+        if (on)
+            gl.glEnable(GL_BLEND);
+        else
+            gl.glDisable(GL_BLEND);
+    }
+
+    public void setDepthTest(GL10 gl, boolean on) {
+        if (on)
+            gl.glEnable(GL_DEPTH_TEST);
+        else
+            gl.glDisable(GL_DEPTH_TEST);
+    }
+
+    public void setTexture2D(GL10 gl, boolean on) {
+        if (on)
+            gl.glEnable(GL_TEXTURE_2D);
+        else
+            gl.glDisable(GL_TEXTURE_2D);
+    }
+
+    public int[] getConfigSpec() {
+        if (mTranslucentBackground) {
+            // We want a depth buffer and an getOpacity buffer
+            int[] configSpec = {
+                    EGL10.EGL_RED_SIZE, 8,
+                    EGL10.EGL_GREEN_SIZE, 8,
+                    EGL10.EGL_BLUE_SIZE, 8,
+                    EGL10.EGL_ALPHA_SIZE, 8,
+                    EGL10.EGL_DEPTH_SIZE, 16,
+                    EGL10.EGL_NONE
+            };
+            return configSpec;
+        } else {
+            // We want a depth buffer, don't care about the
+            // details of the color buffer.
+            int[] configSpec = {
+                    EGL10.EGL_DEPTH_SIZE, 16,
+                    EGL10.EGL_NONE
+            };
+            return configSpec;
+        }
+    }
+
+    private void showFPS(GL10 gl) {
+
+        if (FAST_FPS_DISPLAY) {
+            frames++;
+
+            accumDt += dt;
+
+            if (accumDt > 0.1) {
+                frameRate = frames / accumDt;
+                frames = 0;
+                accumDt = 0;
+            }
+
+            fpsLabel.setString(Formatter.format("%.1f", frameRate));
+            fpsLabel.draw(gl);
+        } else {
+            frames++;
+            accumDt += dt;
+
+            if (accumDt > 0.3) {
+                frameRate = frames / accumDt;
+                frames = 0;
+                accumDt = 0;
+            }
+
+            Texture2D texture = new Texture2D(Formatter.format("%.2f", frameRate), "DroidSans", 24);
+            gl.glEnable(GL_TEXTURE_2D);
+            gl.glEnableClientState(GL_VERTEX_ARRAY);
+            gl.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+            gl.glColor4f(224 / 255f, 224 / 255f, 244 / 255f, 200 / 255f);
+            texture.drawAtPoint(gl, CCPoint.ccp(5, 2));
+
+            gl.glDisable(GL_TEXTURE_2D);
+            gl.glDisableClientState(GL_VERTEX_ARRAY);
+            gl.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        }
+    }
+
+    private boolean mTranslucentBackground;
+
+}
