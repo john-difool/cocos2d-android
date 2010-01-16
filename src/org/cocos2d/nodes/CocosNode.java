@@ -51,7 +51,7 @@ public class CocosNode {
     }
 
     public void setScaleY(float sy) {
-        scaleX_ = sy;
+        scaleY_ = sy;
         isTransformDirty_ = isInverseDirty_ = true;
     }
 
