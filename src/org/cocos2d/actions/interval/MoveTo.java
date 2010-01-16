@@ -1,6 +1,5 @@
 package org.cocos2d.actions.interval;
 
-import android.graphics.PointF;
 import org.cocos2d.nodes.CocosNode;
 
 //
@@ -8,9 +7,12 @@ import org.cocos2d.nodes.CocosNode;
 //
 
 public class MoveTo extends IntervalAction {
-    private PointF endPosition;
-    private PointF startPosition;
-    protected PointF delta;
+    private float endPositionX;
+    private float endPositionY;
+    private float startPositionX;
+    private float startPositionY;
+    protected float deltaX;
+    protected float deltaY;
 
     public static MoveTo action(float t, float x, float y) {
         return new MoveTo(t, x, y);
@@ -18,33 +20,27 @@ public class MoveTo extends IntervalAction {
 
     protected MoveTo(float t, float x, float y) {
         super(t);
-        startPosition = new PointF();
-        endPosition = new PointF(x, y);
-        delta = new PointF();
+        endPositionX = x;
+        endPositionY = y;
     }
 
     @Override
     public IntervalAction copy() {
-        return new MoveTo(duration, endPosition.x, endPosition.y);
+        return new MoveTo(duration, endPositionX, endPositionY);
     }
-
-    long now = 0L;
 
     @Override
     public void start(CocosNode aTarget) {
         super.start(aTarget);
 
-        startPosition.x = target.getPositionX();
-        startPosition.y = target.getPositionY();
-        if (endPosition != null) {
-            delta.x = endPosition.x - startPosition.x;
-            delta.y = endPosition.y - startPosition.y;
-        }
-        now = System.currentTimeMillis();
+        startPositionX = target.getPositionX();
+        startPositionY = target.getPositionY();
+        deltaX = endPositionX - startPositionX;
+        deltaY = endPositionY - startPositionY;
     }
 
     @Override
     public void update(float t) {
-        target.setPosition(startPosition.x + delta.x * t, startPosition.y + delta.y * t);
+        target.setPosition(startPositionX + deltaX * t, startPositionY + deltaY * t);
     }
 }

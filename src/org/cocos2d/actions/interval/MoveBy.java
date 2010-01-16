@@ -1,6 +1,5 @@
 package org.cocos2d.actions.interval;
 
-import android.graphics.PointF;
 import org.cocos2d.nodes.CocosNode;
 
 //
@@ -8,7 +7,6 @@ import org.cocos2d.nodes.CocosNode;
 //
 
 public class MoveBy extends MoveTo {
-    private PointF saved;
 
     public static MoveBy action(float t, float x, float y) {
         return new MoveBy(t, x, y);
@@ -16,26 +14,26 @@ public class MoveBy extends MoveTo {
 
     protected MoveBy(float t, float x, float y) {
         super(t, x, y);
-        delta = new PointF(x, y);
-        saved = new PointF();
+        deltaX = x;
+        deltaY = y;
     }
 
     @Override
     public IntervalAction copy() {
-        return new MoveBy(duration, delta.x, delta.y);
+        return new MoveBy(duration, deltaX, deltaY);
     }
 
     @Override
     public void start(CocosNode aTarget) {
-        saved.x = delta.x;
-        saved.y = delta.y;
+        float savedX = deltaX;
+        float savedY = deltaY;
         super.start(aTarget);
-        delta.x = saved.x;
-        delta.y = saved.y;
+        deltaX = savedX;
+        deltaY = savedY;
     }
 
     @Override
     public IntervalAction reverse() {
-        return new MoveBy(duration, -delta.x, -delta.y);
+        return new MoveBy(duration, -deltaX, -deltaY);
     }
 }
