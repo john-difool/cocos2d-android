@@ -8,11 +8,11 @@ public class ParticleFire extends ParticleSystem {
         return new ParticleFire();
     }
 
-    public ParticleFire() {
+    protected ParticleFire() {
         this(250);
     }
 
-    public ParticleFire(int p) {
+    protected ParticleFire(int p) {
         super(p);
 
 

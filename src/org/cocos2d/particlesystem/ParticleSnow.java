@@ -9,11 +9,11 @@ public class ParticleSnow extends ParticleSystem {
         return new ParticleSnow();
     }
 
-    public ParticleSnow() {
+    protected ParticleSnow() {
         this(700);
     }
 
-    public ParticleSnow(int p) {
+    protected ParticleSnow(int p) {
         super(p);
 
 

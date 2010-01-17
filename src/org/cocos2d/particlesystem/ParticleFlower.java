@@ -8,11 +8,11 @@ public class ParticleFlower extends ParticleSystem {
         return new ParticleFlower();
     }
 
-    public ParticleFlower() {
+    protected ParticleFlower() {
         this(250);
     }
 
-    public ParticleFlower(int p) {
+    protected ParticleFlower(int p) {
         super(p);
 
 

@@ -4,11 +4,15 @@ import org.cocos2d.nodes.TextureManager;
 
 public class ParticleMeteor extends ParticleSystem {
 
-    public ParticleMeteor() {
+    public static ParticleSystem node() {
+        return new ParticleMeteor();
+    }
+
+    protected ParticleMeteor() {
         this(150);
     }
 
-    public ParticleMeteor(int p) {
+    protected ParticleMeteor(int p) {
         super(p);
 
 

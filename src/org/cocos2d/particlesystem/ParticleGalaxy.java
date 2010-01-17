@@ -8,11 +8,11 @@ public class ParticleGalaxy extends ParticleSystem {
         return new ParticleGalaxy();
     }
 
-    public ParticleGalaxy() {
+    protected ParticleGalaxy() {
         this(200);
     }
 
-    public ParticleGalaxy(int p) {
+    protected ParticleGalaxy(int p) {
         super(p);
 
         // duration

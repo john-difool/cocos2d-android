@@ -3,15 +3,16 @@ package org.cocos2d.particlesystem;
 import org.cocos2d.nodes.TextureManager;
 
 public class ParticleSun extends ParticleSystem {
+
     public static ParticleSystem node() {
         return new ParticleSun();
     }
 
-    public ParticleSun() {
+    protected ParticleSun() {
         this(350);
     }
 
-    public ParticleSun(int p) {
+    protected ParticleSun(int p) {
         super(p);
 
         // additive

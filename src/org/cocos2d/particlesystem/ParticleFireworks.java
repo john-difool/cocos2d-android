@@ -8,11 +8,11 @@ public class ParticleFireworks extends ParticleSystem {
         return new ParticleFireworks();
     }
 
-    public ParticleFireworks() {
+    protected ParticleFireworks() {
         this(1500);
     }
 
-    public ParticleFireworks(int p) {
+    protected ParticleFireworks(int p) {
         super(p);
 
         // duration

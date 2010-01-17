@@ -8,11 +8,11 @@ public class ParticleSpiral extends ParticleSystem {
         return new ParticleSpiral();
     }
 
-    public ParticleSpiral() {
+    protected ParticleSpiral() {
         this(500);
     }
 
-    public ParticleSpiral(int p) {
+    protected ParticleSpiral(int p) {
         super(p);
 
 

@@ -17,17 +17,13 @@ import java.nio.FloatBuffer;
 
 public abstract class ParticleSystem extends CocosNode {
 
-    public static ParticleSystem node() {
-        throw new RuntimeException();
-    }
-
     public static class Particle {
-        CCPoint pos;
-        CCPoint dir;
+        CCPoint pos = new CCPoint();
+        CCPoint dir = new CCPoint();
         float radialAccel;
         float tangentialAccel;
-        CCColorF color;
-        CCColorF deltaColor;
+        CCColorF color = new CCColorF();
+        CCColorF deltaColor = new CCColorF();
         float size;
         float life;
     }
@@ -262,15 +258,17 @@ public abstract class ParticleSystem extends CocosNode {
 
 
     //! Initializes a system with a fixed number of particles
-    public ParticleSystem(int numberOfParticles) {
+    protected ParticleSystem(int numberOfParticles) {
         totalParticles = numberOfParticles;
 
         particles = new Particle[totalParticles];
         vertices = new CCPointSprite[totalParticles];
 
 
-        for (int i = 0; i < totalParticles; i++)
+        for (int i = 0; i < totalParticles; i++) {
             particles[i] = new Particle();
+            vertices[i]  = new CCPointSprite();
+        }
 
         // default, active
         active = true;
@@ -419,7 +417,7 @@ public abstract class ParticleSystem extends CocosNode {
 
                 // TODO: Remove when glPointSizePointerOES is fixed
                 vertices[particleIdx].size = p.size;
-                vertices[particleIdx].colors = p.color;
+                vertices[particleIdx].colors = new CCColorF(p.color);
 
                 // update particle counter
                 particleIdx++;
@@ -459,15 +457,12 @@ public abstract class ParticleSystem extends CocosNode {
             // TODO: Remove when glPointSizePointerOES is fixed
 //            gl.glBufferData(GL_ARRAY_BUFFER, 4*7*totalParticles, vertices, GL_DYNAMIC_DRAW);
             ((GL11) gl).glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
-
         }
-        //int blendSrc, blendDst;
-        //int colorMode;
 
         gl.glEnable(GL_TEXTURE_2D);
         gl.glBindTexture(GL_TEXTURE_2D, texture.name());
 
-        ((GL11) gl).glEnable(GL11.GL_POINT_SPRITE_OES);
+        gl.glEnable(GL11.GL_POINT_SPRITE_OES);
         ((GL11) gl).glTexEnvi(GL11.GL_POINT_SPRITE_OES, GL11.GL_COORD_REPLACE_OES, GL10.GL_TRUE);
 
         gl.glEnableClientState(GL_VERTEX_ARRAY);
@@ -500,9 +495,6 @@ public abstract class ParticleSystem extends CocosNode {
         //gl.glColorPointer(4, GL_FLOAT, 7*4, 4*3);
         gl.glColorPointer(4, GL_FLOAT, 0, mColors);
 
-        // save blend state
-        //glGetIntegerv(GL_BLEND_DST, &blendDst);
-        //glGetIntegerv(GL_BLEND_SRC, &blendSrc);
         if (blendAdditive)
             gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         else
@@ -510,10 +502,6 @@ public abstract class ParticleSystem extends CocosNode {
 
         // save color mode
         //glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &colorMode);
-        //if( colorModulate )
-        //  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-        //else
-        //  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
         gl.glDrawArrays(GL_POINTS, 0, particleIdx);
 

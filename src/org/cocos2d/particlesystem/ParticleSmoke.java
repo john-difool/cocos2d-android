@@ -8,11 +8,11 @@ public class ParticleSmoke extends ParticleSystem {
         return new ParticleSmoke();
     }
 
-    public ParticleSmoke() {
+    protected ParticleSmoke() {
         this(200);
     }
 
-    public ParticleSmoke(int p) {
+    protected ParticleSmoke(int p) {
         super(p);
 
 

@@ -9,11 +9,11 @@ public class ParticleRain extends ParticleSystem {
         return new ParticleRain();
     }
 
-    public ParticleRain() {
+    protected ParticleRain() {
         this(1000);
     }
 
-    public ParticleRain(int p) {
+    protected ParticleRain(int p) {
         super(p);
 
 

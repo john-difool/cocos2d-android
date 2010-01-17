@@ -3,16 +3,16 @@ package org.cocos2d.particlesystem;
 import org.cocos2d.nodes.TextureManager;
 
 public class ParticleExplosion extends ParticleSystem {
+
     public static ParticleSystem node() {
         return new ParticleExplosion();
     }
 
-
-    public ParticleExplosion() {
+    protected ParticleExplosion() {
         this(700);
     }
 
-    public ParticleExplosion(int p) {
+    protected ParticleExplosion(int p) {
         super(p);
 
 
