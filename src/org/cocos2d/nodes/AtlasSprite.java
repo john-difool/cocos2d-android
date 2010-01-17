@@ -8,6 +8,26 @@ import org.cocos2d.utils.CCFormatter;
 
 import java.util.HashMap;
 
+/** AtlasSprite is a CocosNode object that implements the CocosNodeFrames and CocosNodeRGBA protocols.
+ *
+ * AtlasSprite can be used as a replacement of Sprite.
+ *
+ * AtlasSprite has all the features from CocosNode with the following additions and limitations:
+ *	- New features
+ *		- It is MUCH faster than Sprite
+ *		- supports flipX, flipY
+ *
+ *	- Limitations
+ *		- Their parent can only be an AtlasSpriteManager
+ *		- They can't have children
+ *		- Camera is not supported yet (eg: OrbitCamera action doesn't work)
+ *		- GridBase actions are not supported (eg: Lens, Ripple, Twirl)
+ *		- The Alias/Antialias property belongs to AtlasSpriteManager, so you can't individually set the aliased property.
+ *		- The Blending function property belongs to AtlasSpriteManager, so you can't individually set the blending function property.
+ *		- Parallax scroller is not supported, but can be simulated with a "proxy" sprite.
+ *
+ */
+
 public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, CocosNode.CocosNodeFrames, CocosNode.CocosNodeRGBA {
     public static final int kIndexNotInitialized = -1;
 
@@ -36,59 +56,47 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
     // stored as pixel locations
     private CCQuad3 vertexCoords_ = new CCQuad3();
 
-    // whether or not this Sprite needs to be updated in the Atlas
-    private boolean dirtyPosition;
-
     // opacity and RGB protocol
     private int opacity_;
     private CCColor3B color_;
-    private boolean dirtyColor;
+    
+    private boolean dirty_;
 
     // Animations that belong to the sprite
     HashMap<String, AtlasAnimation> animations;
 
-    // cocosNodeProtcol
-    private boolean autoCenterFrames_;
-
-    public boolean dirtyPosition() {
-        return dirtyPosition;
-    }
+    // image is flipped
+    private boolean flipX_;
+    private	boolean flipY_;
 
     /**
      * whether or not the Sprite's color needs to be updated in the Atlas
      */
-    public boolean dirtyColor() {
-        return dirtyColor;
+    public boolean isDirty() {
+        return dirty_;
     }
 
     /**
      * returns the rect of the AtlasSprite
      */
-    public CCRect textureRect() {
+    public CCRect getTextureRect() {
         return rect_;
     }
 
-    public void setAutoCenterFrames(boolean b) {
-        autoCenterFrames_ = b;
-    }
 
     public AtlasSprite(CCRect rect, AtlasSpriteManager manager) {
         textureAtlas_ = manager.atlas();
 
         atlasIndex_ = kIndexNotInitialized;
 
-        dirtyPosition = true;
-        dirtyColor = false;            // optimization: if the color is not changed gl_color_array is not send to the GPU
+        // default transform anchor: center
+        setAnchorPoint(0.5f, 0.5f);
 
         // RGB and opacity
         opacity_ = (byte) 255;
         color_ = new CCColor3B(255, 255, 255);
 
         animations = null;        // lazy alloc
-
-        // default transform anchor: center
-        setTransformAnchor(rect.size.width / 2, rect.size.height / 2);
-        autoCenterFrames_ = false;
 
         setTextureRect(rect);
     }
@@ -109,15 +117,15 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
         updateTextureCoords();
 
         // Don't update Atlas if index == -1. issue #283
-        if (atlasIndex_ != kIndexNotInitialized)
-            updateAtlas();
+        if (atlasIndex_ == kIndexNotInitialized)
+            dirty_ = true;
         else
-            dirtyPosition = true;
+            updateAtlas();
 
         // add these lines
-        if (autoCenterFrames_) {
-            setTransformAnchor(rect.size.width / 2, rect.size.height / 2);
-            dirtyPosition = true;
+        if (!((rect.size.width == getWidth()) && ((rect.size.getHeight()) == getHeight()))) {
+            setContentSize(rect.size.width, rect.size.height);
+            dirty_ = true;
         }
     }
 
@@ -129,6 +137,11 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
         float right = (rect_.origin.x + rect_.size.width) / atlasWidth;
         float top = rect_.origin.y / atlasHeight;
         float bottom = (rect_.origin.y + rect_.size.height) / atlasHeight;
+
+        if( flipX_)
+            CCMacros.CC_SWAP(left,right);
+        if( flipY_)
+            CCMacros.CC_SWAP(top,bottom);
 
         CCQuad2 newCoords = new CCQuad2(
                 left, bottom,
@@ -142,7 +155,7 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
     public void updateColor() {
         CCColor4B colorQuad = new CCColor4B(color_.r, color_.g, color_.b, opacity_);
         textureAtlas_.updateColor(colorQuad, atlasIndex_);
-        dirtyColor = false;
+        dirty_ = false;
     }
 
     // algorithm from pyglet ( http://www.pyglet.org )
@@ -229,7 +242,7 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
         }
 
         textureAtlas_.updateQuad(texCoords_, vertexCoords_, atlasIndex_);
-        dirtyPosition = false;
+        dirty_ = false;
     }
 
     public void updateAtlas() {
@@ -244,37 +257,49 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
-        dirtyPosition = true;
+        dirty_ = true;
     }
 
     @Override
     public void setRotation(float rot) {
         super.setRotation(rot);
-        dirtyPosition = true;
+        dirty_ = true;
     }
 
     @Override
     public void setScaleX(float sx) {
         super.setScaleX(sx);
-        dirtyPosition = true;
+        dirty_ = true;
     }
 
     @Override
     public void setScaleY(float sy) {
         super.setScaleY(sy);
-        dirtyPosition = true;
+        dirty_ = true;
     }
 
     @Override
     public void setScale(float s) {
         super.scale(s);
-        dirtyPosition = true;
+        dirty_ = true;
+    }
+
+    @Override
+    public void setVertexZ(float z) {
+        super.setVertexZ(z);
+        dirty_ = true;
+    }
+
+    @Override
+    public void setAnchorPoint(float x, float y) {
+        super.setAnchorPoint(x, y);
+        dirty_ = true;
     }
 
     @Override
     public void setTransformAnchor(float x, float y) {
         super.setTransformAnchor(x, y);
-        dirtyPosition = true;
+        dirty_ = true;
     }
 
     @Override
@@ -285,9 +310,35 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
     @Override
     public void setVisible(boolean v) {
         super.setVisible(v);
-        dirtyPosition = true;
+        dirty_ = true;
     }
 
+    public void setFlipX(boolean b)
+    {
+        if( flipX_ != b ) {
+            flipX_ = b;
+            setTextureRect(rect_);
+        }
+    }
+
+    public boolean getFlipX()
+    {
+        return flipX_;
+    }
+
+    public void setFlipY(boolean b)
+    {
+        if( flipY_ != b ) {
+            flipY_ = b;
+            setTextureRect(rect_);
+        }
+    }
+
+    public boolean getFlipY()
+    {
+        return flipY_;
+    }
+    
     @Override
     public CocosNode addChild(CocosNode child, int z, int aTag) {
         assert false : "AtlasSprite can't have children";
@@ -296,7 +347,7 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
 
     public void setOpacity(int opacity) {
         opacity_ = opacity;
-        dirtyColor = true;
+        dirty_ = true;
     }
 
     public int getOpacity() {
@@ -307,21 +358,11 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
         color_.r = color.r;
         color_.g = color.g;
         color_.b = color.b;
-        dirtyColor = true;
+        dirty_ = true;
     }
 
     public CCColor3B getColor() {
         return new CCColor3B(color_.r, color_.g, color_.b);
-    }
-
-    @Override
-    public float getWidth() {
-        return rect_.size.width;
-    }
-
-    @Override
-    public float getHeight() {
-        return rect_.size.height;
     }
 
     // TODO Remove cast

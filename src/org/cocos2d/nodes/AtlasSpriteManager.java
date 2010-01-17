@@ -2,6 +2,11 @@ package org.cocos2d.nodes;
 
 import org.cocos2d.opengl.Texture2D;
 import org.cocos2d.opengl.TextureAtlas;
+import org.cocos2d.opengl.Primitives;
+import org.cocos2d.types.CCMacros;
+import org.cocos2d.types.CCBlendFunc;
+import org.cocos2d.types.CCRect;
+import org.cocos2d.types.CCPoint;
 
 import javax.microedition.khronos.opengles.GL10;
 import java.util.ArrayList;
@@ -12,12 +17,15 @@ public class AtlasSpriteManager extends CocosNode {
 
     public static final int defaultCapacity = 29;
 
+    private static boolean DEBUG_DRAW = false;
     int totalSprites_;
     TextureAtlas textureAtlas_;
 
     public TextureAtlas atlas() {
         return textureAtlas_;
     }
+
+    private CCBlendFunc blendFunc_;
 
     /*
     * init with Texture2D
@@ -27,9 +35,13 @@ public class AtlasSpriteManager extends CocosNode {
     }
 
     public AtlasSpriteManager(Texture2D tex, int capacity) {
-        totalSprites_ = 0;
+
+        blendFunc_ = new CCBlendFunc(CCMacros.CC_BLEND_SRC, CCMacros.CC_BLEND_DST);
+
         textureAtlas_ = new TextureAtlas(tex, capacity);
 
+        updateBlendFunc();
+        
         // no lazy alloc in this node
         children = new ArrayList<CocosNode>(capacity);
     }
@@ -42,8 +54,12 @@ public class AtlasSpriteManager extends CocosNode {
     }
 
     public AtlasSpriteManager(String fileImage, int capacity) {
-        totalSprites_ = 0;
+
+        blendFunc_ = new CCBlendFunc(CCMacros.CC_BLEND_SRC, CCMacros.CC_BLEND_DST);
+
         textureAtlas_ = new TextureAtlas(fileImage, capacity);
+
+        updateBlendFunc();
 
         // no lazy alloc in this node
         children = new ArrayList<CocosNode>(capacity);
@@ -195,12 +211,26 @@ public class AtlasSpriteManager extends CocosNode {
 
     @Override
     public void draw(GL10 gl) {
+        if(textureAtlas_.getTotalQuads() == 0)
+            return;
+
+        
         for (int i = 0; i < children.size(); i++) {
             AtlasSprite sprite = (AtlasSprite) children.get(i);
-            if (sprite.dirtyPosition())
+            if (sprite.isDirty())
                 sprite.updatePosition();
-            if (sprite.dirtyColor())
                 sprite.updateColor();
+
+            if (DEBUG_DRAW) {
+		        CCRect rect = sprite.getBoundingBox(); //Inssue 528
+                CCPoint[] vertices= {
+                    CCPoint.ccp(rect.origin.x, rect.origin.y),
+                    CCPoint.ccp(rect.origin.x+rect.size.width, rect.origin.y),
+                    CCPoint.ccp(rect.origin.x+rect.size.width, rect.origin.y+rect.size.height),
+                    CCPoint.ccp(rect.origin.x, rect.origin.y+rect.size.height),
+                };
+		        Primitives.drawPoly(gl, vertices, 4, true);
+            }
         }
 
         if (totalSprites_ > 0) {
@@ -210,9 +240,19 @@ public class AtlasSpriteManager extends CocosNode {
             if (textureAtlas_.withColorArray())
                 gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
+
             gl.glEnable(GL10.GL_TEXTURE_2D);
 
+            boolean newBlend = false;
+            if( blendFunc_.src != CCMacros.CC_BLEND_SRC || blendFunc_.dst != CCMacros.CC_BLEND_DST ) {
+                newBlend = true;
+                gl.glBlendFunc( blendFunc_.src, blendFunc_.dst );
+            }
+
             textureAtlas_.drawQuads(gl);
+
+            if( newBlend )
+                gl.glBlendFunc(CCMacros.CC_BLEND_SRC, CCMacros.CC_BLEND_DST);
 
             gl.glDisable(GL10.GL_TEXTURE_2D);
 
@@ -228,9 +268,9 @@ public class AtlasSpriteManager extends CocosNode {
         // if we're going beyond the current TextureAtlas's capacity,
         // all the previously initialized sprites will need to redo their texture coords
         // this is likely computationally expensive
-        int quantity = (textureAtlas_.totalQuads() + 1) * 4 / 3;
+        int quantity = (textureAtlas_.getTotalQuads() + 1) * 4 / 3;
 
-//        Log.w(LOG_TAG, "Resizing TextureAtlas capacity, from [%d] to [%d].", textureAtlas_.totalQuads(), quantity);
+//        Log.w(LOG_TAG, "Resizing TextureAtlas capacity, from [%d] to [%d].", textureAtlas_.getTotalQuads(), quantity);
 
 
         textureAtlas_.resizeCapacity(quantity);
@@ -240,4 +280,13 @@ public class AtlasSpriteManager extends CocosNode {
             sprite.updateAtlas();
         }
     }
+
+    private void updateBlendFunc()
+    {
+        if( ! textureAtlas_.getTexture().hasPremultipliedAlpha() ) {
+            blendFunc_.src = GL10.GL_SRC_ALPHA;
+            blendFunc_.dst = GL10.GL_ONE_MINUS_SRC_ALPHA;
+        }
+    }
+
 }
