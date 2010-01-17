@@ -126,6 +126,10 @@ public class CocosNodeTest extends Activity {
         public TestDemo() {
             CCSize s = Director.sharedDirector().winSize();
 
+            Label label = new Label(title(), "DroidSans", 18);
+            label.setPosition(s.width / 2, s.height - 30);
+            addChild(label);
+
             MenuItemImage item1 = MenuItemImage.item("b1.png", "b2.png", this, "backCallback");
             MenuItemImage item2 = MenuItemImage.item("r1.png", "r2.png", this, "restartCallback");
             MenuItemImage item3 = MenuItemImage.item("f1.png", "f2.png", this, "nextCallback");
@@ -166,34 +170,46 @@ public class CocosNodeTest extends Activity {
 
             CCSize s = Director.sharedDirector().winSize();
 
+            Sprite sp0 = new Sprite("grossini.png");
             Sprite sp1 = new Sprite("grossinis_sister1.png");
             Sprite sp2 = new Sprite("grossinis_sister2.png");
+            Sprite point0 = new Sprite("r1.png");
             Sprite point1 = new Sprite("r1.png");
             Sprite point2 = new Sprite("r1.png");
 
+            point0.scale(0.25f);
             point1.scale(0.25f);
             point2.scale(0.25f);
 
-            sp1.setPosition(100, s.height / 2);
+            sp0.setPosition(s.width/2, s.height / 2);
+            point0.setPosition(sp0.getPositionX(), sp0.getPositionY());
+            sp0.setAnchorPoint(0.5f, 0.5f);
+
+            sp1.setPosition(s.width/2 - 100, s.height / 2);
             point1.setPosition(sp1.getPositionX(), sp1.getPositionY());
+            sp1.setAnchorPoint(0, 0);
 
-            sp2.setPosition(380, s.height / 2);
+            sp2.setPosition(s.width/2 + 100, s.height / 2);
             point2.setPosition(sp2.getPositionX(), sp2.getPositionY());
+            sp2.setAnchorPoint(1, 1);
 
-            sp2.setTransformAnchor(0, 0);
-
+            addChild(sp0);
             addChild(sp1);
             addChild(sp2);
+
+            addChild(point0, 1);
             addChild(point1, 1);
             addChild(point2, 1);
-
 
             IntervalAction a1 = RotateBy.action(2, 360);
             IntervalAction a2 = ScaleBy.action(2, 2);
 
             Action action1 = RepeatForever.action(Sequence.actions(a1, a2, a2.reverse()));
-            Action action2 = RepeatForever.action(Sequence.actions(a1.copy(), a2.copy(), a2.reverse()));
 
+            Action action2 = action1.copy();
+            Action action0 = action1.copy();
+
+            sp0.runAction(action0);
             sp1.runAction(action1);
             sp2.runAction(action2);
         }
@@ -216,7 +232,7 @@ public class CocosNodeTest extends Activity {
             Sprite sp4 = new Sprite("grossinis_sister2.png");
 
             sp1.setPosition(100, s.height / 2);
-            sp2.setPosition(380, s.height / 2);
+            sp2.setPosition(s.width - 100, s.height / 2);
             addChild(sp1);
             addChild(sp2);
 
@@ -239,7 +255,7 @@ public class CocosNodeTest extends Activity {
         }
 
         public String title() {
-            return "Transform Anchor and children";
+            return "Transform Anchor and Children";
         }
     }
 
@@ -247,7 +263,6 @@ public class CocosNodeTest extends Activity {
 
         public void onEnter() {
             super.onEnter();
-
 
             CCSize s = Director.sharedDirector().winSize();
 
@@ -292,11 +307,14 @@ public class CocosNodeTest extends Activity {
     static class Test4 extends TestDemo {
 
         public Test4() {
+
+            CCSize s = Director.sharedDirector().winSize();
+
             Sprite sp1 = new Sprite("grossinis_sister1.png");
             Sprite sp2 = new Sprite("grossinis_sister2.png");
 
-            sp1.setPosition(100, 160);
-            sp2.setPosition(380, 160);
+            sp1.setPosition(100, s.height / 2);
+            sp2.setPosition(s.width - 100, s.height / 2);
 
             addChild(sp1, 0, 2);
             addChild(sp2, 0, 3);
@@ -312,7 +330,7 @@ public class CocosNodeTest extends Activity {
         }
 
         public void delay4(float dt) {
-            unschedule("_cmd");
+            unschedule("delay4");
             removeChild(3, false);
         }
 
@@ -325,11 +343,13 @@ public class CocosNodeTest extends Activity {
     static class Test5 extends TestDemo {
 
         public Test5() {
+            CCSize s = Director.sharedDirector().winSize();
+
             Sprite sp1 = new Sprite("grossinis_sister1.png");
             Sprite sp2 = new Sprite("grossinis_sister2.png");
 
-            sp1.setPosition(100, 160);
-            sp2.setPosition(380, 160);
+            sp1.setPosition(100, s.height / 2);
+            sp2.setPosition(s.width - 100, s.height / 2);
 
             IntervalAction rot = RotateBy.action(2, 360);
             IntervalAction rot_back = rot.reverse();
@@ -355,9 +375,7 @@ public class CocosNodeTest extends Activity {
 
             addChild(sp1, 0, kTagSprite1);
             addChild(sp2, 0, kTagSprite2);
-
         }
-
 
         public String title() {
             return "Remove";
@@ -367,14 +385,16 @@ public class CocosNodeTest extends Activity {
     static class Test6 extends TestDemo {
 
         public Test6() {
+            CCSize s = Director.sharedDirector().winSize();
+
             Sprite sp1 = new Sprite("grossinis_sister1.png");
             Sprite sp11 = new Sprite("grossinis_sister1.png");
 
             Sprite sp2 = new Sprite("grossinis_sister2.png");
             Sprite sp21 = new Sprite("grossinis_sister2.png");
 
-            sp1.setPosition(100, 160);
-            sp2.setPosition(380, 160);
+            sp1.setPosition(100, s.height / 2);
+            sp2.setPosition(s.width - 100, s.height / 2);
 
 
             IntervalAction rot = RotateBy.action(2, 360);
@@ -395,7 +415,7 @@ public class CocosNodeTest extends Activity {
             sp2.runAction(forever2);
             sp21.runAction(forever21);
 
-            schedule("Add And Remove", 2.0f);
+            schedule("addAndRemove", 2.0f);
         }
 
         public void addAndRemove(float dt) {
@@ -430,7 +450,7 @@ public class CocosNodeTest extends Activity {
         }
 
         public void shouldNotCrash(float delta) {
-            unschedule("_cmd");
+            unschedule("shouldNotCrash");
 
             CCSize s = Director.sharedDirector().winSize();
 

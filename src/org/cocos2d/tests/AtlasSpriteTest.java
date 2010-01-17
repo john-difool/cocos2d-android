@@ -130,8 +130,8 @@ public class AtlasSpriteTest extends Activity {
         public AtlasSpriteDemo() {
             CCSize s = Director.sharedDirector().winSize();
 
-            Label label = new Label(title(), "DroidSans", 24);
-            label.setPosition(s.width / 2, s.height / 2);
+            Label label = new Label(title(), "DroidSans", 18);
+            label.setPosition(s.width / 2, s.height - 30);
             addChild(label);
 
             MenuItemImage item1 = MenuItemImage.item("b1.png", "b2.png", this, "backCallback");
@@ -428,9 +428,10 @@ public class AtlasSpriteTest extends Activity {
 
             IntervalAction rotate = RotateBy.action(10, 360);
             Action action = RepeatForever.action(rotate);
+
             for (int i = 0; i < 3; i++) {
                 AtlasSprite sprite = new AtlasSprite(CCRect.make(85 * i, 121 * 1, 85, 121), mgr);
-                sprite.setPosition(90 + i * 150, s.height / 2);
+                sprite.setPosition(60 + i * 100, s.height / 2);
 
 
                 Sprite point = new Sprite("r1.png");
@@ -440,12 +441,13 @@ public class AtlasSpriteTest extends Activity {
 
                 switch (i) {
                     case 0:
-                        sprite.setTransformAnchor(0, 0);
+                        sprite.setAnchorPoint(0, 0);
                         break;
                     case 1:
+                        sprite.setAnchorPoint(0.5f, 0.5f);
                         break;
                     case 2:
-                        sprite.setTransformAnchor(85, 121);
+                        sprite.setAnchorPoint(1, 1);
                         break;
                 }
                 point.setPosition(sprite.getPositionX(), sprite.getPositionY());
@@ -458,12 +460,13 @@ public class AtlasSpriteTest extends Activity {
 
         @Override
         public String title() {
-            return "AtlasSprite: anchor point";
+            return "AtlasSprite: Anchor Point";
         }
     }
 
 
     static class Atlas6 extends AtlasSpriteDemo {
+
         public Atlas6() {
             // small capacity. Testing resizing
             // Don't use capacity=1 in your real game. It is expensive to resize the capacity
