@@ -763,6 +763,8 @@ public class CocosNode {
 
     public void cleanup() {
 
+        stopAllActions();
+
         scheduledSelectors = null;
 
         if (children != null)
