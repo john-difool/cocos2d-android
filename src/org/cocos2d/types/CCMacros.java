@@ -4,6 +4,16 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class CCMacros {
 
+    public static void CC_SWAP(int x, int y ) {
+    	int temp  = x;
+		x = y; y = temp;
+    }
+
+    public static void CC_SWAP(float x, float y ) {
+    	float temp  = x;
+		x = y; y = temp;
+    }    
+
     /// returns a random float between -1 and 1
     public static float CCRANDOM_MINUS1_1() {
         return (float) Math.random() * 2.0f - 1.0f;
