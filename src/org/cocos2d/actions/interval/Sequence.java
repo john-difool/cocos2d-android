@@ -37,7 +37,7 @@ public class Sequence extends IntervalAction {
 
     @Override
     public IntervalAction copy() {
-        return new Sequence(actions.get(0), actions.get(1));
+        return new Sequence(actions.get(0).copy(), actions.get(1).copy());
     }
 
     @Override
