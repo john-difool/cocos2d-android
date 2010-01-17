@@ -73,6 +73,11 @@ public class Texture2D {
         return _maxT;
     }
 
+    // TODO: Implement me
+    public boolean hasPremultipliedAlpha() {
+        return false;
+    }
+    
     private FloatBuffer mVertices;
     private FloatBuffer mCoordinates;
 //    private ShortBuffer mIndices;
