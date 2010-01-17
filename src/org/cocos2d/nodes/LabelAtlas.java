@@ -64,7 +64,7 @@ public class LabelAtlas extends AtlasNode {
     }
 
     public void setString(String newString) {
-        if (newString.length() > textureAtlas_.totalQuads())
+        if (newString.length() > textureAtlas_.getTotalQuads())
             textureAtlas_.resizeCapacity(newString.length());
 
         string = newString;
