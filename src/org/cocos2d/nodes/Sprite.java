@@ -8,22 +8,8 @@ import java.util.HashMap;
 public class Sprite extends TextureNode implements CocosNode.CocosNodeFrames {
     private HashMap<String, CocosAnimation> animations;
 
-    // CocosNodeFrames protocol
-    private boolean _autoCenterFrames;
-
-    public boolean autoCenterFrames() {
-        return _autoCenterFrames;
-    }
-
-    public void setAutoCenterFrames(boolean autoCenterFrames) {
-        _autoCenterFrames = autoCenterFrames;
-    }
-
     public Sprite(String filename) {
         setTexture(TextureManager.sharedTextureManager().addImage(filename));
-
-        setTransformAnchor(getTexture().getWidth() / 2, getTexture().getHeight() / 2);
-        _autoCenterFrames = false;
 
         // lazy alloc
         animations = null;
@@ -34,9 +20,6 @@ public class Sprite extends TextureNode implements CocosNode.CocosNodeFrames {
 
         setTexture(TextureManager.sharedTextureManager().addImage(image));
 
-        setTransformAnchor(getTexture().getWidth() / 2, getTexture().getHeight() / 2);
-        _autoCenterFrames = false;
-
         // lazy alloc
         animations = null;
     }
@@ -45,7 +28,6 @@ public class Sprite extends TextureNode implements CocosNode.CocosNodeFrames {
         setTexture(tex);
 
         setTransformAnchor(getTexture().getWidth() / 2, getTexture().getHeight() / 2);
-        _autoCenterFrames = false;
 
         animations = null; // lazy alloc
     }
@@ -56,10 +38,6 @@ public class Sprite extends TextureNode implements CocosNode.CocosNodeFrames {
 
     public void setDisplayFrame(Object frame) {
         setTexture((Texture2D) frame);
-
-        if (_autoCenterFrames) {
-            setTransformAnchor(getTexture().getWidth() / 2, getTexture().getHeight() / 2);
-        }
     }
 
     public void setDisplayFrame(String animationName, int frameIndex) {
