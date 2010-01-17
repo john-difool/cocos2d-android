@@ -91,7 +91,7 @@ public class CocosNode {
     private CCSize contentSize_;
 
     public void setAnchorPoint(float x, float y) {
-        if ((anchorPoint_.x != x) || (anchorPoint_.y != y)) {
+        if (!((anchorPoint_.x == x) && (anchorPoint_.y == y))) {
             anchorPoint_.x = x;
             anchorPoint_.y = y;
             setTransformAnchor(contentSize_.width * anchorPoint_.x, contentSize_.height * anchorPoint_.y);
@@ -123,6 +123,45 @@ public class CocosNode {
 
     public float getHeight() {
         return contentSize_.height;
+    }
+
+    public CCRect getBoundingBox()
+    {
+        CCRect rect = CCRect.make(0, 0, contentSize_.width, contentSize_.height);
+        return convertRectUsingMatrix(rect, nodeToParentTransform());
+    }
+
+    private static CCRect convertRectUsingMatrix(CCRect aRect, CCAffineTransform matrix)
+    {
+      CCRect r = CCRect.make(0, 0, 0, 0);
+      CCPoint[] p = new CCPoint[4];
+
+      for (int i = 0; i < 4; i++) {
+          p[i] = CCPoint.make(aRect.origin.x, aRect.origin.y);
+      }
+
+      p[1].x += aRect.size.width;
+      p[2].y += aRect.size.height;
+      p[3].x += aRect.size.width;
+      p[3].y += aRect.size.height;
+
+      for (int i = 0; i < 4; i++) {
+        p[i] = CCPoint.applyAffineTransform(p[i], matrix);
+      }
+
+      CCPoint min = CCPoint.make(p[0].x, p[0].y),
+              max = CCPoint.make(p[0].x, p[0].y);
+      for (int i = 1; i < 4; i++) {
+          min.x = Math.min(min.x, p[i].x);
+          min.y = Math.min(min.y, p[i].y);
+          max.x = Math.max(max.x, p[i].x);
+          max.y = Math.max(max.y, p[i].y);
+      }
+
+      r.origin.x = min.x; r.origin.y = min.y;
+      r.size.width = max.x - min.x; r.size.height = max.y - min.y;
+
+      return r;
     }
 
     private CCPoint position_;
@@ -697,8 +736,6 @@ public class CocosNode {
         public CocosAnimation animationByName(String animationName);
 
         public void addAnimation(CocosAnimation animation);
-
-        public void setAutoCenterFrames(boolean autoCenterFrames);
     }
 
     private void childrenAlloc() {
