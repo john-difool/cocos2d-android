@@ -41,7 +41,7 @@ public class TextureAtlas {
 
     private boolean withColorArray_;
 
-    public int totalQuads() {
+    public int getTotalQuads() {
         return totalQuads_;
     }
 
@@ -90,7 +90,7 @@ public class TextureAtlas {
     }
 
     public String toString() {
-        return new CCFormatter().format("<%s = %08X | totalQuads = %i>", TextureAtlas.class, this, totalQuads_);
+        return new CCFormatter().format("<%s = %08X | getTotalQuads = %i>", TextureAtlas.class, this, totalQuads_);
     }
 
     public void initColorArray() {
@@ -230,7 +230,7 @@ public class TextureAtlas {
         if (newCapacity == capacity_)
             return;
 
-        // update capacity and totalQuads
+        // update capacity and getTotalQuads
         totalQuads_ = Math.min(totalQuads_, newCapacity);
 
         capacity_ = newCapacity;
