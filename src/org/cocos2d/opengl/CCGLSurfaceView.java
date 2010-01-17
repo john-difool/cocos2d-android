@@ -59,6 +59,7 @@ public class CCGLSurfaceView extends GLSurfaceView {
             try {
                 Director.sharedDirector().wait(20L);
             } catch (InterruptedException e) {
+                // Do nothing
             }
         }
         return true;

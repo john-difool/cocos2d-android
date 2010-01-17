@@ -9,7 +9,7 @@ public class CCPoint {
         return new CCPoint(0, 0);
     }
 
-    private CCPoint() {
+    public CCPoint() {
         this(0, 0);
     }
 

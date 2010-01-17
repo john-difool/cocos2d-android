@@ -17,6 +17,13 @@ public class CCColorF {
         a = aa;
     }
 
+    public CCColorF(CCColorF c) {
+        r = c.r;
+        g = c.g;
+        b = c.b;
+        a = c.a;
+    }
+
     public float[] ccColorF() {
         return new float[]{r, g, b, a};
     }
