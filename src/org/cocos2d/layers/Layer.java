@@ -7,13 +7,22 @@ import org.cocos2d.nodes.TouchEventsDelegate;
 import org.cocos2d.types.CCSize;
 
 public class Layer extends CocosNode implements TouchEventsDelegate {
-    public boolean isTouchEnabled;
+    private boolean isTouchEnabled_;
 
     //! whether or not it will receive Accelerometer events
-    public boolean isAccelerometerEnabled;
+    public boolean isAccelerometerEnabled_;
 
+    public boolean isTouchEnabled()
+    {
+        return isTouchEnabled_;
+    }
 
-    public static Layer layer() {
+    public void setTouchEnabled(boolean b)
+    {
+        isTouchEnabled_ = b;
+    }
+
+    public static Layer node() {
         return new Layer();
     }
 
@@ -21,10 +30,12 @@ public class Layer extends CocosNode implements TouchEventsDelegate {
         CCSize s = Director.sharedDirector().winSize();
         setRelativeAnchorPoint(false);
 
-        setTransformAnchor(s.width / 2, s.height / 2);
+        setAnchorPoint(0.5f, 0.5f);
+        setContentSize(s.width, s.height);
+        setRelativeAnchorPoint(false);
 
-        isTouchEnabled = false;
-        isAccelerometerEnabled = false;
+        isTouchEnabled_ = false;
+        isAccelerometerEnabled_ = false;
 
     }
 
@@ -33,7 +44,7 @@ public class Layer extends CocosNode implements TouchEventsDelegate {
 
         // register 'parent' nodes first
         // since events are propagated in reverse order
-        if (isTouchEnabled)
+        if (isTouchEnabled_)
             Director.sharedDirector().addEventHandler(this);
 
         // the iterate over all the children
@@ -45,7 +56,7 @@ public class Layer extends CocosNode implements TouchEventsDelegate {
 
     @Override
     public void onExit() {
-        if (isTouchEnabled)
+        if (isTouchEnabled_)
             Director.sharedDirector().removeEventHandler(this);
 
 //        if( isAccelerometerEnabled )

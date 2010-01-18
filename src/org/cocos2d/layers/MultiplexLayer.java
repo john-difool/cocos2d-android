@@ -8,7 +8,11 @@ public class MultiplexLayer extends Layer {
 
     private int enabledLayer;
 
-    public MultiplexLayer(Layer... params) {
+    public MultiplexLayer node(Layer... params) {
+        return new MultiplexLayer(params);
+    }
+
+    protected MultiplexLayer(Layer... params) {
         layers = new ArrayList<Layer>();
 
         layers.addAll(Arrays.asList(params));
@@ -19,7 +23,7 @@ public class MultiplexLayer extends Layer {
 
     public void switchTo(int n) {
         if (n >= layers.size()) {
-            throw new MultiplexLayerInvalidIndex("Invalid index in MultiplexLayer switchTo message");
+            throw new MultiplexLayerInvalidIndex("Invalid index passed to MultiplexLayer.switchTo");
         }
 
         removeChild(layers.get(enabledLayer), false);

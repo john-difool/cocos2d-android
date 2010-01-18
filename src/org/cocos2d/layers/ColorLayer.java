@@ -15,58 +15,50 @@ public class ColorLayer extends Layer implements CocosNode.CocosNodeRGBA, CocosN
     protected CCColor3B color_;
     protected int opacity_;
 
-    private FloatBuffer squareVertices;
-    private ByteBuffer squareColors;
-
+    private FloatBuffer squareVertices_;
+    private ByteBuffer squareColors_;
 
     public static ColorLayer node(CCColor4B color) {
         return new ColorLayer(color, Director.sharedDirector().winSize().width, Director.sharedDirector().winSize().height);
     }
 
-    public static ColorLayer layer(CCColor4B color, float w, float h) {
+    public static ColorLayer node(CCColor4B color, float w, float h) {
         return new ColorLayer(color, w, h);
     }
 
-    public ColorLayer(CCColor4B color) {
+    protected ColorLayer(CCColor4B color) {
         this(color, Director.sharedDirector().winSize().width, Director.sharedDirector().winSize().height);
     }
 
     protected ColorLayer(CCColor4B color, float w, float h) {
         ByteBuffer vbb = ByteBuffer.allocateDirect(4 * 2 * 4);
         vbb.order(ByteOrder.nativeOrder());
-        squareVertices = vbb.asFloatBuffer();
+        squareVertices_ = vbb.asFloatBuffer();
 
-        squareColors = ByteBuffer.allocateDirect(4 * 4);
+        squareColors_ = ByteBuffer.allocateDirect(4 * 4);
 
         color_ = new CCColor3B(color.r, color.g, color.b);
         opacity_ = color.a;
 
+        for (int i = 0; i < (4 * 2); i++)
+            squareVertices_.put(i, 0);
+
         updateColor();
-        initWidthAndWeight(w, h);
+        setContentSize(w, h);
     }
 
     private void updateColor() {
-        for (int i = 0; i < squareColors.limit(); i++) {
+        for (int i = 0; i < squareColors_.limit(); i++) {
             if (i % 4 == 0)
-                squareColors.put(i, (byte) color_.r);
+                squareColors_.put(i, (byte) color_.r);
             else if (i % 4 == 1)
-                squareColors.put(i, (byte) color_.g);
+                squareColors_.put(i, (byte) color_.g);
             else if (i % 4 == 2)
-                squareColors.put(i, (byte) color_.b);
+                squareColors_.put(i, (byte) color_.b);
             else
-                squareColors.put(i, (byte) opacity_);
+                squareColors_.put(i, (byte) opacity_);
         }
     }
-
-    private void initWidthAndWeight(float w, float h) {
-        for (int i = 0; i < (4 * 2); i++)
-            squareVertices.put(i, 0);
-        squareVertices.put(2, w);
-        squareVertices.put(5, h);
-        squareVertices.put(6, w);
-        squareVertices.put(7, h);
-    }
-
 
     @Override
     public void draw(GL10 gl) {
@@ -75,10 +67,10 @@ public class ColorLayer extends Layer implements CocosNode.CocosNodeRGBA, CocosN
         gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
 
-        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, squareVertices);
+        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, squareVertices_);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 
-        gl.glColorPointer(4, GL10.GL_UNSIGNED_BYTE, 0, squareColors);
+        gl.glColorPointer(4, GL10.GL_UNSIGNED_BYTE, 0, squareColors_);
         gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
         if (opacity_ != 255)
@@ -124,20 +116,24 @@ public class ColorLayer extends Layer implements CocosNode.CocosNodeRGBA, CocosN
 
     @Override
     public float getWidth() {
-        return squareVertices.get(2);
+        return squareVertices_.get(2);
     }
 
     @Override
     public float getHeight() {
-        return squareVertices.get(5);
+        return squareVertices_.get(5);
     }
 
     @Override
     public void setContentSize(float w, float h) {
-        squareVertices.put(2, w);
-        squareVertices.put(5, h);
-        squareVertices.put(6, w);
-        squareVertices.put(7, h);
+
+        // Layer default ctor calls setContentSize priot to nio alloc
+        if (squareVertices_ != null) {
+            squareVertices_.put(2, w);
+            squareVertices_.put(5, h);
+            squareVertices_.put(6, w);
+            squareVertices_.put(7, h);
+        }
 
         super.setContentSize(w, h);
     }
@@ -154,11 +150,5 @@ public class ColorLayer extends Layer implements CocosNode.CocosNodeRGBA, CocosN
         setContentSize(getWidth(), h);
     }
 
-
-    static class ColorLayerInitException extends RuntimeException {
-        public ColorLayerInitException(String reason) {
-            super(reason);
-        }
-    }
 }
 
