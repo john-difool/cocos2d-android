@@ -1,5 +1,7 @@
 package org.cocos2d.nodes;
 
+import org.cocos2d.types.CCSize;
+
 public class Scene extends CocosNode {
 
     public static Scene node() {
@@ -7,9 +9,11 @@ public class Scene extends CocosNode {
     }
 
     protected Scene() {
+        CCSize s = Director.sharedDirector().winSize();
+        
         setRelativeAnchorPoint(false);
 
-        setTransformAnchor(Director.sharedDirector().winSize().width / 2,
-                Director.sharedDirector().winSize().height / 2);
+        setAnchorPoint(0.5f, 0.5f);
+        setContentSize(s.width, s.height);	
     }
 }
