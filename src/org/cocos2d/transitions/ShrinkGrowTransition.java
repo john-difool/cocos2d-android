@@ -25,8 +25,8 @@ public class ShrinkGrowTransition extends TransitionScene {
         inScene.scale(0.001f);
         outScene.scale(1.0f);
 
-        inScene.setTransformAnchor(2 * s.width / 3, s.height / 2);
-        outScene.setTransformAnchor(s.width / 3, s.height / 2);
+        inScene.setAnchorPoint(2/3.0f,0.5f);
+        outScene.setAnchorPoint(1/3.0f,0.5f);	
 
 
         IntervalAction scaleOut = ScaleTo.action(duration, 0.01f);

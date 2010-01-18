@@ -25,8 +25,8 @@ public class JumpZoomTransition extends TransitionScene {
         inScene.scale(0.5f);
         inScene.setPosition(width, 0);
 
-        inScene.setTransformAnchor(width / 2, height / 2);
-        outScene.setTransformAnchor(width / 2, height / 2);
+        inScene.setAnchorPoint(0.5f, 0.5f);
+        outScene.setAnchorPoint(0.5f, 0.5f);
 
         IntervalAction jump = JumpBy.action(duration / 4, -width, 0, width / 4, 2);
         IntervalAction scaleIn = ScaleTo.action(duration / 4, 1.0f);

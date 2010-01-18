@@ -23,8 +23,8 @@ public class RotoZoomTransition extends TransitionScene {
         inScene.scale(0.001f);
         outScene.scale(1.0f);
 
-        inScene.setTransformAnchor(s.width / 2, s.height / 2);
-        outScene.setTransformAnchor(s.width / 2, s.height / 2);
+        inScene.setAnchorPoint(0.5f, 0.5f);
+        outScene.setAnchorPoint(0.5f, 0.5f);
 
         IntervalAction rotozoom = Sequence.actions(Spawn.actions(ScaleBy.action(duration / 2, 0.001f),
                 RotateBy.action(duration / 2, 360 * 2)),
