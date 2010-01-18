@@ -297,12 +297,6 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
     }
 
     @Override
-    public void setTransformAnchor(float x, float y) {
-        super.setTransformAnchor(x, y);
-        dirty_ = true;
-    }
-
-    @Override
     public void setRelativeAnchorPoint(boolean relative) {
         Log.w("AtlasSprite", "relativeTransformAnchor_ is ignored in AtlasSprite");
     }
