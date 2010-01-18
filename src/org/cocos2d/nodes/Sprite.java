@@ -8,26 +8,22 @@ import java.util.HashMap;
 public class Sprite extends TextureNode implements CocosNode.CocosNodeFrames {
     private HashMap<String, CocosAnimation> animations;
 
-    public Sprite(String filename) {
-        setTexture(TextureManager.sharedTextureManager().addImage(filename));
-
-        // lazy alloc
-        animations = null;
+    public static Sprite sprite(String filename) {
+        return new Sprite(TextureManager.sharedTextureManager().addImage(filename));
     }
 
-    public Sprite(Bitmap image) {
+    public static Sprite sprite(Bitmap image) {
         assert image != null : "Image must not be null";
 
-        setTexture(TextureManager.sharedTextureManager().addImage(image));
-
-        // lazy alloc
-        animations = null;
+        return new Sprite(TextureManager.sharedTextureManager().addImage(image));
     }
 
-    public Sprite(Texture2D tex) {
-        setTexture(tex);
+    public static Sprite sprite(Texture2D tex) {
+        return new Sprite(tex);
+    }
 
-        setTransformAnchor(getTexture().getWidth() / 2, getTexture().getHeight() / 2);
+    protected Sprite(Texture2D tex) {
+        setTexture(tex);
 
         animations = null; // lazy alloc
     }
