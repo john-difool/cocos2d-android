@@ -92,10 +92,9 @@ public class SpritesTest extends Activity {
         Sprite tamara;
 
         public SpriteDemo() {
-
             CCSize s = Director.sharedDirector().winSize();
 
-            Label label = new Label(title(), "DroidSans", 24);
+            Label label = Label.node(title(), "DroidSans", 24);
             label.setPosition(s.width / 2, s.height / 2);
             addChild(label);
 
@@ -103,12 +102,12 @@ public class SpritesTest extends Activity {
             // Example:
             // You can create a sprite using a Texture2D
 //            Texture2D tex = new Texture2D("grossini.png");
-            grossini = new Sprite("grossini.png");
+            grossini = Sprite.sprite("grossini.png");
 
 
             // Example:
             // Or you can create an sprite using a filename. PNG, JPEG and BMP files are supported. Probably TIFF too
-            tamara = new Sprite("grossinis_sister1.png");
+            tamara = Sprite.sprite("grossinis_sister1.png");
 
             addChild(grossini, 1);
             addChild(tamara, 2);
@@ -120,7 +119,7 @@ public class SpritesTest extends Activity {
             MenuItemImage item2 = MenuItemImage.item("r1.png", "r2.png", this, "restartCallback");
             MenuItemImage item3 = MenuItemImage.item("f1.png", "f2.png", this, "nextCallback");
 
-            Menu menu = new Menu(item1, item2, item3);
+            Menu menu = Menu.menu(item1, item2, item3);
             menu.setPosition(0, 0);
             item1.setPosition(s.width / 2 - 100, 30);
             item2.setPosition(s.width / 2, 30);
