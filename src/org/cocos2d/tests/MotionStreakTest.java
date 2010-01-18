@@ -121,7 +121,7 @@ public class MotionStreakTest extends Activity {
         public TestDemo() {
             CCSize s = Director.sharedDirector().winSize();
 
-            Label label = new Label(title(), "DroidSans", 24);
+            Label label = Label.node(title(), "DroidSans", 24);
             addChild(label, kTagLabel);
             label.setPosition(s.width / 2, s.height / 2);
 
@@ -129,7 +129,7 @@ public class MotionStreakTest extends Activity {
             MenuItemImage item2 = MenuItemImage.item("r1.png", "r2.png", this, "restartCallback");
             MenuItemImage item3 = MenuItemImage.item("f1.png", "f2.png", this, "nextCallback");
 
-            Menu menu = new Menu(item1, item2, item3);
+            Menu menu = Menu.menu(item1, item2, item3);
             menu.setPosition(0, 0);
             item1.setPosition(s.width / 2 - 100, 30);
             item2.setPosition(s.width / 2, 30);
@@ -169,12 +169,12 @@ public class MotionStreakTest extends Activity {
             CCSize s = Director.sharedDirector().winSize();
 
             // the root object just rotates around
-            root = new Sprite("r1.png");
+            root = Sprite.sprite("r1.png");
             addChild(root, 1);
             root.setPosition(s.width / 2, s.height / 2);
 
             // the target object is offset from root, and the streak is moved to follow it
-            target = new Sprite("r1.png");
+            target = Sprite.sprite("r1.png");
             root.addChild(target);
             target.setPosition(100, 0);
 

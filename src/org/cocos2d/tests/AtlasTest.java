@@ -137,10 +137,8 @@ public class AtlasTest extends Activity {
             float x, y;
 
             CCSize s = Director.sharedDirector().winSize();
-            x = s.width;
-            y = s.height;
 
-            Label label = new Label(title(), "DroidSans", 32);
+            Label label = Label.node(title(), "DroidSans", 32);
             addChild(label, 1);
             label.setPosition(s.width / 2, s.height / 2);
 
@@ -148,7 +146,7 @@ public class AtlasTest extends Activity {
             MenuItemImage item2 = MenuItemImage.item("r1.png", "r2.png", this, "restartCallback");
             MenuItemImage item3 = MenuItemImage.item("f1.png", "f2.png", this, "nextCallback");
 
-            Menu menu = new Menu(item1, item2, item3);
+            Menu menu = Menu.menu(item1, item2, item3);
 
             menu.setPosition(0, 0);
             item1.setPosition(s.width / 2 - 100, 30);
@@ -230,7 +228,7 @@ public class AtlasTest extends Activity {
         float time;
 
         public Atlas2() {
-            label = new LabelAtlas("123 Test", "tuffy_bold_italic-charmap.png", 48, 64, ' ');
+            label = LabelAtlas.node("123 Test", "tuffy_bold_italic-charmap.png", 48, 64, ' ');
 
             addChild(label);
 
@@ -266,7 +264,7 @@ public class AtlasTest extends Activity {
 
             addChild(tilemap, 0, kTagTileMap);
 
-            tilemap.setTransformAnchor(0, tilemap.getHeight() / 2);
+            tilemap.setAnchorPoint(0, 0);
 
             IntervalAction s = ScaleBy.action(4, 0.8f);
             IntervalAction scaleBack = s.reverse();
@@ -307,7 +305,7 @@ public class AtlasTest extends Activity {
 
             addChild(tilemap, 0, kTagTileMap);
 
-            tilemap.setTransformAnchor(0, 0);
+            tilemap.setAnchorPoint(0, 0);
             tilemap.setPosition(-20, -200);
 
             Log.i(LOG_TAG, "Atlas4 starts");

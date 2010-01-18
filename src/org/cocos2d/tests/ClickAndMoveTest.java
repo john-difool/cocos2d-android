@@ -51,7 +51,7 @@ public class ClickAndMoveTest extends Activity {
         Director.sharedDirector().attachInView(mGLSurfaceView);
 
         // set landscape mode
-        Director.sharedDirector().setLandscape(false);
+        Director.sharedDirector().setLandscape(true);
 
         // show FPS
         Director.sharedDirector().setDisplayFPS(true);
@@ -93,9 +93,9 @@ public class ClickAndMoveTest extends Activity {
         static final int kTagSprite = 1;
 
         public MainLayer() {
-            isTouchEnabled = true;
+            setTouchEnabled(true);
 
-            Sprite sprite = new Sprite("grossini.png");
+            Sprite sprite = Sprite.sprite("grossini.png");
 
             Layer layer = ColorLayer.node(new CCColor4B(255, 255, 0, 255));
             addChild(layer, -1);

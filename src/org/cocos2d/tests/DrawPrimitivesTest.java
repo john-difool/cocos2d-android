@@ -74,7 +74,7 @@ public class DrawPrimitivesTest extends Activity {
             MenuItemImage item2 = MenuItemImage.item("r1.png", "r2.png", this, "restartCallback");
             MenuItemImage item3 = MenuItemImage.item("f1.png", "f2.png", this, "nextCallbackk");
 
-            Menu menu = new Menu(item1, item2, item3);
+            Menu menu = Menu.menu(item1, item2, item3);
 
             menu.setPosition(0, 0);
             item1.setPosition(s.width / 2 - 100, 30);

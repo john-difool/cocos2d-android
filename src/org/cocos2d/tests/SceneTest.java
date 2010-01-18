@@ -42,12 +42,13 @@ public class SceneTest extends Activity {
     }
 
     static class Layer1 extends Layer {
+
         public Layer1() {
             MenuItemFont item1 = MenuItemFont.item("Test pushScene", this, "onPushScene");
             MenuItemFont item2 = MenuItemFont.item("Test pushScene w/transition", this, "onPushSceneTran");
             MenuItemFont item3 = MenuItemFont.item("Quit", this, "onQuit");
 
-            Menu menu = new Menu(item1, item2, item3);
+            Menu menu = Menu.menu(item1, item2, item3);
             menu.alignItemsVertically();
 
             addChild(menu);
@@ -80,7 +81,7 @@ public class SceneTest extends Activity {
             MenuItemFont item2 = MenuItemFont.item("Replace Scene Transition", this, "onReplaceSceneTransition");
             MenuItemFont item3 = MenuItemFont.item("Go Back", this, "onGoBack");
 
-            Menu menu = new Menu(item1, item2, item3);
+            Menu menu = Menu.menu(item1, item2, item3);
             menu.alignItemsVertically();
 
             addChild(menu);
@@ -106,8 +107,8 @@ public class SceneTest extends Activity {
     static class Layer3 extends ColorLayer {
         public Layer3() {
             super(new CCColor4B(0, 0, 255, 255));
-            isTouchEnabled = true;
-            Label label = new Label("Touch to pop scene", "DroidSans", 32);
+            setTouchEnabled(true);
+            Label label = Label.node("Touch to pop scene", "DroidSans", 32);
             addChild(label);
             float width = Director.sharedDirector().winSize().width;
             float height = Director.sharedDirector().winSize().height;

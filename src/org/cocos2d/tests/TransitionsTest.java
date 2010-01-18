@@ -224,7 +224,7 @@ public class TransitionsTest extends Activity {
     static class TestLayer extends Layer {
 
         public TestLayer() {
-            isTouchEnabled = true;
+            setTouchEnabled(true);
 
             float x, y;
 
@@ -232,11 +232,11 @@ public class TransitionsTest extends Activity {
             x = s.width;
             y = s.height;
 
-            Sprite bg1 = new Sprite("background1.jpg");
-            bg1.setTransformAnchor(0, 0);
+            Sprite bg1 = Sprite.sprite("background1.jpg");
+            bg1.setAnchorPoint(0, 0);
             addChild(bg1, -1);
 
-            Label label = new Label("SCENE 1", "DroidSans", 64);
+            Label label = Label.node("SCENE 1", "DroidSans", 64);
 
             label.setPosition(x / 2, y / 2);
             addChild(label);
@@ -246,7 +246,7 @@ public class TransitionsTest extends Activity {
             MenuItemImage item2 = MenuItemImage.item("r1.png", "r2.png", this, "restartCallback");
             MenuItemImage item3 = MenuItemImage.item("f1.png", "f2.png", this, "nextCallback");
 
-            Menu menu = new Menu(item1, item2, item3);
+            Menu menu = Menu.menu(item1, item2, item3);
             menu.setPosition(0, 0);
             item1.setPosition(s.width / 2 - 100, 30);
             item2.setPosition(s.width / 2, 30);
@@ -276,7 +276,7 @@ public class TransitionsTest extends Activity {
     static class TestLayer2 extends Layer {
 
         public TestLayer2() {
-            isTouchEnabled = true;
+            setTouchEnabled(true);
 
             float x, y;
 
@@ -284,11 +284,11 @@ public class TransitionsTest extends Activity {
             x = s.width;
             y = s.height;
 
-            Sprite bg2 = new Sprite("background2.jpg");
-            bg2.setTransformAnchor(0, 0);
+            Sprite bg2 = Sprite.sprite("background2.jpg");
+            bg2.setAnchorPoint(0, 0);
             addChild(bg2, -1);
 
-            Label label = new Label("SCENE 2", "DroidSans", 64);
+            Label label = Label.node("SCENE 2", "DroidSans", 64);
 
             label.setPosition(x / 2, y / 2);
             addChild(label);
@@ -297,7 +297,7 @@ public class TransitionsTest extends Activity {
             MenuItemImage item1 = MenuItemImage.item("b1.png", "b2.png", this, "backCallback");
             MenuItemImage item2 = MenuItemImage.item("r1.png", "r2.png", this, "restartCallback");
             MenuItemImage item3 = MenuItemImage.item("f1.png", "f2.png", this, "nextCallback");
-            Menu menu = new Menu(item1, item2, item3);
+            Menu menu = Menu.menu(item1, item2, item3);
             menu.setPosition(0, 0);
             item1.setPosition(s.width / 2 - 100, 30);
             item2.setPosition(s.width / 2, 30);

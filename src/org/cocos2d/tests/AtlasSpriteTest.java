@@ -130,7 +130,7 @@ public class AtlasSpriteTest extends Activity {
         public AtlasSpriteDemo() {
             CCSize s = Director.sharedDirector().winSize();
 
-            Label label = new Label(title(), "DroidSans", 18);
+            Label label = Label.node(title(), "DroidSans", 18);
             label.setPosition(s.width / 2, s.height - 30);
             addChild(label);
 
@@ -138,7 +138,7 @@ public class AtlasSpriteTest extends Activity {
             MenuItemImage item2 = MenuItemImage.item("r1.png", "r2.png", this, "restartCallback");
             MenuItemImage item3 = MenuItemImage.item("f1.png", "f2.png", this, "nextCallback");
 
-            Menu menu = new Menu(item1, item2, item3);
+            Menu menu = Menu.menu(item1, item2, item3);
             menu.setPosition(0, 0);
             item1.setPosition(s.width / 2 - 100, 30);
             item2.setPosition(s.width / 2, 30);
@@ -171,7 +171,7 @@ public class AtlasSpriteTest extends Activity {
 
         public Atlas1() {
 
-            isTouchEnabled = true;
+            setTouchEnabled(true);
 
             float x, y;
 
@@ -434,7 +434,7 @@ public class AtlasSpriteTest extends Activity {
                 sprite.setPosition(60 + i * 100, s.height / 2);
 
 
-                Sprite point = new Sprite("r1.png");
+                Sprite point = Sprite.sprite("r1.png");
                 point.scale(0.25f);
                 point.setPosition(sprite.getPositionX(), sprite.getPositionY());
                 addChild(point, 1);
@@ -476,7 +476,7 @@ public class AtlasSpriteTest extends Activity {
             CCSize s = Director.sharedDirector().winSize();
 
             mgr.setRelativeAnchorPoint(false);
-            mgr.setTransformAnchor(s.width / 2.0f, s.height / 2.0f);
+            mgr.setAnchorPoint(0.5f, 0.5f);
 
 
             // AtlasSprite actions

@@ -75,7 +75,7 @@ public class ParallaxTest extends Activity {
             MenuItemImage item2 = MenuItemImage.item("r1.png", "r2.png", this, "restartCallback");
             MenuItemImage item3 = MenuItemImage.item("f1.png", "f2.png", this, "nextCallback");
 
-            Menu menu = new Menu(item1, item2, item3);
+            Menu menu = Menu.menu(item1, item2, item3);
             menu.setPosition(0, 0);
             item1.setPosition(s.width / 2 - 100, 30);
             item2.setPosition(s.width / 2, 30);
@@ -111,11 +111,11 @@ public class ParallaxTest extends Activity {
     static class Parallax1 extends ParallaxDemo {
         public Parallax1() {
             // Top Layer, a simple image
-            Sprite cocosImage = new Sprite("powered.png");
+            Sprite cocosImage = Sprite.sprite("powered.png");
             // scale the image (optional)
             cocosImage.scale(2.5f);
             // change the transform anchor point to 0,0 (optional)
-            cocosImage.setTransformAnchor(0, 0);
+            cocosImage.setAnchorPoint(0, 0);
             // position the image somewhere (optional)
             cocosImage.setPosition(200, 1000);
 
@@ -127,18 +127,18 @@ public class ParallaxTest extends Activity {
             TileMapAtlas tilemap = new TileMapAtlas("tiles.png", "levelmap.tga", 16, 16);
 
             // change the transform anchor to 0,0 (optional)
-            tilemap.setTransformAnchor(0, 0);
+            tilemap.setAnchorPoint(0, 0);
             // position the tilemap (optional)
             tilemap.setPosition(0, -200);
 
             Texture2D.restoreTexParameters();
 
             // background layer: another image
-            Sprite background = new Sprite("background.png");
+            Sprite background = Sprite.sprite("background.png");
             // scale the image (optional)
             background.scale(1.5f);
             // change the transform anchor point (optional)
-            background.setTransformAnchor(0, 0);
+            background.setAnchorPoint(0, 0);
 
 
             // create a void node, a parent node
@@ -189,12 +189,12 @@ public class ParallaxTest extends Activity {
 
             Texture2D.restoreTexParameters();
 
-            tilemap.setTransformAnchor(0, 0);
+            tilemap.setAnchorPoint(0, 0);
             tilemap.setPosition(0, -200);
 
-            Sprite background = new Sprite("background.png");
+            Sprite background = Sprite.sprite("background.png");
             background.scale(1.5f);
-            background.setTransformAnchor(0, 0);
+            background.setAnchorPoint(0, 0);
 
             // the parent contains data. The parent moves at (1,1)
             // while the child moves at the ratio of (0.4, 0.5)

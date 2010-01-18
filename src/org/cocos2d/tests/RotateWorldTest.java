@@ -37,9 +37,9 @@ public class RotateWorldTest extends Activity {
             x = size.width;
             y = size.height;
 
-            Sprite sprite = new Sprite("grossini.png");
-            Sprite spriteSister1 = new Sprite("grossinis_sister1.png");
-            Sprite spriteSister2 = new Sprite("grossinis_sister2.png");
+            Sprite sprite = Sprite.sprite("grossini.png");
+            Sprite spriteSister1 = Sprite.sprite("grossinis_sister1.png");
+            Sprite spriteSister2 = Sprite.sprite("grossinis_sister2.png");
 
             sprite.scale(1.5f);
             spriteSister1.scale(1.5f);
@@ -80,10 +80,10 @@ public class RotateWorldTest extends Activity {
             x = size.width;
             y = size.height;
 
-            CocosNode blue = new ColorLayer(new CCColor4B(0, 0, 255, 255));
-            CocosNode red = new ColorLayer(new CCColor4B(255, 0, 0, 255));
-            CocosNode green = new ColorLayer(new CCColor4B(0, 255, 0, 255));
-            CocosNode white = new ColorLayer(new CCColor4B(255, 255, 255, 255));
+            CocosNode blue = ColorLayer.node(new CCColor4B(0, 0, 255, 255));
+            CocosNode red = ColorLayer.node(new CCColor4B(255, 0, 0, 255));
+            CocosNode green = ColorLayer.node(new CCColor4B(0, 255, 0, 255));
+            CocosNode white = ColorLayer.node(new CCColor4B(255, 255, 255, 255));
 
             blue.scale(0.5f);
             blue.setPosition(-x / 4, -y / 4);
