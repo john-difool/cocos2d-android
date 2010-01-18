@@ -5,15 +5,18 @@ import org.cocos2d.types.CCQuad3;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class LabelAtlas extends AtlasNode {
+public class LabelAtlas extends AtlasNode implements CocosNode.CocosNodeLabel, CocosNode.CocosNodeSize {
     /// string to render
     String string;
 
     /// the first char in the charmap
     char mapStartChar;
 
-    public LabelAtlas(String theString, String charmapfile, int w, int h, char c) {
+    public static LabelAtlas node(String theString, String charmapfile, int w, int h, char c) {
+        return new LabelAtlas(theString, charmapfile, w, h, c);
+    }
 
+    protected LabelAtlas(String theString, String charmapfile, int w, int h, char c) {
         super(charmapfile, w, h, theString.length());
 
         string = theString;
