@@ -70,12 +70,6 @@ public class CocosNode {
         return transformAnchor_.y;
     }
 
-    public void setTransformAnchor(float x, float y) {
-        transformAnchor_.x = x;
-        transformAnchor_.y = y;
-        isTransformDirty_ = isInverseDirty_ = true;
-    }
-
     private boolean relativeAnchorPoint_;
 
     public void setRelativeAnchorPoint(boolean newValue) {
@@ -94,7 +88,8 @@ public class CocosNode {
         if (!((anchorPoint_.x == x) && (anchorPoint_.y == y))) {
             anchorPoint_.x = x;
             anchorPoint_.y = y;
-            setTransformAnchor(contentSize_.width * anchorPoint_.x, contentSize_.height * anchorPoint_.y);
+            transformAnchor_.x = contentSize_.width * anchorPoint_.x;
+            transformAnchor_.y = contentSize_.height * anchorPoint_.y;
         }
     }
 
@@ -113,7 +108,8 @@ public class CocosNode {
         if ((contentSize_.width != w) || (contentSize_.height != h)) {
             contentSize_.width = w;
             contentSize_.height = h;
-            setTransformAnchor(contentSize_.width * anchorPoint_.x, contentSize_.height * anchorPoint_.y);
+            transformAnchor_.x = contentSize_.width * anchorPoint_.x;
+            transformAnchor_.y = contentSize_.height * anchorPoint_.y;
         }
     }
 
