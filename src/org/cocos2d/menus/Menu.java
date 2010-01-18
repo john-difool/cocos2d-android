@@ -30,7 +30,6 @@ public class Menu extends Layer {
         this.selectedItem = selectedItem;
     }
 
-
     /**
      * creates a menu with its items
      */
@@ -38,7 +37,7 @@ public class Menu extends Layer {
         return new Menu(items);
     }
 
-    public Menu(MenuItem... items) {
+    protected Menu(MenuItem... items) {
         // menu in the center of the screen
         CCSize s = Director.sharedDirector().winSize();
 
@@ -54,7 +53,7 @@ public class Menu extends Layer {
         setContentSize(s.width, s.height);
 
 
-        isTouchEnabled = true;
+        setTouchEnabled(true);
 
         int z = 0;
         for (int i = 0; i < items.length; i++) {
@@ -142,12 +141,6 @@ public class Menu extends Layer {
             height += item.getHeight() * item.getScaleY() + padding;
         }
 
-//        float y = -height / 2.0f;
-//        for (int i = 0; i < children.size(); i++) {
-//            MenuItem item = (MenuItem)children.get(i);
-//            item.position = CCPoint.ccp(0, y + item.getHeight() * item.scaleY / 2.0f);
-//            y += item.getHeight() * item.scaleY + padding;
-//        }
         float y = height / 2.0f;
         for (int i = 0; i < children.size(); i++) {
             MenuItem item = (MenuItem) children.get(i);
@@ -174,12 +167,6 @@ public class Menu extends Layer {
             width += item.getWidth() * item.getScaleX() + padding;
         }
 
-//        float x = -width / 2.0f;
-//        for (int i = 0; i < children.size(); i++) {
-//            MenuItem item = (MenuItem)children.get(i);
-//            item.position = CCPoint.ccp(x + item.getWidth() * item.scaleX / 2.0f, 0);
-//            x += item.getWidth() * item.scaleX + padding;
-//        }
         float x = width / 2.0f;
         for (int i = 0; i < children.size(); i++) {
             MenuItem item = (MenuItem) children.get(i);

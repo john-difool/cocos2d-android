@@ -6,7 +6,13 @@ import org.cocos2d.nodes.CocosNode;
 import javax.microedition.khronos.opengles.GL10;
 
 public class MenuItemAtlasSprite extends MenuItemSprite {
-    public MenuItemAtlasSprite(AtlasSprite normalSprite, AtlasSprite selectedSprite, AtlasSprite disabledSprite,
+
+
+    public static MenuItemAtlasSprite item(AtlasSprite normalSprite, AtlasSprite selectedSprite, AtlasSprite disabledSprite, CocosNode target, String selector) {
+        return new MenuItemAtlasSprite(normalSprite, selectedSprite, disabledSprite, target, selector);
+    }
+
+    protected MenuItemAtlasSprite(AtlasSprite normalSprite, AtlasSprite selectedSprite, AtlasSprite disabledSprite,
                                CocosNode target, String selector) {
         super(normalSprite, selectedSprite, disabledSprite, target, selector);
 

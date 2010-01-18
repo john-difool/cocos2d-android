@@ -20,7 +20,15 @@ public class MenuItemSprite extends MenuItem implements CocosNode.CocosNodeRGBA 
     protected CocosNode selectedImage_;
     protected CocosNode disabledImage_;
 
-    public MenuItemSprite(CocosNode normalSprite, CocosNode selectedSprite, CocosNode disabledSprite, CocosNode target, String selector) {
+    public static MenuItemSprite item(CocosNode normalSprite, CocosNode selectedSprite, CocosNode disabledSprite) {
+        return new MenuItemSprite(normalSprite, selectedSprite, disabledSprite, null, null);
+    }
+
+    public static MenuItemSprite item(CocosNode normalSprite, CocosNode selectedSprite, CocosNode disabledSprite, CocosNode target, String selector) {
+        return new MenuItemSprite(normalSprite, selectedSprite, disabledSprite, target, selector);
+    }
+
+    protected MenuItemSprite(CocosNode normalSprite, CocosNode selectedSprite, CocosNode disabledSprite, CocosNode target, String selector) {
         super(target, selector);
         normalImage_ = normalSprite;
         selectedImage_ = selectedSprite;

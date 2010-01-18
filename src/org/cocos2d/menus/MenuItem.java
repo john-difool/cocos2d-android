@@ -26,7 +26,7 @@ public abstract class MenuItem extends CocosNode {
     /**
      * Initializes a menu item with a target/selector
      */
-    public MenuItem(Object rec, String cb) {
+    protected MenuItem(Object rec, String cb) {
         targetCallback = rec;
         selector = cb;
 
@@ -36,13 +36,13 @@ public abstract class MenuItem extends CocosNode {
         if (rec != null && cb != null)
             try {
                 Class cls = rec.getClass();
-                invocation = cls.getMethod(cb, new Class[]{});
+                invocation = cls.getMethod(cb);
             } catch (Exception e) {
+                // Do nothing
             }
 
         isEnabled_ = true;
         isSelected_ = false;
-
     }
 
     /**
@@ -52,8 +52,9 @@ public abstract class MenuItem extends CocosNode {
         if (isEnabled_) {
             if (targetCallback != null & invocation != null) {
                 try {
-                    invocation.invoke(targetCallback, new Object[]{});
+                    invocation.invoke(targetCallback);
                 } catch (Exception e) {
+                    // Do nothing
                 }
             }
         }

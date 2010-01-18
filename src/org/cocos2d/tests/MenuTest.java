@@ -113,14 +113,14 @@ public class MenuTest extends Activity {
             mgr.addChild(spriteNormal);
             mgr.addChild(spriteSelected);
             mgr.addChild(spriteDisabled);
-            MenuItemSprite item1 = new MenuItemAtlasSprite(spriteNormal, spriteSelected, spriteDisabled, this, "menuCallback");
+            MenuItemSprite item1 = MenuItemAtlasSprite.item(spriteNormal, spriteSelected, spriteDisabled, this, "menuCallback");
 
             // Image Item
             MenuItem item2 = MenuItemImage.item("SendScoreButton.png", "SendScoreButtonPressed.png", this, "menuCallback2");
 
             // Label Item (LabelAtlas)
-            LabelAtlas labelAtlas = new LabelAtlas("0123456789", "fps_images.png", 16, 24, '.');
-            MenuItemLabel item3 = new MenuItemLabel(labelAtlas, this, "menuCallbackDisabled");
+            LabelAtlas labelAtlas = LabelAtlas.node("0123456789", "fps_images.png", 16, 24, '.');
+            MenuItemLabel item3 = MenuItemLabel.item(labelAtlas, this, "menuCallbackDisabled");
             item3.setDisabledColor(new CCColor3B(32, 32, 64));
             item3.setColor(new CCColor3B(200, 200, 255));
 
@@ -140,21 +140,21 @@ public class MenuTest extends Activity {
             IntervalAction seq = Sequence.actions(color_action, color_back);
             item6.runAction(RepeatForever.action(seq));
 
-            Menu menu = new Menu(item1, item2, item3, item4, /*item5,*/ item6);
+            Menu menu = Menu.menu(item1, item2, item3, item4, /*item5,*/ item6);
             menu.alignItemsVertically();
 
 
             // elastic effect
-            CCSize s = Director.sharedDirector().winSize();
-            int i = 0;
-            for (CocosNode child : menu.getChildren()) {
-                int offset = (int) (s.width / 2 + 50);
-                if (i % 2 == 0)
-                    offset = -offset;
-                child.setPosition(child.getPositionX() + offset, child.getPositionY());
-                child.runAction(EaseElasticOut.action(MoveBy.action(2, child.getPositionX() - offset, 0), 0.35f));
-                i++;
-            }
+//            CCSize s = Director.sharedDirector().winSize();
+//            int i = 0;
+//            for (CocosNode child : menu.getChildren()) {
+//                int offset = (int) (s.width / 2 + 50);
+//                if (i % 2 == 0)
+//                    offset = -offset;
+//                child.setPosition(child.getPositionX() + offset, child.getPositionY());
+//                child.runAction(EaseElasticOut.action(MoveBy.action(2, child.getPositionX() - offset, 0), 0.35f));
+//                i++;
+//            }
 
 
             // IMPORTANT
@@ -170,6 +170,13 @@ public class MenuTest extends Activity {
         }
 
         MenuItem disabledItem;
+
+        public void menuCallbackDisabled() {
+        }
+
+        public void menuCallbackEnable() {
+            disabledItem.setIsEnabled(!disabledItem.isEnabled());
+        }
 
         public void menuCallback() {
         }

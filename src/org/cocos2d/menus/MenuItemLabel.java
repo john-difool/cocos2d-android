@@ -3,18 +3,23 @@ package org.cocos2d.menus;
 import org.cocos2d.actions.base.Action;
 import org.cocos2d.actions.interval.ScaleTo;
 import org.cocos2d.nodes.CocosNode;
+import org.cocos2d.nodes.Label;
 import org.cocos2d.types.CCColor3B;
 
 import javax.microedition.khronos.opengles.GL10;
 
 public class MenuItemLabel extends MenuItem implements CocosNode.CocosNodeRGBA {
-    private CocosNode label_;
+    private CocosNodeLabel label_;
     private CCColor3B colorBackup;
     private CCColor3B disabledColor_;
 
-    public MenuItemLabel(CocosNode label, CocosNode target, String selector) {
+    public static MenuItemLabel item(CocosNodeLabel label, CocosNode target, String selector) {
+        return new MenuItemLabel(label, target, selector);
+    }
+
+    protected MenuItemLabel(CocosNodeLabel label, CocosNode target, String selector) {
         super(target, selector);
-        label_ = label;
+        setLabel(label);
         colorBackup = new CCColor3B(255, 255, 255);
         disabledColor_ = new CCColor3B(126, 126, 126);
     }
@@ -45,17 +50,17 @@ public class MenuItemLabel extends MenuItem implements CocosNode.CocosNodeRGBA {
         disabledColor_.b = color.b;
     }
 
-    public CocosNode getLabel() {
+    public CocosNodeLabel getLabel() {
         return label_;
     }
 
-    public void setLabel(CocosNode label) {
+    public void setLabel(CocosNodeLabel label) {
         label_ = label;
         setContentSize(((CocosNodeSize) label_).getWidth(), ((CocosNodeSize) label_).getHeight());
     }
 
     public void setString(String string) {
-        ((CocosNodeLabel) label_).setString(string);
+        label_.setString(string);
         setContentSize(((CocosNodeSize) label_).getWidth(), ((CocosNodeSize) label_).getHeight());
     }
 
@@ -72,7 +77,7 @@ public class MenuItemLabel extends MenuItem implements CocosNode.CocosNodeRGBA {
     public void selected() {
         // subclass to change the default action
         if (isEnabled_) {
-            selected();
+            super.selected();
 
             stopAction(kZoomActionTag);
             Action zoomAction = ScaleTo.action(0.1f, 1.2f);
@@ -106,7 +111,7 @@ public class MenuItemLabel extends MenuItem implements CocosNode.CocosNodeRGBA {
     }
 
     public void draw(GL10 gl) {
-        label_.draw(gl);
+        ((CocosNode)label_).draw(gl);
     }
 
 

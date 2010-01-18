@@ -12,7 +12,11 @@ public class MenuItemToggle extends MenuItem {
     private byte opacity_;
     CCColor3B color_;
 
-    public MenuItemToggle(CocosNode t, String sel, MenuItem... items) {
+    public static MenuItemToggle item(CocosNode target, String selector, MenuItem... items) {
+        return new MenuItemToggle(target, selector, items);
+    }
+
+    protected MenuItemToggle(CocosNode t, String sel, MenuItem... items) {
         super(t, sel);
 
         subItems_ = new ArrayList<MenuItem>(items.length);
