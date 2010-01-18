@@ -505,7 +505,7 @@ public class Director implements GLSurfaceView.Renderer {
                 ret.x = y;
                 ret.y = x;
             } else {
-                ret.x = y;
+                ret.x = newY;
                 ret.y = width_ - x;
             }
         }
