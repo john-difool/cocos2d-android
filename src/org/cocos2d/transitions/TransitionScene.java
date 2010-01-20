@@ -2,6 +2,9 @@ package org.cocos2d.transitions;
 
 import org.cocos2d.nodes.Director;
 import org.cocos2d.nodes.Scene;
+import org.cocos2d.events.TouchDispatcher;
+
+import javax.microedition.khronos.opengles.GL10;
 
 public class TransitionScene extends Scene {
 
@@ -28,6 +31,7 @@ public class TransitionScene extends Scene {
     protected Scene inScene;
     protected Scene outScene;
     protected float duration;
+    protected boolean inSceneOnTop;
 
     /**
      * creates a base transition with duration and incoming scene
@@ -36,14 +40,10 @@ public class TransitionScene extends Scene {
         return new TransitionScene(t, s);
     }
 
-    public TransitionScene() {
-        throw new RuntimeException("Don't call this!!!");
-    }
-
     /**
      * initializes a transition with duration and incoming scene
      */
-    public TransitionScene(float t, Scene s) {
+    protected TransitionScene(float t, Scene s) {
         assert s != null : "Argument scene must be non-null";
 
         duration = t;
@@ -56,41 +56,28 @@ public class TransitionScene extends Scene {
             throw new TransitionWithInvalidSceneException("Incoming scene must be different from the outgoing scene");
         }
 
-        // disable events while transitions
-        Director.sharedDirector().setEventsEnabled(false);
-
-        addScenes();
+        // disable events while transition
+        TouchDispatcher.sharedDispatcher().setDispatchEvents(false);
+        sceneOrder();
 
     }
 
-    protected void addScenes() {
+    protected void sceneOrder() {
         // add both scenes
-        addChild(inScene, 1);
-        addChild(outScene, 0);
+        inSceneOnTop = true;
     }
 
-    public void step(float dt) {
-
-        unschedule("_cmd");
-
-        Director.sharedDirector().replaceScene(inScene);
-
-        // enable events while transitions
-        Director.sharedDirector().setEventsEnabled(true);
-
-        // issue #267
-        outScene.setVisible(true);
-
-        removeChild(inScene, false);
-        removeChild(outScene, false);
-
-        inScene = null;
-        outScene = null;
+    public void draw(GL10 gl)
+    {
+        if( inSceneOnTop) {
+            outScene.visit(gl);
+            inScene.visit(gl);
+        } else {
+            inScene.visit(gl);
+            outScene.visit(gl);
+        }
     }
 
-    /**
-     * called after the transition finishes
-     */
     public void finish() {
         /* clean up */
         inScene.setVisible(true);
@@ -105,10 +92,21 @@ public class TransitionScene extends Scene {
         outScene.setRotation(0.0f);
         outScene.getCamera().restore();
 
-        //	inScene.stopAllActions();
-        //	outScene.stopAllActions();
+        schedule("setNewScene", 0);
+    }
 
-        schedule("step", 0);
+    public void setNewScene(float dt) {
+
+        unschedule("setNewScene");
+
+        Director.sharedDirector().replaceScene(inScene);
+
+        // enable events after transition
+        TouchDispatcher.sharedDispatcher().setDispatchEvents(true);
+
+        // issue #267
+        outScene.setVisible(true);
+
     }
 
     /**
@@ -119,10 +117,38 @@ public class TransitionScene extends Scene {
         outScene.setVisible(false);
     }
 
-}
 
-class TransitionWithInvalidSceneException extends RuntimeException {
-    public TransitionWithInvalidSceneException(String reason) {
-        super(reason);
+    // custom onEnter
+
+    @Override
+    public void onEnter() {
+        super.onEnter();
+        inScene.onEnter();
+        // outScene should not receive the onEnter callback
+    }
+
+    // custom onExit
+
+    @Override
+    public void onExit() {
+        super.onExit();
+        outScene.onExit();
+
+        // inScene should not receive the onExit callback
+        // only the onEnterTransitionDidFinish
+        inScene.onEnterTransitionDidFinish();
+    }
+
+    @Override
+    public void onEnterTransitionDidFinish() {
+        super.onEnterTransitionDidFinish();
+    }
+
+    
+    static class TransitionWithInvalidSceneException extends RuntimeException {
+        public TransitionWithInvalidSceneException(String reason) {
+            super(reason);
+        }
     }
 }
+
