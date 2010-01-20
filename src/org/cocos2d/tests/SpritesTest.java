@@ -447,7 +447,7 @@ public class SpritesTest extends Activity {
         }
 
         public String title() {
-            return "Reverse an action";
+            return "Reverse an Action";
         }
     }
 
@@ -465,7 +465,7 @@ public class SpritesTest extends Activity {
         }
 
         public String title() {
-            return "DelayTime: m + delay + m";
+            return "DelayTime: m + Delay + m";
         }
     }
 
@@ -485,7 +485,7 @@ public class SpritesTest extends Activity {
         }
 
         public String title() {
-            return "Reverse a sequence";
+            return "Reverse a Sequence";
         }
     }
 
@@ -518,7 +518,7 @@ public class SpritesTest extends Activity {
         }
 
         public String title() {
-            return "Reverse sequence 2";
+            return "Reverse Sequence 2";
         }
     }
 
@@ -559,7 +559,7 @@ public class SpritesTest extends Activity {
         }
 
         public String title() {
-            return "Callback action: CallFunc";
+            return "Callback Action: CallFunc";
         }
     }
 
@@ -587,7 +587,7 @@ public class SpritesTest extends Activity {
 
 
         public String title() {
-            return "OrbitCamera action";
+            return "OrbitCamera Action";
         }
     }
 

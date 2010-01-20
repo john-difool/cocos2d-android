@@ -20,8 +20,8 @@ import org.cocos2d.transitions.FlipXTransition;
 import org.cocos2d.transitions.SlideInTTransition;
 import org.cocos2d.transitions.TransitionScene;
 import org.cocos2d.types.CCColor4B;
+import org.cocos2d.events.TouchDispatcher;
 
-import java.util.Set;
 
 public class SceneTest extends Activity {
     private static final String LOG_TAG = SceneTest.class.getSimpleName();
@@ -63,7 +63,7 @@ public class SceneTest extends Activity {
         public void onPushSceneTran() {
             Scene scene = Scene.node();
             scene.addChild(new Layer2(), 0);
-            Director.sharedDirector().pushScene(new SlideInTTransition(1, scene));
+            Director.sharedDirector().pushScene(SlideInTTransition.transition(1, scene));
         }
 
 
@@ -100,14 +100,16 @@ public class SceneTest extends Activity {
         public void onReplaceSceneTransition() {
             Scene s = Scene.node();
             s.addChild(new Layer3(), 0);
-            Director.sharedDirector().replaceScene(new FlipXTransition(2.0f, s, TransitionScene.Orientation.kOrientationLeftOver));
+            Director.sharedDirector().replaceScene(FlipXTransition.transition(2.0f, s, TransitionScene.Orientation.kOrientationLeftOver));
         }
     }
 
     static class Layer3 extends ColorLayer {
         public Layer3() {
             super(new CCColor4B(0, 0, 255, 255));
-            setTouchEnabled(true);
+
+            isTouchEnabled_ = true;
+
             Label label = Label.node("Touch to pop scene", "DroidSans", 32);
             addChild(label);
             float width = Director.sharedDirector().winSize().width;
@@ -115,9 +117,10 @@ public class SceneTest extends Activity {
             label.setPosition(width / 2, height / 2);
         }
 
-        public boolean CCTouchesEnded(Set touches, MotionEvent event) {
+        @Override
+        public boolean ccTouchesEnded(MotionEvent event) {
             Director.sharedDirector().popScene();
-            return Director.kEventHandled;
+            return TouchDispatcher.kEventHandled;
         }
     }
 

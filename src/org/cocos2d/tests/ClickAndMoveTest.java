@@ -16,6 +16,7 @@ import org.cocos2d.opengl.CCGLSurfaceView;
 import org.cocos2d.types.CCColor4B;
 import org.cocos2d.types.CCMacros;
 import org.cocos2d.types.CCPoint;
+import org.cocos2d.events.TouchDispatcher;
 
 public class ClickAndMoveTest extends Activity {
     private static final String LOG_TAG = ClickAndMoveTest.class.getSimpleName();
@@ -51,7 +52,7 @@ public class ClickAndMoveTest extends Activity {
         Director.sharedDirector().attachInView(mGLSurfaceView);
 
         // set landscape mode
-        Director.sharedDirector().setLandscape(true);
+        Director.sharedDirector().setLandscape(false);
 
         // show FPS
         Director.sharedDirector().setDisplayFPS(true);
@@ -93,7 +94,8 @@ public class ClickAndMoveTest extends Activity {
         static final int kTagSprite = 1;
 
         public MainLayer() {
-            setTouchEnabled(true);
+
+            isTouchEnabled_ = true;
 
             Sprite sprite = Sprite.sprite("grossini.png");
 
@@ -109,7 +111,7 @@ public class ClickAndMoveTest extends Activity {
         }
 
         @Override
-        public boolean CCTouchesBegan(MotionEvent event) {
+        public boolean ccTouchesBegan(MotionEvent event) {
             CCPoint convertedLocation = Director.sharedDirector().convertCoordinate(event.getX(), event.getY());
 
             CocosNode s = getChild(kTagSprite);
@@ -128,7 +130,7 @@ public class ClickAndMoveTest extends Activity {
 
             s.runAction(RotateTo.action(1, at));
 
-            return Director.kEventHandled;
+            return TouchDispatcher.kEventHandled;
         }
 
     }

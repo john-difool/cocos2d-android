@@ -19,6 +19,8 @@ public class TransitionsTest extends Activity {
     private static final String LOG_TAG = TransitionsTest.class.getSimpleName();
     private CCGLSurfaceView mGLSurfaceView;
 
+    private static final float TRANSITION_DURATION = 1.2f;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +49,7 @@ public class TransitionsTest extends Activity {
         Director.sharedDirector().setAnimationInterval(1.0f / 60);
 
         Scene scene = Scene.node();
-        scene.addChild(new TestLayer(), 2);
-
+        scene.addChild(new TestLayer1());
         // Make the Scene active
         Director.sharedDirector().runWithScene(scene);
 
@@ -221,16 +222,13 @@ public class TransitionsTest extends Activity {
         }
     }
 
-    static class TestLayer extends Layer {
+    static class TestLayer1 extends Layer {
 
-        public TestLayer() {
-            setTouchEnabled(true);
-
-            float x, y;
+        public TestLayer1() {
 
             CCSize s = Director.sharedDirector().winSize();
-            x = s.width;
-            y = s.height;
+            float x = s.width;
+            float y = s.height;
 
             Sprite bg1 = Sprite.sprite("background1.jpg");
             bg1.setAnchorPoint(0, 0);
@@ -255,34 +253,31 @@ public class TransitionsTest extends Activity {
         }
 
         public void nextCallback() {
-            Scene s2 = Scene.node();
-            s2.addChild(new TestLayer2());
-            Director.sharedDirector().replaceScene(nextTransition(1.2f, s2));
+            Scene scene = Scene.node();
+            scene.addChild(new TestLayer2());
+            Director.sharedDirector().replaceScene(nextTransition(TRANSITION_DURATION, scene));
         }
 
         public void backCallback() {
-            Scene s2 = Scene.node();
-            s2.addChild(new TestLayer2());
-            Director.sharedDirector().replaceScene(backTransition(1.2f, s2));
+            Scene scene = Scene.node();
+            scene.addChild(new TestLayer2());
+            Director.sharedDirector().replaceScene(backTransition(TRANSITION_DURATION, scene));
         }
 
         public void restartCallback() {
-            Scene s2 = Scene.node();
-            s2.addChild(new TestLayer2());
-            Director.sharedDirector().replaceScene(restartTransition(1.2f, s2));
+            Scene scene = Scene.node();
+            scene.addChild(new TestLayer2());
+            Director.sharedDirector().replaceScene(restartTransition(TRANSITION_DURATION, scene));
         }
     }
 
     static class TestLayer2 extends Layer {
 
         public TestLayer2() {
-            setTouchEnabled(true);
-
-            float x, y;
 
             CCSize s = Director.sharedDirector().winSize();
-            x = s.width;
-            y = s.height;
+            float x = s.width;
+            float y = s.height;
 
             Sprite bg2 = Sprite.sprite("background2.jpg");
             bg2.setAnchorPoint(0, 0);
@@ -297,6 +292,7 @@ public class TransitionsTest extends Activity {
             MenuItemImage item1 = MenuItemImage.item("b1.png", "b2.png", this, "backCallback");
             MenuItemImage item2 = MenuItemImage.item("r1.png", "r2.png", this, "restartCallback");
             MenuItemImage item3 = MenuItemImage.item("f1.png", "f2.png", this, "nextCallback");
+
             Menu menu = Menu.menu(item1, item2, item3);
             menu.setPosition(0, 0);
             item1.setPosition(s.width / 2 - 100, 30);
@@ -307,21 +303,21 @@ public class TransitionsTest extends Activity {
         }
 
         public void nextCallback() {
-            Scene s2 = Scene.node();
-            s2.addChild(new TestLayer());
-            Director.sharedDirector().replaceScene(nextTransition(1.2f, s2));
+            Scene scene = Scene.node();
+            scene.addChild(new TestLayer1());
+            Director.sharedDirector().replaceScene(nextTransition(TRANSITION_DURATION, scene));
         }
 
         public void backCallback() {
-            Scene s2 = Scene.node();
-            s2.addChild(new TestLayer());
-            Director.sharedDirector().replaceScene(backTransition(1.2f, s2));
+            Scene scene = Scene.node();
+            scene.addChild(new TestLayer1());
+            Director.sharedDirector().replaceScene(backTransition(TRANSITION_DURATION, scene));
         }
 
         public void restartCallback() {
-            Scene s2 = Scene.node();
-            s2.addChild(new TestLayer());
-            Director.sharedDirector().replaceScene(restartTransition(1.2f, s2));
+            Scene scene = Scene.node();
+            scene.addChild(new TestLayer1());
+            Director.sharedDirector().replaceScene(restartTransition(TRANSITION_DURATION, scene));
 
         }
     }
