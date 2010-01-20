@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import org.cocos2d.actions.ActionManager;
@@ -14,6 +13,8 @@ import org.cocos2d.types.CCPoint;
 import org.cocos2d.types.CCRect;
 import org.cocos2d.types.CCSize;
 import org.cocos2d.utils.CCFormatter;
+import org.cocos2d.events.TouchDispatcher;
+import org.cocos2d.transitions.TransitionScene;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -32,9 +33,6 @@ public class Director implements GLSurfaceView.Renderer {
     private int width_, height_;
 
     private static final double kDefaultFPS = 60.0f;    // 60 frames per second
-
-    public static final boolean kEventHandled = true;
-    public static final boolean kEventIgnored = false;
 
     // Landscape is right or left ?
     private static final boolean LANDSCAPE_LEFT = false;
@@ -68,9 +66,6 @@ public class Director implements GLSurfaceView.Renderer {
 
     /* will be the next 'runningScene' in the next frame */
     private Scene nextScene;
-
-    /* event handler */
-    private ArrayList<TouchEventsDelegate> eventHandlers;
 
     /* scheduled scenes */
     private ArrayList<Scene> scenesStack_;
@@ -106,11 +101,6 @@ public class Director implements GLSurfaceView.Renderer {
     private boolean displayFPS;
 
     /**
-     * Whether or not to propagate the touch events to the running Scene. Default true
-     */
-    private boolean eventsEnabled;
-
-    /**
      * The OpenGL view
      */
     private GLSurfaceView getOpenGLView() {
@@ -129,10 +119,6 @@ public class Director implements GLSurfaceView.Renderer {
 
     public void setDisplayFPS(boolean value) {
         displayFPS = value;
-    }
-
-    public void setEventsEnabled(boolean value) {
-        eventsEnabled = value;
     }
 
     private static Director _sharedDirector;
@@ -165,7 +151,6 @@ public class Director implements GLSurfaceView.Renderer {
             nextScene = null;
 
             oldAnimationInterval = animationInterval = 1.0 / kDefaultFPS;
-            eventHandlers = new ArrayList<TouchEventsDelegate>(8);
             scenesStack_ = new ArrayList<Scene>(10);
 
             // landscape
@@ -178,8 +163,6 @@ public class Director implements GLSurfaceView.Renderer {
             // paused?
             paused = false;
 
-            // touch events enabled?
-            eventsEnabled = true;
         }
     }
 
@@ -251,8 +234,9 @@ public class Director implements GLSurfaceView.Renderer {
 
 
         /* to avoid flicker, nextScene MUST be here: after tick and before draw */
-        if (nextScene != null)
+        if (nextScene != null) {
             setNextScene();
+        }
 
         gl.glPushMatrix();
 
@@ -456,7 +440,9 @@ public class Director implements GLSurfaceView.Renderer {
 //            if([view isUserInteractionEnabled])
 //            {
 //                [openGLView_ setUserInteractionEnabled:YES];
-        setEventsEnabled(true);
+
+        TouchDispatcher.sharedDispatcher().setDispatchEvents(true);
+
 //            }
 //            else
 //            {
@@ -529,7 +515,7 @@ public class Director implements GLSurfaceView.Renderer {
         int index = scenesStack_.size();
 
         scenesStack_.set(index - 1, scene);
-        nextScene = scene;    // nextScene is a weak ref
+        nextScene = scene;
     }
 
     public void pushScene(Scene scene) {
@@ -565,7 +551,7 @@ public class Director implements GLSurfaceView.Renderer {
         runningScene_ = null;
         nextScene = null;
 
-        eventHandlers.clear();
+        TouchDispatcher.sharedDispatcher().removeAllDelegates();
 
         scenesStack_.clear();
 
@@ -582,14 +568,21 @@ public class Director implements GLSurfaceView.Renderer {
     }
 
     public void setNextScene() {
-        if (runningScene_ != null)
+
+        boolean runningIsTransition = runningScene_ instanceof TransitionScene;
+        boolean newIsTransition = nextScene instanceof TransitionScene;
+
+        // If it is not a transition, call onExit
+        if( runningScene_ != null && ! newIsTransition )
             runningScene_.onExit();
 
         runningScene_ = nextScene;
         nextScene = null;
 
-        if (runningScene_ != null)
+        if( ! runningIsTransition ) {
             runningScene_.onEnter();
+            runningScene_.onEnterTransitionDidFinish();
+        }
     }
 
     public void pause() {
@@ -639,62 +632,6 @@ public class Director implements GLSurfaceView.Renderer {
             startAnimation();
         }
     }
-
-
-    public void addEventHandler(TouchEventsDelegate delegate) {
-        assert delegate != null : "Director.addEventHandler: delegate must be non null";
-
-        eventHandlers.add(0, delegate);
-    }
-
-    public void removeEventHandler(TouchEventsDelegate delegate) {
-        assert delegate != null : "Director.removeEventHandler: delegate must be non null";
-
-        eventHandlers.remove(delegate);
-    }
-
-
-    //
-    // multi touch proxies
-    //
-
-    public void touchesBegan(MotionEvent event) {
-        if (eventsEnabled) {
-            ArrayList<TouchEventsDelegate> copyArray = (ArrayList<TouchEventsDelegate>) eventHandlers.clone();
-            for (TouchEventsDelegate eventHandler : copyArray) {
-                if (eventHandler.CCTouchesBegan(event) == kEventHandled)
-                    break;
-            }
-        }
-    }
-
-    public void touchesMoved(MotionEvent event) {
-        if (eventsEnabled) {
-            ArrayList<TouchEventsDelegate> copyArray = (ArrayList<TouchEventsDelegate>) eventHandlers.clone();
-            for (TouchEventsDelegate eventHandler : copyArray) {
-                eventHandler.CCTouchesMoved(event);
-            }
-        }
-    }
-
-    public void touchesEnded(MotionEvent event) {
-        if (eventsEnabled) {
-            ArrayList<TouchEventsDelegate> copyArray = (ArrayList<TouchEventsDelegate>) eventHandlers.clone();
-            for (TouchEventsDelegate eventHandler : copyArray) {
-                eventHandler.CCTouchesEnded(event);
-            }
-        }
-    }
-
-    public void touchesCancelled(MotionEvent event) {
-        if (eventsEnabled) {
-            ArrayList<TouchEventsDelegate> copyArray = (ArrayList<TouchEventsDelegate>) eventHandlers.clone();
-            for (TouchEventsDelegate eventHandler : copyArray) {
-                eventHandler.CCTouchesCancelled(event);
-            }
-        }
-    }
-
 
     public void setAlphaBlending(GL10 gl, boolean on) {
         if (on)
