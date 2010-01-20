@@ -7,12 +7,16 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import org.cocos2d.nodes.Director;
+import org.cocos2d.events.TouchDispatcher;
 
 public class CCGLSurfaceView extends GLSurfaceView {
 
     private static final String LOG_TAG = CCGLSurfaceView.class.getSimpleName();
     private Director mRenderer;
+    private TouchDispatcher mDispatcher;
+
     public Display frame;
+
 
     public CCGLSurfaceView(Context context) {
         super(context);
@@ -29,6 +33,8 @@ public class CCGLSurfaceView extends GLSurfaceView {
         mRenderer = Director.sharedDirector();
         Director.me = (Activity) context;
 
+        mDispatcher = TouchDispatcher.sharedDispatcher();
+
         setRenderer(mRenderer);
 
         WindowManager w = ((Activity) context).getWindowManager();
@@ -42,16 +48,16 @@ public class CCGLSurfaceView extends GLSurfaceView {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_CANCEL:
-                mRenderer.touchesCancelled(event);
+                mDispatcher.touchesCancelled(event);
                 break;
             case MotionEvent.ACTION_DOWN:
-                mRenderer.touchesBegan(event);
+                mDispatcher.touchesBegan(event);
                 break;
             case MotionEvent.ACTION_MOVE:
-                mRenderer.touchesMoved(event);
+                mDispatcher.touchesMoved(event);
                 break;
             case MotionEvent.ACTION_UP:
-                mRenderer.touchesEnded(event);
+                mDispatcher.touchesEnded(event);
                 break;
         }
 
@@ -62,6 +68,7 @@ public class CCGLSurfaceView extends GLSurfaceView {
                 // Do nothing
             }
         }
+        
         return true;
     }
 
