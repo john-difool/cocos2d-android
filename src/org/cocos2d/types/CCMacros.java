@@ -4,6 +4,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class CCMacros {
 
+    public static final int INT_MIN = -2147483648;
+
     public static void CC_SWAP(int x, int y ) {
     	int temp  = x;
 		x = y; y = temp;
