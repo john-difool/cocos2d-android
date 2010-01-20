@@ -15,6 +15,7 @@ import org.cocos2d.nodes.*;
 import org.cocos2d.opengl.CCGLSurfaceView;
 import org.cocos2d.opengl.Texture2D;
 import org.cocos2d.types.*;
+import org.cocos2d.events.TouchDispatcher;
 
 public class AtlasSpriteTest extends Activity {
     private static final String LOG_TAG = AtlasSpriteTest.class.getSimpleName();
@@ -171,7 +172,7 @@ public class AtlasSpriteTest extends Activity {
 
         public Atlas1() {
 
-            setTouchEnabled(true);
+            isTouchEnabled_ = true;
 
             float x, y;
 
@@ -215,12 +216,12 @@ public class AtlasSpriteTest extends Activity {
         }
 
         @Override
-        public boolean CCTouchesBegan(MotionEvent event) {
+        public boolean ccTouchesBegan(MotionEvent event) {
             CCPoint location = Director.sharedDirector().convertCoordinate(event.getX(), event.getY());
 
             addNewSprite(location);
 
-            return Director.kEventHandled;
+            return TouchDispatcher.kEventHandled;
         }
 
         @Override
