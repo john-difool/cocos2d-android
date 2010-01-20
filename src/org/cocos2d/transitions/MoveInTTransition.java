@@ -9,6 +9,10 @@ import org.cocos2d.nodes.Scene;
  */
 public class MoveInTTransition extends MoveInLTransition {
 
+    public static MoveInTTransition transition(float t, Scene s) {
+        return new MoveInTTransition(t, s);
+    }
+
     public MoveInTTransition(float t, Scene s) {
         super(t, s);
     }

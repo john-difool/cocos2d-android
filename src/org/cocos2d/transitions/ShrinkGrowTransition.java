@@ -13,6 +13,11 @@ import org.cocos2d.types.CCSize;
  * Shrink the outgoing scene while grow the incoming scene
  */
 public class ShrinkGrowTransition extends TransitionScene {
+
+    public static ShrinkGrowTransition transition(float t, Scene s) {
+        return new ShrinkGrowTransition(t, s);
+    }
+
     public ShrinkGrowTransition(float t, Scene s) {
         super(t, s);
     }
@@ -32,10 +37,14 @@ public class ShrinkGrowTransition extends TransitionScene {
         IntervalAction scaleOut = ScaleTo.action(duration, 0.01f);
         IntervalAction scaleIn = ScaleTo.action(duration, 1.0f);
 
-        inScene.runAction(EaseOut.action(scaleIn, 2.0f));
+        inScene.runAction(easeAction(scaleIn));
         outScene.runAction(Sequence.actions(
-                EaseOut.action(scaleOut, 2.0f),
+                easeAction(scaleOut),
                 CallFunc.action(this, "finish")));
+    }
+
+    protected IntervalAction easeAction(IntervalAction action) {
+        return EaseOut.action(action, 2.0f);
     }
 
 }

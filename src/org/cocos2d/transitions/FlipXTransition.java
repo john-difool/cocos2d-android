@@ -16,6 +16,10 @@ import org.cocos2d.nodes.Scene;
  */
 public class FlipXTransition extends OrientedTransitionScene {
 
+    public static FlipXTransition transition(float t, Scene s, int orientation) {
+        return new FlipXTransition(t, s, orientation);
+    }
+
     public FlipXTransition(float t, Scene s, int orientation) {
         super(t, s, orientation);
     }

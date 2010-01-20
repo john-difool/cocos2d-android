@@ -14,7 +14,8 @@ import org.cocos2d.types.CCSize;
  * Move in from to the left the incoming scene.
  */
 public class MoveInLTransition extends TransitionScene {
-    public static TransitionScene transition(float t, Scene s) {
+
+    public static MoveInLTransition transition(float t, Scene s) {
         return new MoveInLTransition(t, s);
     }
 
@@ -30,7 +31,7 @@ public class MoveInLTransition extends TransitionScene {
         IntervalAction a = action();
 
         inScene.runAction(Sequence.actions(
-                EaseOut.action(a, 2.0f),
+                easeAction(a),
                 CallFunc.action(this, "finish")));
 
     }
@@ -40,6 +41,10 @@ public class MoveInLTransition extends TransitionScene {
      */
     protected IntervalAction action() {
         return MoveTo.action(duration, 0, 0);
+    }
+
+    protected IntervalAction easeAction(IntervalAction action) {
+        return EaseOut.action(action, 2.0f);
     }
 
     /**

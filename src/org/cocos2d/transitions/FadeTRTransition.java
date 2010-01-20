@@ -10,15 +10,18 @@ import org.cocos2d.types.CCSize;
  */
 public class FadeTRTransition extends TransitionScene {
 
+    public static FadeTRTransition transition(float t, Scene s) {
+        return new FadeTRTransition(t, s);
+    }
+
     public FadeTRTransition(float t, Scene s) {
         super(t, s);
     }
 
     // override addScenes, and change the order
-    protected void addScenes() {
-        // add both scenes
-        addChild(inScene, 0);
-        addChild(outScene, 1);
+    public void sceneOrder()
+    {
+        inSceneOnTop = false;
     }
 
     public void onEnter() {

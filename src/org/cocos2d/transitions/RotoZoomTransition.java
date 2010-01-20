@@ -12,10 +12,15 @@ import org.cocos2d.types.CCSize;
  */
 public class RotoZoomTransition extends TransitionScene {
 
+    public static RotoZoomTransition transition(float t, Scene s) {
+        return new RotoZoomTransition(t, s);
+    }
+
     public RotoZoomTransition(float t, Scene s) {
         super(t, s);
     }
 
+    @Override
     public void onEnter() {
         super.onEnter();
         CCSize s = Director.sharedDirector().winSize();

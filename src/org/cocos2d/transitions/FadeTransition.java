@@ -21,6 +21,10 @@ public class FadeTransition extends TransitionScene {
     /**
      * creates the transition with a duration and with an RGB color
      */
+    public static FadeTransition transition(float t, Scene s, CCColor3B rgb) {
+        return new FadeTransition(t, s, rgb);
+    }
+
     /**
      * initializes the transition with a duration and with an RGB color
      */

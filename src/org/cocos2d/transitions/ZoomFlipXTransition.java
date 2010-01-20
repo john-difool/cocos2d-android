@@ -17,6 +17,10 @@ import org.cocos2d.nodes.Scene;
  */
 public class ZoomFlipXTransition extends OrientedTransitionScene {
 
+    public static ZoomFlipXTransition transition(float t, Scene s, int orientation) {
+        return new ZoomFlipXTransition(t, s, orientation);
+    }
+
     public ZoomFlipXTransition(float t, Scene s, int orientation) {
         super(t, s, orientation);
     }

@@ -12,6 +12,10 @@ import org.cocos2d.types.CCSize;
  */
 public class JumpZoomTransition extends TransitionScene {
 
+    public static JumpZoomTransition transition(float t, Scene s) {
+        return new JumpZoomTransition(t, s);
+    }
+
     public JumpZoomTransition(float t, Scene s) {
         super(t, s);
     }
@@ -19,6 +23,7 @@ public class JumpZoomTransition extends TransitionScene {
     public void onEnter() {
         super.onEnter();
         CCSize size = Director.sharedDirector().winSize();
+        
         float width = size.getWidth();
         float height = size.getHeight();
 

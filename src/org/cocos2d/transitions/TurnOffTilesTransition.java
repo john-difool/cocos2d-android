@@ -3,12 +3,15 @@ package org.cocos2d.transitions;
 import org.cocos2d.nodes.Director;
 import org.cocos2d.nodes.Scene;
 import org.cocos2d.types.CCSize;
+import org.cocos2d.actions.interval.IntervalAction;
+import org.cocos2d.actions.ease.EaseOut;
 
 /**
  * TurnOffTiles Transition.
  * Turn off the tiles of the outgoing scene in random order
  */
 public class TurnOffTilesTransition extends TransitionScene {
+    
     public static TransitionScene transition(float t, Scene s) {
         return new TurnOffTilesTransition(t, s);
     }
@@ -18,10 +21,9 @@ public class TurnOffTilesTransition extends TransitionScene {
     }
 
     // override addScenes, and change the order
-    protected void addScenes() {
-        // add both scenes
-        addChild(inScene, 0);
-        addChild(outScene, 1);
+    public void sceneOrder()
+    {
+        inSceneOnTop = false;
     }
 
     public void onEnter() {
@@ -39,4 +41,9 @@ public class TurnOffTilesTransition extends TransitionScene {
 
     }
 
+    protected IntervalAction easeAction(IntervalAction action) {
+        return action;
+//        return EaseOut.action(action, 2.0f);
+    }
+    
 }

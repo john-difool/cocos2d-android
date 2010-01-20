@@ -9,7 +9,8 @@ import org.cocos2d.types.CCSize;
  * Move in from to the bottom the incoming scene.
  */
 public class MoveInBTransition extends MoveInLTransition {
-    public static TransitionScene transition(float t, Scene s) {
+
+    public static MoveInBTransition transition(float t, Scene s) {
         return new MoveInBTransition(t, s);
     }
 
