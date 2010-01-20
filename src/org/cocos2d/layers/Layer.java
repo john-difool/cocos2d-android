@@ -3,23 +3,33 @@ package org.cocos2d.layers;
 import android.view.MotionEvent;
 import org.cocos2d.nodes.CocosNode;
 import org.cocos2d.nodes.Director;
-import org.cocos2d.nodes.TouchEventsDelegate;
+import org.cocos2d.events.TouchDispatcher;
+import org.cocos2d.events.TouchDelegate;
 import org.cocos2d.types.CCSize;
 
-public class Layer extends CocosNode implements TouchEventsDelegate {
-    private boolean isTouchEnabled_;
+public class Layer extends CocosNode implements TouchDelegate {
+
+    protected boolean isTouchEnabled_;
 
     //! whether or not it will receive Accelerometer events
-    public boolean isAccelerometerEnabled_;
+    protected boolean isAccelerometerEnabled_;
 
     public boolean isTouchEnabled()
     {
         return isTouchEnabled_;
     }
 
-    public void setTouchEnabled(boolean b)
+    public void setIsTouchEnabled(boolean enabled)
     {
-        isTouchEnabled_ = b;
+        if( isTouchEnabled_ != enabled ) {
+            isTouchEnabled_ = enabled;
+            if( isRunning() ) {
+                if( enabled )
+                    registerWithTouchDispatcher();
+                else
+                    TouchDispatcher.sharedDispatcher().removeDelegate(this);
+            }
+        }
     }
 
     public static Layer node() {
@@ -36,7 +46,11 @@ public class Layer extends CocosNode implements TouchEventsDelegate {
 
         isTouchEnabled_ = false;
         isAccelerometerEnabled_ = false;
+            
+    }
 
+    protected void registerWithTouchDispatcher() {
+        TouchDispatcher.sharedDispatcher().addDelegate(this, 0);
     }
 
     @Override
@@ -45,9 +59,9 @@ public class Layer extends CocosNode implements TouchEventsDelegate {
         // register 'parent' nodes first
         // since events are propagated in reverse order
         if (isTouchEnabled_)
-            Director.sharedDirector().addEventHandler(this);
+            registerWithTouchDispatcher();
 
-        // the iterate over all the children
+        // then iterate over all the children
         super.onEnter();
 
 //        if( isAccelerometerEnabled )
@@ -56,8 +70,9 @@ public class Layer extends CocosNode implements TouchEventsDelegate {
 
     @Override
     public void onExit() {
+
         if (isTouchEnabled_)
-            Director.sharedDirector().removeEventHandler(this);
+            TouchDispatcher.sharedDispatcher().removeDelegate(this);
 
 //        if( isAccelerometerEnabled )
 //            [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
@@ -65,16 +80,19 @@ public class Layer extends CocosNode implements TouchEventsDelegate {
         super.onExit();
     }
 
-    public boolean CCTouchesBegan(MotionEvent event) {
-        return Director.kEventIgnored;  // TODO Auto-generated method stub
+    public boolean ccTouchesBegan(MotionEvent event) {
+        return TouchDispatcher.kEventHandled;  // TODO Auto-generated method stub
     }
 
-    public void CCTouchesMoved(MotionEvent event) {
+    public boolean ccTouchesMoved(MotionEvent event) {
+        return TouchDispatcher.kEventIgnored;  // TODO Auto-generated method stub
     }
 
-    public void CCTouchesEnded(MotionEvent event) {
+    public boolean ccTouchesEnded(MotionEvent event) {
+        return TouchDispatcher.kEventIgnored;  // TODO Auto-generated method stub
     }
 
-    public void CCTouchesCancelled(MotionEvent event) {
+    public boolean ccTouchesCancelled(MotionEvent event) {
+        return TouchDispatcher.kEventIgnored;  // TODO Auto-generated method stub
     }
 }
