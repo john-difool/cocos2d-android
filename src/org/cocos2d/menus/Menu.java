@@ -6,6 +6,8 @@ import org.cocos2d.nodes.Director;
 import org.cocos2d.types.CCPoint;
 import org.cocos2d.types.CCRect;
 import org.cocos2d.types.CCSize;
+import org.cocos2d.types.CCMacros;
+import org.cocos2d.events.TouchDispatcher;
 
 import java.util.ArrayList;
 
@@ -30,6 +32,12 @@ public class Menu extends Layer {
         this.selectedItem = selectedItem;
     }
 
+    @Override
+    protected void registerWithTouchDispatcher() {
+        TouchDispatcher.sharedDispatcher().addDelegate(this, CCMacros.INT_MIN+1);
+    }
+
+    
     /**
      * creates a menu with its items
      */
@@ -53,7 +61,7 @@ public class Menu extends Layer {
         setContentSize(s.width, s.height);
 
 
-        setTouchEnabled(true);
+        isTouchEnabled_ = true;
 
         int z = 0;
         for (int i = 0; i < items.length; i++) {
@@ -71,42 +79,44 @@ public class Menu extends Layer {
     // Menu - Events
 
     @Override
-    public boolean CCTouchesBegan(MotionEvent event) {
+    public boolean ccTouchesBegan(MotionEvent event) {
 
-        if (state != MenuState.kMenuStateWaiting) return false;
-
+        if (state != MenuState.kMenuStateWaiting)
+            return TouchDispatcher.kEventIgnored;
         selectedItem = itemForTouch(event);
 
         if (selectedItem != null) {
             selectedItem.selected();
             state = MenuState.kMenuStateTrackingTouch;
-            return Director.kEventHandled;
+            return TouchDispatcher.kEventHandled;
         }
 
-        return Director.kEventIgnored;
+        return TouchDispatcher.kEventIgnored;
     }
 
     @Override
-    public void CCTouchesEnded(MotionEvent event) {
+    public boolean ccTouchesEnded(MotionEvent event) {
         if (selectedItem != null) {
             selectedItem.unselected();
             selectedItem.activate();
         }
 
         state = MenuState.kMenuStateWaiting;
+        return TouchDispatcher.kEventHandled;
     }
 
     @Override
-    public void CCTouchesCancelled(MotionEvent event) {
+    public boolean ccTouchesCancelled(MotionEvent event) {
         if (selectedItem != null) {
             selectedItem.unselected();
         }
 
         state = MenuState.kMenuStateWaiting;
+        return TouchDispatcher.kEventHandled;
     }
 
     @Override
-    public void CCTouchesMoved(MotionEvent event) {
+    public boolean ccTouchesMoved(MotionEvent event) {
         MenuItem currentItem = itemForTouch(event);
 
         if (currentItem != selectedItem) {
@@ -118,7 +128,7 @@ public class Menu extends Layer {
                 selectedItem.selected();
             }
         }
-
+        return TouchDispatcher.kEventHandled;         
     }
 
 
