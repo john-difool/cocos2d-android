@@ -91,6 +91,7 @@ public class ActionManager {
 
     // actions
 
+    // TODO figure out why the target not found
     /**
      * Pauses all actions for a certain target.
      * When the actions are paused, they won't be "ticked".
@@ -99,8 +100,9 @@ public class ActionManager {
         HashElement element = targets.get(target);
         if (element != null) {
             element.paused = true;
-        } else
-            Log.w(LOG_TAG, "pauseAllActions: target not found");
+        } else {
+            //Log.w(LOG_TAG, "pauseAllActions: target not found");
+        }
     }
 
     /**
@@ -111,8 +113,9 @@ public class ActionManager {
         HashElement element = targets.get(target);
         if (element != null) {
             element.paused = false;
-        } else
-            Log.w(LOG_TAG, "resumeAllActions: target not found");
+        } else {
+//            Log.w(LOG_TAG, "resumeAllActions: target not found");
+        }
     }
 
 
