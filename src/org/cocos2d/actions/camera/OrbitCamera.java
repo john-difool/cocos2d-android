@@ -44,7 +44,7 @@ public class OrbitCamera extends CameraAction {
     @Override
     public void start(CocosNode aTarget) {
         super.start(aTarget);
-        float r[] = new float[1], zenith[] = new float[1], azimuth[] = new float[1];
+        float[] r = new float[1], zenith = new float[1], azimuth = new float[1];
 
         spherical(r, zenith, azimuth);
         if (Float.isNaN(radius))
@@ -72,8 +72,8 @@ public class OrbitCamera extends CameraAction {
     }
 
     private void spherical(float newRadius[], float zenith[], float azimuth[]) {
-        float ex[] = new float[1], ey[] = new float[1], ez[] = new float[1];
-        float cx[] = new float[1], cy[] = new float[1], cz[] = new float[1];
+        float[] ex = new float[1], ey = new float[1], ez = new float[1];
+        float[] cx = new float[1], cy = new float[1], cz = new float[1];
         float x, y, z;
         float r; // radius
         float s;
@@ -87,12 +87,14 @@ public class OrbitCamera extends CameraAction {
 
         r = (float) (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2)));
         s = (float) (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
+
         if (s == 0.0f)
             s = 0.00000001f;
         if (r == 0.0f)
             r = 0.00000001f;
 
         zenith[0] = (float) Math.acos(z / r);
+        
         if (x < 0)
             azimuth[0] = (float) (Math.PI - Math.asin(y / s));
         else
@@ -100,4 +102,5 @@ public class OrbitCamera extends CameraAction {
 
         newRadius[0] = r / Camera.getZEye();
     }
+
 }

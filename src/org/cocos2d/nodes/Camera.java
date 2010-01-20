@@ -41,12 +41,12 @@ public class Camera {
     public void restore() {
         CCSize s = Director.sharedDirector().displaySize();
 
-        eyeX = s.width / 2;
-        eyeY = s.height / 2;
+        eyeX = 0 /* s.width / 2 */;
+        eyeY = 0 /* s.height / 2 */;
         eyeZ = Camera.getZEye();
 
-        centerX = s.width / 2;
-        centerY = s.height / 2;
+        centerX = 0 /* s.width / 2 */;
+        centerY = 0 /* s.height / 2 */;
         centerZ = 0.0f;
 
         upX = 0.0f;
@@ -62,17 +62,19 @@ public class Camera {
 
             gl.glLoadIdentity();
 
-            if (landscape)
-                gl.glRotatef(-90, 0, 0, 1);
+//            if (landscape)
+//                gl.glRotatef(-90, 0, 0, 1);
 
-            GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+            GLU.gluLookAt(gl, eyeX, eyeY, eyeZ,
+                    centerX, centerY, centerZ,
+                    upX, upY, upZ);
 
-            if (landscape) {
-//           if (LANDSCAPE_LEFT)
-                gl.glTranslatef(-80, 80, 0);
-//            else
 // TODO FIX ME
-            }
+//            if (landscape) {
+//           if (LANDSCAPE_LEFT)
+//                gl.glTranslatef(-80, 80, 0);
+//            else
+//            }
         }
     }
 
