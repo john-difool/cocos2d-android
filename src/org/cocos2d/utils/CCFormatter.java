@@ -1,7 +1,5 @@
 package org.cocos2d.utils;
 
-import java.util.Locale;
-
 public class CCFormatter {
     private StringBuilder sb;
     private java.util.Formatter formatter;
