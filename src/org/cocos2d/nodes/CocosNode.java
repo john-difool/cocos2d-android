@@ -214,10 +214,10 @@ public class CocosNode {
         this.parent = parent;
     }
 
-    private int tag;
+    private int tag_;
 
     public int getTag() {
-        return tag;
+        return tag_;
     }
 
     private float vertexZ_;
@@ -230,14 +230,14 @@ public class CocosNode {
         vertexZ_ = z;
     }
 
-    private int zOrder;
+    private int zOrder_;
 
     public int getZOrder() {
-        return zOrder;
+        return zOrder_;
     }
 
     public void setZOrder(int z) {
-        zOrder = z;
+        zOrder_ = z;
     }
 
     protected ArrayList<CocosNode> children;
@@ -258,7 +258,11 @@ public class CocosNode {
     }
 
 
-    private boolean isRunning;
+    private boolean isRunning_;
+
+    public boolean isRunning() {
+        return isRunning_;
+    }
 
     private HashMap<String, Scheduler.Timer> scheduledSelectors;
 
@@ -268,7 +272,7 @@ public class CocosNode {
     }
 
     protected CocosNode() {
-        isRunning = false;
+        isRunning_ = false;
 
         rotation_ = 0.0f;
         scaleX_ = 1.0f;
@@ -291,9 +295,9 @@ public class CocosNode {
 
         visible_ = true;
 
-        tag = INVALID_TAG;
+        tag_ = INVALID_TAG;
 
-        zOrder = 0;
+        zOrder_ = 0;
 
         camera_ = null;
 
@@ -313,9 +317,9 @@ public class CocosNode {
             childrenAlloc();
 
         insertChild(child, z);
-        child.tag = tag;
+        child.tag_ = tag;
         child.setParent(this);
-        if (isRunning) {
+        if (isRunning_) {
             child.onEnter();
         }
         return this;
@@ -324,13 +328,13 @@ public class CocosNode {
     public CocosNode addChild(CocosNode child, int z) {
         assert child != null;
 
-        return addChild(child, z, child.tag);
+        return addChild(child, z, child.tag_);
     }
 
     public CocosNode addChild(CocosNode child) {
         assert child != null;
 
-        return addChild(child, child.zOrder, child.tag);
+        return addChild(child, child.zOrder_, child.tag_);
     }
 
     public void removeChild(CocosNode child, boolean cleanup) {
@@ -354,7 +358,7 @@ public class CocosNode {
     public void removeAllChildren(boolean cleanup) {
         for (int i = 0; i < children.size(); i++) {
             CocosNode child = children.get(i);
-            if (isRunning)
+            if (isRunning_)
                 child.onExit();
 
             if (cleanup)
@@ -366,11 +370,11 @@ public class CocosNode {
     }
 
     public CocosNode getChild(int tag) {
-        assert tag != INVALID_TAG : "Invalid tag";
+        assert tag != INVALID_TAG : "Invalid tag_";
 
         for (int i = 0; i < children.size(); i++) {
             CocosNode child = children.get(i);
-            if (child.tag == tag) {
+            if (child.tag_ == tag) {
                 return child;
             }
         }
@@ -389,7 +393,7 @@ public class CocosNode {
     }
 
     private void detachChild(CocosNode child, boolean doCleanup) {
-        if (isRunning)
+        if (isRunning_)
             child.onExit();
 
         if (doCleanup)
@@ -426,7 +430,7 @@ public class CocosNode {
         if (children != null)
             for (int i = 0; i < children.size(); i++) {
                 CocosNode child = children.get(i);
-                if (child.zOrder < 0) {
+                if (child.zOrder_ < 0) {
                     child.visit(gl);
                 } else
                     break;
@@ -438,7 +442,7 @@ public class CocosNode {
         if (children != null)
             for (int i = 0; i < children.size(); i++) {
                 CocosNode child = children.get(i);
-                if (child.zOrder >= 0) {
+                if (child.zOrder_ >= 0) {
                     child.visit(gl);
                 }
             }
@@ -452,8 +456,10 @@ public class CocosNode {
     }
 
     public void transform(GL10 gl) {
-        if (!(grid_ != null && grid_.isActive()))
+
+        if (!(grid_ != null && grid_.isActive())) {
             getCamera().locate(gl);
+        }
 
         //
         // transformations
@@ -495,7 +501,7 @@ public class CocosNode {
     public Action runAction(Action action) {
         assert action != null : "Argument must be non-null";
 
-        ActionManager.sharedManager().addAction(action, this, !isRunning);
+        ActionManager.sharedManager().addAction(action, this, !isRunning_);
         return action;
     }
 
@@ -508,12 +514,12 @@ public class CocosNode {
     }
 
     public void stopAction(int tag) {
-        assert tag != INVALID_TAG : "Invalid tag";
+        assert tag != INVALID_TAG : "Invalid tag_";
         ActionManager.sharedManager().removeAction(tag, this);
     }
 
     public Action getAction(int tag) {
-        assert tag != INVALID_TAG : "Invalid tag";
+        assert tag != INVALID_TAG : "Invalid tag_";
 
         return ActionManager.sharedManager().getAction(tag, this);
     }
@@ -540,7 +546,7 @@ public class CocosNode {
 
         Scheduler.Timer timer = new Scheduler.Timer(this, selector, interval);
 
-        if (isRunning)
+        if (isRunning_)
             Scheduler.sharedScheduler().schedule(timer);
 
         scheduledSelectors.put(key, timer);
@@ -563,7 +569,7 @@ public class CocosNode {
         }
 
         scheduledSelectors.remove(key);
-        if (isRunning)
+        if (isRunning_)
             Scheduler.sharedScheduler().unschedule(timer);
     }
 
@@ -771,7 +777,7 @@ public class CocosNode {
 
     @Override
     public String toString() {
-        return "<instance of " + this.getClass() + "|Tag = " + tag + ">";
+        return "<instance of " + this.getClass() + "| Tag = " + tag_ + ">";
     }
 
     public float scale() {
@@ -796,13 +802,22 @@ public class CocosNode {
                 child.onEnter();
             }
         activateTimers();
-        isRunning = true;
+        isRunning_ = true;
+    }
+
+    public void onEnterTransitionDidFinish() {
+
+        if (children != null)
+            for (int i = 0; i < children.size(); i++) {
+                CocosNode child = children.get(i);
+                child.onEnterTransitionDidFinish();
+            }
     }
 
     public void onExit() {
 
         deactivateTimers();
-        isRunning = false;
+        isRunning_ = false;
 
         if (children != null)
             for (int i = 0; i < children.size(); i++) {
