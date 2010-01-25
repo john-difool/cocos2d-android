@@ -5,20 +5,22 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class TGA {
+    private static final String LOG_TAG = TGA.class.getSimpleName();
+
 
     public static class ImageTGA {
         TGAError status;
-        byte type, pixelDepth;
+        int type, pixelDepth;
 
         /**
          * map width
          */
-        public short width;
+        public int width;
 
         /**
          * map height
          */
-        public short height;
+        public int height;
 
         /**
          * raw data
@@ -55,10 +57,10 @@ public class TGA {
         f.read();
         f.read();
 
-        info.width = (short) (f.read() << 8 | (byte) f.read());
-        info.height = (short) (f.read() << 8 | (byte) f.read());
+        info.width = (f.read() & 0xff) | ((f.read() & 0xff) << 8);
+        info.height = (f.read() & 0xff) | ((f.read() & 0xff) << 8);
 
-        info.pixelDepth = (byte) f.read();
+        info.pixelDepth = f.read() & 0xff;
 
 
         int garbage = f.read();
@@ -66,6 +68,7 @@ public class TGA {
         info.flipped = 0;
 
         if ((garbage & 0x20) != 0) info.flipped = 1;
+
     }
 
 
@@ -210,6 +213,7 @@ public class TGA {
         mode = info.pixelDepth / 8;
         // total is the number of unsigned chars to read
         total = info.height * info.width * mode;
+        
         // allocate memory for image pixels
         info.imageData = new byte[total];
 
