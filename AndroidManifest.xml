@@ -29,6 +29,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".tests.ParticleTest"
+                  android:debuggable="true"
+                  android:launchMode="singleInstance"
+                  android:label="@string/activity_particletest">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.TEST"/>
+            </intent-filter>
+        </activity>
+
         <activity android:name=".tests.MenuTest"
                   android:debuggable="true"
                   android:launchMode="singleInstance"
