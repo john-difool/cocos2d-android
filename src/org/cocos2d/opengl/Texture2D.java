@@ -127,7 +127,6 @@ public class Texture2D {
                     image.hasAlpha() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
             Canvas canvas = new Canvas(bitmap);
             canvas.drawBitmap(image, 0, 0, null);
-            init(bitmap, imageSize);
             image.recycle();
             image = bitmap;
         }
@@ -253,7 +252,6 @@ public class Texture2D {
             gl.glGenTextures(1, textures, 0);
 
             _name = textures[0];
-
             gl.glBindTexture(GL_TEXTURE_2D, _name);
 
             applyTexParameters(gl);
@@ -331,6 +329,7 @@ public class Texture2D {
     }
 
     public void applyTexParameters(GL10 gl) {
+        gl.glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _texParams.minFilter );
         gl.glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _texParams.magFilter);
         gl.glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _texParams.wrapS);
         gl.glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _texParams.wrapT);
