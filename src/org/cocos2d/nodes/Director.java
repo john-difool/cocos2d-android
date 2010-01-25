@@ -3,12 +3,13 @@ package org.cocos2d.nodes;
 import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
-import android.opengl.GLU;
 import android.view.View;
 import android.view.WindowManager;
+import android.util.Log;
 import org.cocos2d.actions.ActionManager;
 import org.cocos2d.actions.Scheduler;
 import org.cocos2d.opengl.Texture2D;
+import org.cocos2d.opengl.GLU;
 import org.cocos2d.types.CCPoint;
 import org.cocos2d.types.CCRect;
 import org.cocos2d.types.CCSize;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 
 public class Director implements GLSurfaceView.Renderer {
+    private static final String LOG_TAG = Director.class.getSimpleName();
+
     public static Activity me = null;
 
     public Activity getActivity() {
@@ -41,6 +44,34 @@ public class Director implements GLSurfaceView.Renderer {
     // uncomment this line to use the old method that updated
     private static final boolean FAST_FPS_DISPLAY = true;
 
+    /** Possible OpenGL projections used by director */
+
+    // sets a 2D projection (orthogonal projection)
+    public static final int CCDirectorProjection2D = 1;
+
+    // sets a 3D projection with a fovy=60, znear=0.5f and zfar=1500.
+    public static final int CCDirectorProjection3D = 2;
+
+    // it does nothing. But if you are using a custom projection set it this value.
+    public static final int CCDirectorProjectionCustom = 3;
+
+    // Detault projection is 2D projection
+    // TODO Change to 3D
+    public static final int CCDirectorProjectionDefault = CCDirectorProjection2D;
+
+    private int projection_;
+
+
+    /** Possible device orientations */
+
+	// Device oriented vertically, home button on the bottom
+	public static final int CCDeviceOrientationPortrait = 1;
+	/// Device oriented vertically, home button on the top
+    public static final int CCDeviceOrientationPortraitUpsideDown = 2;
+	/// Device oriented horizontally, home button on the right
+    public static final int CCDeviceOrientationLandscapeLeft = 3;
+	/// Device oriented horizontally, home button on the left
+    public static final int CCDeviceOrientationLandscapeRight = 4;
 
     // internal timer
     private Timer animationTimer;
@@ -48,8 +79,8 @@ public class Director implements GLSurfaceView.Renderer {
 
     private int pixelFormat_;
 
-    /* landscape mode ? */
-    private boolean landscape;
+    /* orientation */
+    int	deviceOrientation_;
 
     /* display FPS ? */
     private int frames;
@@ -154,7 +185,7 @@ public class Director implements GLSurfaceView.Renderer {
             scenesStack_ = new ArrayList<Scene>(10);
 
             // landscape
-            landscape = false;
+            deviceOrientation_ = CCDeviceOrientationPortrait;
 
             // FPS
             displayFPS = false;
@@ -178,8 +209,8 @@ public class Director implements GLSurfaceView.Renderer {
         gl.glDisable(GL_LIGHTING);
 
         gl.glShadeModel(GL_FLAT);
-
-        setTexture2D(gl, true);
+//
+//        setTexture2D(gl, true);
 
         // set other opengl default values
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1f);
@@ -242,10 +273,6 @@ public class Director implements GLSurfaceView.Renderer {
 
         applyLandscape(gl);
 
-        /*
-         * Now we're ready to draw some 3D objects
-         */
-
         /* draw the scene */
         if (runningScene_ != null)
             runningScene_.visit(gl);
@@ -274,38 +301,88 @@ public class Director implements GLSurfaceView.Renderer {
     public void setPixelFormat(int format) {
         pixelFormat_ = format;
     }
-
+                       
     private void setDefaultProjection(GL10 gl) {
-        set2Dprojection(gl);
+        setprojection(gl, CCDirectorProjectionDefault);
+//      set2Dprojection(gl);
 //      set3Dprojection(gl);
     }
 
+    private void setprojection(GL10 gl, int projection) {
+        switch (projection) {
+            case CCDirectorProjection2D:
+                gl.glMatrixMode(GL_PROJECTION);
+                gl.glLoadIdentity();
+                gl.glOrthof(0, width_, 0, height_, -1, 1);
+
+//                gl.glTranslatef(0, height_, 0);
+//                gl.glScalef(1.0f, -1.0f, 1.0f);
+
+                gl.glMatrixMode(GL10.GL_MODELVIEW);
+                gl.glLoadIdentity();
+                break;
+
+            case CCDirectorProjection3D:
+                gl.glViewport(0, 0, width_, height_);
+                gl.glMatrixMode(GL_PROJECTION);
+                gl.glLoadIdentity();
+                GLU.gluPerspective(gl, 60, height_, 0.5f, 1500.0f);
+
+                gl.glMatrixMode(GL_MODELVIEW);
+                gl.glLoadIdentity();
+                GLU.gluLookAt(gl, width_ / 2, height_ / 2, Camera.getZEye(),
+                          width_ / 2, height_ / 2, 0, 0.0f, 1.0f, 0.0f);
+                break;
+
+            case CCDirectorProjectionCustom:
+                // if custom, ignore it.
+                // The user is responsible for setting the correct projection
+                break;
+
+            default:
+                Log.w(LOG_TAG, "cocos2d: Director: Unrecognized projection");
+                break;
+        }
+
+        projection_ = projection;
+
+    }
+
+    public int getProjection() {
+        return projection_;
+    }
+
     private void set2Dprojection(GL10 gl) {
-        gl.glMatrixMode(GL_PROJECTION);
-        GLU.gluOrtho2D(gl, 0, width_, height_, 0);
-        gl.glTranslatef(0, height_, 0);
-        gl.glScalef(1.0f, -1.0f, 1.0f);
-        gl.glMatrixMode(GL10.GL_MODELVIEW);
-        gl.glLoadIdentity();
+        setprojection(gl, CCDirectorProjection2D);
+
+//        gl.glMatrixMode(GL_PROJECTION);
+//        gl.glLoadIdentity();
+//        GLU.gluOrtho2D(gl, 0, width_, height_, 0);
+//        gl.glTranslatef(0, height_, 0);
+//        gl.glScalef(1.0f, -1.0f, 1.0f);
+//        gl.glMatrixMode(GL10.GL_MODELVIEW);
+//        gl.glLoadIdentity();
     }
 
     // set a 3d projection matrix
     private void set3Dprojection(GL10 gl) {
-        gl.glMatrixMode(GL_PROJECTION);
-        gl.glLoadIdentity();
-        GLU.gluPerspective(gl, 60, width_ / height_, 0.5f, 1500.0f);
+        setprojection(gl, CCDirectorProjection3D);
 
-        gl.glMatrixMode(GL_MODELVIEW);
-        gl.glLoadIdentity();
-        GLU.gluLookAt(gl, width_ / 2, height_ / 2, Camera.getZEye(),
-                width_ / 2, height_ / 2, 0, 0.0f, 1.0f, 0.0f);
+//        gl.glMatrixMode(GL_PROJECTION);
+//        gl.glLoadIdentity();
+//        GLU.gluPerspective(gl, 60, width_ / height_, 0.5f, 1500.0f);
+//
+//        gl.glMatrixMode(GL_MODELVIEW);
+//        gl.glLoadIdentity();
+//        GLU.gluLookAt(gl, width_ / 2, height_ / 2, Camera.getZEye(),
+//                width_ / 2, height_ / 2, 0, 0.0f, 1.0f, 0.0f);
     }
 
     public CCSize winSize() {
-        CCSize s = displaySize();
-        if (landscape) {
+        CCSize s = CCSize.make(width_, height_);
+        if( deviceOrientation_ == CCDeviceOrientationLandscapeLeft || deviceOrientation_ == CCDeviceOrientationLandscapeRight ) {
             // swap x,y in landscape mode
-            s.width = height_;
+            s.width = width_;
             s.height = width_;
         }
         return s;
@@ -315,29 +392,61 @@ public class Director implements GLSurfaceView.Renderer {
         return CCSize.make(width_, height_);
     }
 
-    public boolean landscape() {
-        return landscape;
+    public boolean getLandscape() {
+        return deviceOrientation_ == CCDeviceOrientationLandscapeLeft;
     }
 
     public void setLandscape(boolean on) {
-        if (on != landscape) {
-            landscape = on;
+        if ( on )
+            setDeviceOrientation(CCDeviceOrientationLandscapeLeft);
+        else
+            setDeviceOrientation(CCDeviceOrientationPortrait);
+    }
+
+    public void setDeviceOrientation(int orientation) {
+        if( deviceOrientation_ != orientation ) {
+            deviceOrientation_ = orientation;
+            switch( deviceOrientation_) {
+                case CCDeviceOrientationPortrait:
+                    break;
+                case CCDeviceOrientationPortraitUpsideDown:
+                    break;
+                case CCDeviceOrientationLandscapeLeft:
+                    break;
+                case CCDeviceOrientationLandscapeRight:
+                    break;
+                default:
+                    Log.w(LOG_TAG, "Director: Unknown device orientation");
+                    break;
+            }
         }
     }
 
-    private void applyLandscape(GL10 gl) {
-        if (landscape) {
-            gl.glTranslatef(160, 240, 0);
 
-            if (LANDSCAPE_LEFT) {
-                gl.glRotatef(-90, 0, 0, 1);
-                gl.glTranslatef(-240, -160, 0);
-            } else {
-                // rotate left
-                gl.glRotatef(90, 0, 0, 1);
-                gl.glTranslatef(-240, -160, 0);
-            }
+    private void applyLandscape(GL10 gl) {
+
+        switch ( deviceOrientation_ ) {
+            case CCDeviceOrientationPortrait:
+                // nothing
+                break;
+            case CCDeviceOrientationPortraitUpsideDown:
+                // upside down
+                gl.glTranslatef(160,240,0);
+                gl.glRotatef(180,0,0,1);
+                gl.glTranslatef(-160,-240,0);
+                break;
+            case CCDeviceOrientationLandscapeRight:
+                gl.glTranslatef(160,240,0);
+                gl.glRotatef(90,0,0,1);
+                gl.glTranslatef(-240,-160,0);
+                break;
+            case CCDeviceOrientationLandscapeLeft:
+                gl.glTranslatef(160,240,0);
+                gl.glRotatef(-90,0,0,1);
+                gl.glTranslatef(-240,-160,0);
+                break;
         }
+
     }
 
     // Director Integration with a Android view
@@ -483,19 +592,49 @@ public class Director implements GLSurfaceView.Renderer {
 
 
     public CCPoint convertCoordinate(float x, float y) {
-        int newY = (int) (height_ - y);
-        CCPoint ret = CCPoint.ccp(x, newY);
+        return convertToGL(x, y);
+    }
 
-        if (landscape) {
-            if (LANDSCAPE_LEFT) {
-                ret.x = y;
-                ret.y = x;
-            } else {
-                ret.x = newY;
-                ret.y = width_ - x;
+    public CCPoint convertToGL(float uiPointX, float uiPointY) {
+        float newY = height_ - uiPointY;
+        float newX = width_ - uiPointX;
+
+        switch ( deviceOrientation_) {
+            case CCDeviceOrientationPortrait:
+                return CCPoint.ccp(uiPointX, newY);
+
+            case CCDeviceOrientationPortraitUpsideDown:
+                return CCPoint.ccp(newX, uiPointY);
+
+            case CCDeviceOrientationLandscapeLeft:
+                return CCPoint.ccp(uiPointY, uiPointX);
+
+            case CCDeviceOrientationLandscapeRight:
+                return CCPoint.ccp(newY, newX);
             }
+        return null;
+    }
+
+    CCPoint convertToUI(float glPointX, float glPointY) {
+        CCSize winSize = winSize();
+        int oppositeX = (int)(winSize.width - glPointX);
+        int oppositeY = (int)(winSize.height - glPointY);
+        switch ( deviceOrientation_) {
+            case CCDeviceOrientationPortrait:
+                return CCPoint.ccp(glPointX, glPointY);
+
+            case CCDeviceOrientationPortraitUpsideDown:
+                return CCPoint.ccp(oppositeX, oppositeY);
+
+            case CCDeviceOrientationLandscapeLeft:
+                return CCPoint.ccp(glPointY, oppositeX);
+
+            case CCDeviceOrientationLandscapeRight:
+                return CCPoint.ccp(oppositeY, glPointX);
+
         }
-        return ret;
+
+        return null;
     }
 
     // Director Scene Management
@@ -716,6 +855,6 @@ public class Director implements GLSurfaceView.Renderer {
         }
     }
 
-    private boolean mTranslucentBackground;
+    private boolean mTranslucentBackground = false;
 
 }

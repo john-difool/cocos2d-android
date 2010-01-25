@@ -58,7 +58,7 @@ public class Camera {
 
     public void locate(GL10 gl) {
         if (dirty) {
-            boolean landscape = Director.sharedDirector().landscape();
+            boolean landscape = Director.sharedDirector().getLandscape();
 
             gl.glLoadIdentity();
 

@@ -84,7 +84,7 @@ public class DrawPrimitivesTest extends Activity {
         }
 
         public void restartCallback() {
-            boolean landscape = Director.sharedDirector().landscape();
+            boolean landscape = Director.sharedDirector().getLandscape();
             Director.sharedDirector().setLandscape(!landscape);
 
             Scene s = Scene.node();
@@ -93,7 +93,7 @@ public class DrawPrimitivesTest extends Activity {
         }
 
         public void nextCallback() {
-            boolean landscape = Director.sharedDirector().landscape();
+            boolean landscape = Director.sharedDirector().getLandscape();
             Director.sharedDirector().setLandscape(!landscape);
 
             Scene s = Scene.node();
@@ -102,7 +102,7 @@ public class DrawPrimitivesTest extends Activity {
         }
 
         public void backCallback() {
-            boolean landscape = Director.sharedDirector().landscape();
+            boolean landscape = Director.sharedDirector().getLandscape();
             Director.sharedDirector().setLandscape(!landscape);
 
             Scene s = Scene.node();

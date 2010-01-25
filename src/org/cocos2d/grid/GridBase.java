@@ -73,7 +73,7 @@ public abstract class GridBase {
 
     // This routine can be merged with Director
     public void applyLandscape(GL10 gl) {
-        boolean landscape = Director.sharedDirector().landscape();
+        boolean landscape = Director.sharedDirector().getLandscape();
 
         if (landscape) {
             gl.glTranslatef(160, 240, 0);
