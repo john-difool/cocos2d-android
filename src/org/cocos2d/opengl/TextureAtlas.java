@@ -97,10 +97,11 @@ public class TextureAtlas {
         if (!withColorArray_) {
             // default color: 255,255,255,255
             ByteBuffer cbb = ByteBuffer.allocateDirect(4 * capacity_ * 1);
-            for (int i = 0; i < CCColor4B.size * capacity_ * 1; i++) {
-                cbb.put(i, (byte) 0xff);
-            }
             colors = cbb;
+            for (int i = 0; i < CCColor4B.size * capacity_ * 1; i++) {
+                colors.put(i, (byte) 0xff);
+            }
+            colors.position(0);
 
             withColorArray_ = true;
         }
@@ -117,6 +118,7 @@ public class TextureAtlas {
             indices.put((short) (i * 6 + 4), (short) (i * 4 + 2));
             indices.put((short) (i * 6 + 3), (short) (i * 4 + 3));
         }
+        indices.position(0);
     }
 
     public void updateQuad(CCQuad2 quadT, CCQuad3 quadV, int index) {
@@ -240,18 +242,22 @@ public class TextureAtlas {
         FloatBuffer tmpTexCoords = tbb.asFloatBuffer();
         tmpTexCoords.put(textureCoordinates);
         textureCoordinates = tmpTexCoords;
+        textureCoordinates.position(0);
 
         ByteBuffer vbb = ByteBuffer.allocateDirect(CCQuad3.size * newCapacity * 4);
         vbb.order(ByteOrder.nativeOrder());
         FloatBuffer tmpVertexCoords = vbb.asFloatBuffer();
         tmpVertexCoords.put(vertexCoordinates);
         vertexCoordinates = tmpVertexCoords;
+        vertexCoordinates.position(0);
 
         ByteBuffer isb = ByteBuffer.allocateDirect(6 * newCapacity * 2);
         isb.order(ByteOrder.nativeOrder());
         ShortBuffer tmpIndices = isb.asShortBuffer();
-//        tmpIndices.put(indices);
+        tmpIndices.put(indices);
         indices = tmpIndices;
+        indices.position(0);
+
         initIndices();
 
         if (withColorArray_) {
@@ -259,6 +265,7 @@ public class TextureAtlas {
             ByteBuffer tmpColors = cbb;
             tmpColors.put(colors);
             colors = tmpColors;
+            colors.position(0);
         }
     }
 

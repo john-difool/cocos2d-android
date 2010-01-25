@@ -12,7 +12,7 @@ public class LabelAtlas extends AtlasNode implements CocosNode.CocosNodeLabel, C
     /// the first char in the charmap
     char mapStartChar;
 
-    public static LabelAtlas node(String theString, String charmapfile, int w, int h, char c) {
+    public static LabelAtlas label(String theString, String charmapfile, int w, int h, char c) {
         return new LabelAtlas(theString, charmapfile, w, h, c);
     }
 

@@ -19,6 +19,7 @@ public abstract class ParticleSystem extends CocosNode {
 
     public static class Particle {
         CCPoint pos = new CCPoint();
+        CCPoint startPos = new CCPoint();
         CCPoint dir = new CCPoint();
         float radialAccel;
         float tangentialAccel;
@@ -239,6 +240,21 @@ public abstract class ParticleSystem extends CocosNode {
 //    /** maximum particles of the system */
 //    protected int totalParticles;
 
+    public static final int kPositionTypeFree = 1;
+    public static final int kPositionTypeGrouped = 2;
+    
+    // movement type: free or grouped
+    private	int positionType_;
+
+    public int getPositionType() {
+        return positionType_;
+    }
+
+    public void setPositionType(int type) {
+        positionType_ = type;
+    }
+
+    
     /**
      * texture used to render the particles
      */
@@ -290,6 +306,9 @@ public abstract class ParticleSystem extends CocosNode {
         ByteBuffer cfb = ByteBuffer.allocateDirect(4 * 4 * totalParticles);
         cfb.order(ByteOrder.nativeOrder());
         mColors = cfb.asFloatBuffer();
+
+        // default movement type;
+        positionType_ = kPositionTypeFree;
 
         schedule("step");
 
@@ -353,6 +372,14 @@ public abstract class ParticleSystem extends CocosNode {
 
         // size
         particle.size = size + sizeVar * CCRANDOM_MINUS1_1();
+
+        // position
+        if( positionType_ == kPositionTypeFree ) {
+            particle.startPos = convertToWorldSpace(0, 0);
+        } else {
+            particle.startPos = CCPoint.make(getPositionX(), getPositionY());
+        }
+
     }
 
 

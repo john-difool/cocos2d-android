@@ -46,8 +46,7 @@ public abstract class AtlasNode extends CocosNode implements CocosNode.CocosNode
     CCColor3B color_;
     boolean opacityModifyRGB_;
 
-
-    public AtlasNode(String tile, int w, int h, int c) {
+    protected AtlasNode(String tile, int w, int h, int c) {
 
         itemWidth = w;
         itemHeight = h;

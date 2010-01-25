@@ -5,27 +5,29 @@ import org.cocos2d.types.CCPoint;
 import org.cocos2d.types.CCRect;
 
 import javax.microedition.khronos.opengles.GL10;
+import static javax.microedition.khronos.opengles.GL10.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 public class Primitives {
 
-    public static void drawPoint(GL10 gl, CCPoint point) {
+    public static void drawPoint(GL10 gl, float x, float y) {
         ByteBuffer vbb = ByteBuffer.allocateDirect(4 * 2 * 1);
         vbb.order(ByteOrder.nativeOrder());
         FloatBuffer vertices = vbb.asFloatBuffer();
 
-        vertices.put(point.x);
-        vertices.put(point.y);
+        vertices.put(x);
+        vertices.put(y);
+        
         vertices.position(0);
 
-        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, vertices);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(2, GL_FLOAT, 0, vertices);
+        gl.glEnableClientState(GL_VERTEX_ARRAY);
 
-        gl.glDrawArrays(GL10.GL_POINTS, 0, 1);
+        gl.glDrawArrays(GL_POINTS, 0, 1);
 
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL_VERTEX_ARRAY);
     }
 
     public static void drawPoints(GL10 gl, CCPoint points[], int numberOfPoints) {
@@ -39,12 +41,12 @@ public class Primitives {
         }
         vertices.position(0);
 
-        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, vertices);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(2, GL_FLOAT, 0, vertices);
+        gl.glEnableClientState(GL_VERTEX_ARRAY);
 
-        gl.glDrawArrays(GL10.GL_POINTS, 0, numberOfPoints);
+        gl.glDrawArrays(GL_POINTS, 0, numberOfPoints);
 
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL_VERTEX_ARRAY);
     }
 
 
@@ -59,12 +61,12 @@ public class Primitives {
         vertices.put(destination.y);
         vertices.position(0);
 
-        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, vertices);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(2, GL_FLOAT, 0, vertices);
+        gl.glEnableClientState(GL_VERTEX_ARRAY);
 
-        gl.glDrawArrays(GL10.GL_LINES, 0, 2);
+        gl.glDrawArrays(GL_LINES, 0, 2);
 
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL_VERTEX_ARRAY);
     }
 
     public static void drawRect(GL10 gl, CCRect rect) {
@@ -89,18 +91,18 @@ public class Primitives {
         }
         vertices.position(0);
 
-        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, vertices);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(2, GL_FLOAT, 0, vertices);
+        gl.glEnableClientState(GL_VERTEX_ARRAY);
 
         if (closePolygon)
-            gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, numberOfPoints);
+            gl.glDrawArrays(GL_LINE_LOOP, 0, numberOfPoints);
         else
-            gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, numberOfPoints);
+            gl.glDrawArrays(GL_LINE_STRIP, 0, numberOfPoints);
 
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    public static void drawCircle(GL10 gl, CCPoint center, float r, float a, int segments, boolean drawLineToCenter) {
+    public static void drawCircle(GL10 gl, float centerX, float centerY, float r, float a, int segments, boolean drawLineToCenter) {
 
         ByteBuffer vbb = ByteBuffer.allocateDirect(4 * 2 * (segments + 2));
         vbb.order(ByteOrder.nativeOrder());
@@ -115,22 +117,80 @@ public class Primitives {
 
         for (int i = 0; i <= segments; i++) {
             float rads = i * coef;
-            float j = (float) (r * FloatMath.cos(rads + a) + center.x);
-            float k = (float) (r * FloatMath.sin(rads + a) + center.y);
+            float j = (float) (r * Math.cos(rads + a) + centerX);
+            float k = (float) (r * Math.sin(rads + a) + centerY);
 
             vertices.put(j);
             vertices.put(k);
         }
-        vertices.put(center.x);
-        vertices.put(center.y);
+        vertices.put(centerX);
+        vertices.put(centerY);
+        
         vertices.position(0);
 
-        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, vertices);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(2, GL_FLOAT, 0, vertices);
+        gl.glEnableClientState(GL_VERTEX_ARRAY);
 
-        gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, segments + additionalSegment);
+        gl.glDrawArrays(GL_LINE_STRIP, 0, segments + additionalSegment);
 
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL_VERTEX_ARRAY);
     }
+    
+    public static void drawQuadBezier(GL10 gl,float originX, float originY, float controlX, float controlY, float destinationX, float destinationY, int segments)
+    {
+        ByteBuffer vbb = ByteBuffer.allocateDirect(4 * 2 * (segments + 1));
+        vbb.order(ByteOrder.nativeOrder());
+        FloatBuffer vertices = vbb.asFloatBuffer();
+        
+        float t = 0.0f;
+        for(int i = 0; i < segments; i++)
+        {
+            float x = (float)Math.pow(1 - t, 2) * originX + 2.0f * (1 - t) * t * controlX + t * t * destinationX;
+            float y = (float)Math.pow(1 - t, 2) * originY + 2.0f * (1 - t) * t * controlY + t * t * destinationY;
+            vertices.put(x);
+            vertices.put(y);
+            t += 1.0f / segments;
+        }
+        vertices.put(destinationX);
+        vertices.put(destinationY);
+
+        vertices.position(0);
+
+        gl.glVertexPointer(2, GL_FLOAT, 0, vertices);
+        gl.glEnableClientState(GL_VERTEX_ARRAY);
+        
+        gl.glDrawArrays(GL_LINE_STRIP, 0, segments + 1);
+        
+        gl.glDisableClientState(GL_VERTEX_ARRAY);
+    }
+    
+    public static void drawCubicBezier(GL10 gl, float originX, float originY, float control1X, float control1Y, float control2X, float control2Y, float destinationX, float destinationY, int segments)
+    {
+        ByteBuffer vbb = ByteBuffer.allocateDirect(4 * 2 * (segments + 1));
+        vbb.order(ByteOrder.nativeOrder());
+        FloatBuffer vertices = vbb.asFloatBuffer();
+
+        float t = 0;
+        for(int i = 0; i < segments; i++)
+        {
+            float x = (float)Math.pow(1 - t, 3) * originX + 3.0f * (float)Math.pow(1 - t, 2) * t * control1X + 3.0f * (1 - t) * t * t * control2X + t * t * t * destinationX;
+            float y = (float)Math.pow(1 - t, 3) * originY + 3.0f * (float)Math.pow(1 - t, 2) * t * control1Y + 3.0f * (1 - t) * t * t * control2Y + t * t * t * destinationY;
+            vertices.put(x);
+            vertices.put(y);
+            t += 1.0f / segments;
+        }
+        vertices.put(destinationX);
+        vertices.put(destinationY);
+
+        vertices.position(0);
+
+        gl.glVertexPointer(2, GL_FLOAT, 0, vertices);
+        gl.glEnableClientState(GL_VERTEX_ARRAY);
+        
+        gl.glDrawArrays(GL_LINE_STRIP, 0, segments + 1);
+        
+        gl.glDisableClientState(GL_VERTEX_ARRAY);  
+    }
+    
 
 }

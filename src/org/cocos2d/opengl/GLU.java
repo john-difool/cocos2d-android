@@ -24,6 +24,8 @@ public class GLU {
         fixedM.put(3+1*4, 0.0f);
         fixedM.put(3+2*4, 0.0f);
         fixedM.put(3+3*4, 1.0f);
+
+        fixedM.position(0);
     }
 
     public static void gluPerspective(GL10 gl, float fovy, float aspect, float zNear, float zFar)
@@ -112,6 +114,8 @@ public class GLU {
 //      fixedM.put(3+1*4, 0.0f);
 //      fixedM.put(3+2*4, 0.0f);
 //      fixedM.put(3+3*4, 1.0f);
+
+        fixedM.position(0);
 
         gl.glMultMatrixf(fixedM);
 

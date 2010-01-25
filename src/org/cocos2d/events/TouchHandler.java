@@ -2,7 +2,7 @@ package org.cocos2d.events;
 
 import android.view.MotionEvent;
 
-public class TouchHandler {
+public class TouchHandler implements TouchDelegate {
 
     private TouchDelegate delegate_;
 
@@ -19,9 +19,9 @@ public class TouchHandler {
         priority_ = prio;
     }
 
-    public TouchHandler(TouchDelegate aDelegate, int aPriority) {
-        delegate_ = aDelegate;
-        priority_ = aPriority;
+    public TouchHandler(TouchDelegate delegate, int priority) {
+        delegate_ = delegate;
+        priority_ = priority;
     }
 
     public boolean ccTouchesBegan(MotionEvent event)

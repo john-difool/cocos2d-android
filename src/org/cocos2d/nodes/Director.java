@@ -382,7 +382,7 @@ public class Director implements GLSurfaceView.Renderer {
         CCSize s = CCSize.make(width_, height_);
         if( deviceOrientation_ == CCDeviceOrientationLandscapeLeft || deviceOrientation_ == CCDeviceOrientationLandscapeRight ) {
             // swap x,y in landscape mode
-            s.width = width_;
+            s.width = height_;
             s.height = width_;
         }
         return s;

@@ -69,6 +69,7 @@ public class Grid3D extends GridBase {
                 vertices.put(idx * 2 + 1, -1);
             }
         }
+        vertices.position(0);
 
         for (x = 0; x < getGridWidth(); x++) {
             for (y = 0; y < getGridHeight(); y++) {
@@ -109,8 +110,11 @@ public class Grid3D extends GridBase {
                 }
             }
         }
+        vertices.position(0);
+        texCoordinates.position(0);
 
         originalVertices.put(vertices);
+        originalVertices.position(0);
     }
 
     public CCVertex3D vertex(CCGridSize pos) {

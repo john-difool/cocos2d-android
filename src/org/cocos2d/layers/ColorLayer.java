@@ -40,8 +40,10 @@ public class ColorLayer extends Layer implements CocosNode.CocosNodeRGBA, CocosN
         color_ = new CCColor3B(color.r, color.g, color.b);
         opacity_ = color.a;
 
-        for (int i = 0; i < (4 * 2); i++)
+        for (int i = 0; i < (4 * 2); i++) {
             squareVertices_.put(i, 0);
+        }
+        squareVertices_.position(0);
 
         updateColor();
         setContentSize(w, h);
@@ -49,14 +51,20 @@ public class ColorLayer extends Layer implements CocosNode.CocosNodeRGBA, CocosN
 
     private void updateColor() {
         for (int i = 0; i < squareColors_.limit(); i++) {
-            if (i % 4 == 0)
-                squareColors_.put(i, (byte) color_.r);
-            else if (i % 4 == 1)
-                squareColors_.put(i, (byte) color_.g);
-            else if (i % 4 == 2)
-                squareColors_.put(i, (byte) color_.b);
-            else
-                squareColors_.put(i, (byte) opacity_);
+            switch (i % 4) {
+                case 0:
+                    squareColors_.put(i, (byte) color_.r);
+                    break;
+                case 1:
+                    squareColors_.put(i, (byte) color_.g);
+                    break;
+                case 2:
+                    squareColors_.put(i, (byte) color_.b);
+                    break;
+                default:
+                    squareColors_.put(i, (byte) opacity_);
+            }
+            squareColors_.position(0);
         }
     }
 

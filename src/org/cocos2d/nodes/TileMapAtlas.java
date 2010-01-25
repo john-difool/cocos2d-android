@@ -26,22 +26,8 @@ public class TileMapAtlas extends AtlasNode {
     /// x,y to altas dicctionary
     private HashMap<String, Integer> posToAtlasIndex;
 
-    /// size of the map in pixels
-    private CCSize contentSize_;
-
     /// numbers of tiles to render
     private int itemsToRender;
-
-    /**
-     * content size of the TileMap
-     */
-    public float getWidth() {
-        return contentSize_.width;
-    }
-
-    public float getHeight() {
-        return contentSize_.height;
-    }
 
     /**
      * TileMap info
@@ -50,10 +36,14 @@ public class TileMapAtlas extends AtlasNode {
         return tgaInfo;
     }
 
+
+    public static TileMapAtlas tilemap(String tile, String map, int w, int h) {
+        return new TileMapAtlas(tile, map, w, h);
+    }
     /**
      * initializes the TileMap with a tile file (atlas) with a map file and the width and height of each tile
      */
-    public TileMapAtlas(String tile, String map, int w, int h) {
+    protected TileMapAtlas(String tile, String map, int w, int h) {
         super(tile, w, h, 0);
 
         loadTGAfile(map);
@@ -67,8 +57,7 @@ public class TileMapAtlas extends AtlasNode {
 
         updateAtlasValues();
 
-        contentSize_.width = tgaInfo.width * itemWidth;
-        contentSize_.height = tgaInfo.height * itemHeight;
+        setContentSize(tgaInfo.width * itemWidth, tgaInfo.height * itemHeight);
 
     }
 

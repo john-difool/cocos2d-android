@@ -372,12 +372,14 @@ public class CocosNode {
     public CocosNode getChild(int tag) {
         assert tag != INVALID_TAG : "Invalid tag_";
 
-        for (int i = 0; i < children.size(); i++) {
-            CocosNode child = children.get(i);
-            if (child.tag_ == tag) {
-                return child;
+        if (children != null)
+            for (int i = 0; i < children.size(); i++) {
+                CocosNode child = children.get(i);
+                if (child.tag_ == tag) {
+                    return child;
+                }
             }
-        }
+
         return null;
     }
 

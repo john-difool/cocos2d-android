@@ -16,7 +16,7 @@ public class Label extends TextureNode implements CocosNode.CocosNodeLabel, Coco
     private String _fontName;
     private float _fontSize;
 
-    public static Label node(String string, String fontname, float fontsize) {
+    public static Label label(String string, String fontname, float fontsize) {
         return new Label(string, 0, 0, TextAlignment.CENTER, fontname, fontsize);
     }
 

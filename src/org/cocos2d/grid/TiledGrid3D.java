@@ -102,21 +102,25 @@ public abstract class TiledGrid3D extends GridBase {
         }
 
         originalVertices.put(vertices);
+        originalVertices.position(0);
     }
 
     public void setTile(CCGridSize pos, CCQuad3 coords) {
         int idx = (gridSize.y * pos.x + pos.y) * CCQuad3.size;
         float[] vertArray = coords.ccQuad3();
-        for (int i = 0; i < CCQuad3.size; i++)
+        for (int i = 0; i < CCQuad3.size; i++) {
             vertices.put(idx + i, vertArray[i]);
+        }
+        vertices.position(0);
     }
 
     public CCQuad3 originalTile(CCGridSize pos) {
         int idx = (gridSize.y * pos.x + pos.y) * CCQuad3.size;
 
         float[] vertArray = new float[CCQuad3.size];
-        for (int i = 0; i < CCQuad3.size; i++)
+        for (int i = 0; i < CCQuad3.size; i++) {
             vertArray[i] = originalVertices.get(idx + i);
+        }
 
         return new CCQuad3(vertArray);
     }
@@ -125,8 +129,9 @@ public abstract class TiledGrid3D extends GridBase {
         int idx = (gridSize.y * pos.x + pos.y) * CCQuad3.size;
 
         float[] vertArray = new float[CCQuad3.size];
-        for (int i = 0; i < CCQuad3.size; i++)
+        for (int i = 0; i < CCQuad3.size; i++) {
             vertArray[i] = vertices.get(idx + i);
+        }
 
         return new CCQuad3(vertArray);
     }

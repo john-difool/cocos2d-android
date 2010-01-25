@@ -107,32 +107,32 @@ public class CCAffineTransform /*implements Cloneable, Serializable*/ {
     /**
      * The values of transformation matrix.
      */
-    double m00;
+    public double m00;
 
     /**
      * The m10.
      */
-    double m10;
+    public double m10;
 
     /**
      * The m01.
      */
-    double m01;
+    public double m01;
 
     /**
      * The m11.
      */
-    double m11;
+    public double m11;
 
     /**
      * The m02.
      */
-    double m02;
+    public double m02;
 
     /**
      * The m12.
      */
-    double m12;
+    public double m12;
 
     /**
      * The transformation <code>type</code>.
