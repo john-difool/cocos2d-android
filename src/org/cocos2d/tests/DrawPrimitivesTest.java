@@ -35,6 +35,52 @@ public class DrawPrimitivesTest extends Activity {
         setContentView(mGLSurfaceView);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // attach the OpenGL view to a window
+        Director.sharedDirector().attachInView(mGLSurfaceView);
+
+        // set landscape mode
+        Director.sharedDirector().setLandscape(false);
+
+        // show FPS
+        Director.sharedDirector().setDisplayFPS(true);
+
+        // frames per second
+        Director.sharedDirector().setAnimationInterval(1.0f / 60);
+
+        Scene scene = Scene.node();
+        scene.addChild(nextAction());
+        scene.runAction(RotateBy.action(4, -360));
+
+        // Make the Scene active
+        Director.sharedDirector().runWithScene(scene);
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        Director.sharedDirector().pause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Director.sharedDirector().resume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        TextureManager.sharedTextureManager().removeAllTextures();
+    }
+
     static int sceneIdx = -1;
     static Class transitions[] = {
             Test1.class,
@@ -149,6 +195,7 @@ public class DrawPrimitivesTest extends Activity {
             // color: 255,255,255,255 (white, non-transparent)
             // Anti-Aliased
             gl.glEnable(GL10.GL_LINE_SMOOTH);
+            
             Primitives.drawLine(gl, CCPoint.ccp(0, 0), CCPoint.ccp(s.width, s.height));
 
             // line: color, width, aliased
@@ -168,7 +215,7 @@ public class DrawPrimitivesTest extends Activity {
             // draw big point in the center
             gl.glPointSize(64);
             gl.glColor4f(0.0f, 0.0f, 1.0f, 0.5f);
-            Primitives.drawPoint(gl, CCPoint.ccp(s.width / 2, s.height / 2));
+            Primitives.drawPoint(gl, s.width / 2, s.height / 2);
 
             // draw 4 small points
             CCPoint points[] = {CCPoint.ccp(60, 60), CCPoint.ccp(70, 70), CCPoint.ccp(60, 70), CCPoint.ccp(70, 60)};
@@ -179,12 +226,12 @@ public class DrawPrimitivesTest extends Activity {
             // draw a green circle with 10 segments
             gl.glLineWidth(16);
             gl.glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-            Primitives.drawCircle(gl, CCPoint.ccp(s.width / 2, s.height / 2), 100, 0, 10, false);
+            Primitives.drawCircle(gl, s.width / 2, s.height / 2, 100, 0, 10, false);
 
             // draw a green circle with 50 segments with line to center
             gl.glLineWidth(2);
             gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-            Primitives.drawCircle(gl, CCPoint.ccp(s.width / 2, s.height / 2), 50, CCMacros.CC_DEGREES_TO_RADIANS(90), 50, true);
+            Primitives.drawCircle(gl, s.width / 2, s.height / 2, 50, CCMacros.CC_DEGREES_TO_RADIANS(90), 50, true);
 
             // open yellow poly
             gl.glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
@@ -192,11 +239,18 @@ public class DrawPrimitivesTest extends Activity {
             CCPoint vertices[] = {CCPoint.ccp(0, 0), CCPoint.ccp(50, 50), CCPoint.ccp(100, 50), CCPoint.ccp(100, 100), CCPoint.ccp(50, 100)};
             Primitives.drawPoly(gl, vertices, 5, false);
 
-            // closed purble poly
+            // closed purple poly
             gl.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
             gl.glLineWidth(2);
             CCPoint vertices2[] = {CCPoint.ccp(30, 130), CCPoint.ccp(30, 230), CCPoint.ccp(50, 200)};
             Primitives.drawPoly(gl, vertices2, 3, true);
+
+            // draw quad bezier path
+            Primitives.drawQuadBezier(gl, 0,s.height, s.width/2,s.height/2, s.width, s.height, 50);
+
+            // draw cubic bezier path
+            Primitives.drawCubicBezier(gl, s.width/2, s.height/2, s.width/2+30, s.height/2+50,
+                    s.width/2+60, s.height/2-50, s.width, s.height/2,100);
 
 
             // restore original values
@@ -210,49 +264,4 @@ public class DrawPrimitivesTest extends Activity {
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // attach the OpenGL view to a window
-        Director.sharedDirector().attachInView(mGLSurfaceView);
-
-        // set landscape mode
-        Director.sharedDirector().setLandscape(false);
-
-        // show FPS
-        Director.sharedDirector().setDisplayFPS(true);
-
-        // frames per second
-        Director.sharedDirector().setAnimationInterval(1.0f / 60);
-
-        Scene scene = Scene.node();
-        scene.addChild(nextAction());
-        scene.runAction(RotateBy.action(4, -360));
-
-        // Make the Scene active
-        Director.sharedDirector().runWithScene(scene);
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        Director.sharedDirector().pause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Director.sharedDirector().resume();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        TextureManager.sharedTextureManager().removeAllTextures();
-    }
 }

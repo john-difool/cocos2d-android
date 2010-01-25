@@ -234,7 +234,7 @@ public class TransitionsTest extends Activity {
             bg1.setAnchorPoint(0, 0);
             addChild(bg1, -1);
 
-            Label label = Label.node("SCENE 1", "DroidSans", 64);
+            Label label = Label.label("SCENE 1", "DroidSans", 64);
 
             label.setPosition(x / 2, y / 2);
             addChild(label);
@@ -283,7 +283,7 @@ public class TransitionsTest extends Activity {
             bg2.setAnchorPoint(0, 0);
             addChild(bg2, -1);
 
-            Label label = Label.node("SCENE 2", "DroidSans", 64);
+            Label label = Label.label("SCENE 2", "DroidSans", 64);
 
             label.setPosition(x / 2, y / 2);
             addChild(label);

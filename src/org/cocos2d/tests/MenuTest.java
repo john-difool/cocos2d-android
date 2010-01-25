@@ -119,7 +119,7 @@ public class MenuTest extends Activity {
             MenuItem item2 = MenuItemImage.item("SendScoreButton.png", "SendScoreButtonPressed.png", this, "menuCallback2");
 
             // Label Item (LabelAtlas)
-            LabelAtlas labelAtlas = LabelAtlas.node("0123456789", "fps_images.png", 16, 24, '.');
+            LabelAtlas labelAtlas = LabelAtlas.label("0123456789", "fps_images.png", 16, 24, '.');
             MenuItemLabel item3 = MenuItemLabel.item(labelAtlas, this, "menuCallbackDisabled");
             item3.setDisabledColor(new CCColor3B(32, 32, 64));
             item3.setColor(new CCColor3B(200, 200, 255));

@@ -138,7 +138,7 @@ public class AtlasTest extends Activity {
 
             CCSize s = Director.sharedDirector().winSize();
 
-            Label label = Label.node(title(), "DroidSans", 32);
+            Label label = Label.label(title(), "DroidSans", 32);
             addChild(label, 1);
             label.setPosition(s.width / 2, s.height / 2);
 
@@ -228,7 +228,7 @@ public class AtlasTest extends Activity {
         float time;
 
         public Atlas2() {
-            label = LabelAtlas.node("123 Test", "tuffy_bold_italic-charmap.png", 48, 64, ' ');
+            label = LabelAtlas.label("123 Test", "tuffy_bold_italic-charmap.png", 48, 64, ' ');
 
             addChild(label);
 
@@ -258,7 +258,7 @@ public class AtlasTest extends Activity {
             Texture2D.saveTexParameters();
             Texture2D.setAliasTexParameters();
 
-            TileMapAtlas tilemap = new TileMapAtlas("tiles.png", "levelmap.tga", 16, 16);
+            TileMapAtlas tilemap = TileMapAtlas.tilemap("tiles.png", "levelmap.tga", 16, 16);
 
             Texture2D.restoreTexParameters();
 
@@ -294,7 +294,7 @@ public class AtlasTest extends Activity {
             Texture2D.saveTexParameters();
             Texture2D.setAliasTexParameters();
 
-            TileMapAtlas tilemap = new TileMapAtlas("tiles.png", "levelmap.tga", 16, 16);
+            TileMapAtlas tilemap = TileMapAtlas.tilemap("tiles.png", "levelmap.tga", 16, 16);
 
             Texture2D.restoreTexParameters();
 

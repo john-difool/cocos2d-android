@@ -131,7 +131,7 @@ public class AtlasSpriteTest extends Activity {
         public AtlasSpriteDemo() {
             CCSize s = Director.sharedDirector().winSize();
 
-            Label label = Label.node(title(), "DroidSans", 18);
+            Label label = Label.label(title(), "DroidSans", 18);
             label.setPosition(s.width / 2, s.height - 30);
             addChild(label);
 

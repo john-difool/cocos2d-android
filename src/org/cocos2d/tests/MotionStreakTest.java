@@ -121,7 +121,7 @@ public class MotionStreakTest extends Activity {
         public TestDemo() {
             CCSize s = Director.sharedDirector().winSize();
 
-            Label label = Label.node(title(), "DroidSans", 24);
+            Label label = Label.label(title(), "DroidSans", 24);
             addChild(label, kTagLabel);
             label.setPosition(s.width / 2, s.height / 2);
 

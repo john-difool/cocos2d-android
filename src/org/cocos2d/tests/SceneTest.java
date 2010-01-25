@@ -110,7 +110,7 @@ public class SceneTest extends Activity {
 
             isTouchEnabled_ = true;
 
-            Label label = Label.node("Touch to pop scene", "DroidSans", 32);
+            Label label = Label.label("Touch to pop scene", "DroidSans", 32);
             addChild(label);
             float width = Director.sharedDirector().winSize().width;
             float height = Director.sharedDirector().winSize().height;
