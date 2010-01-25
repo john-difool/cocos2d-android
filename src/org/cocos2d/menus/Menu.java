@@ -83,6 +83,7 @@ public class Menu extends Layer {
 
         if (state != MenuState.kMenuStateWaiting)
             return TouchDispatcher.kEventIgnored;
+
         selectedItem = itemForTouch(event);
 
         if (selectedItem != null) {
@@ -96,39 +97,51 @@ public class Menu extends Layer {
 
     @Override
     public boolean ccTouchesEnded(MotionEvent event) {
-        if (selectedItem != null) {
-            selectedItem.unselected();
-            selectedItem.activate();
+        if (state == MenuState.kMenuStateTrackingTouch) {
+            if (selectedItem != null) {
+                selectedItem.unselected();
+                selectedItem.activate();
+            }
+
+            state = MenuState.kMenuStateWaiting;
+            return TouchDispatcher.kEventHandled;
         }
 
-        state = MenuState.kMenuStateWaiting;
-        return TouchDispatcher.kEventHandled;
+        return TouchDispatcher.kEventIgnored;
     }
 
     @Override
     public boolean ccTouchesCancelled(MotionEvent event) {
-        if (selectedItem != null) {
-            selectedItem.unselected();
+        if (state == MenuState.kMenuStateTrackingTouch) {
+            if (selectedItem != null) {
+                selectedItem.unselected();
+            }
+
+            state = MenuState.kMenuStateWaiting;
+            return TouchDispatcher.kEventHandled;
         }
 
-        state = MenuState.kMenuStateWaiting;
-        return TouchDispatcher.kEventHandled;
+        return TouchDispatcher.kEventIgnored;
     }
 
     @Override
     public boolean ccTouchesMoved(MotionEvent event) {
-        MenuItem currentItem = itemForTouch(event);
+        if (state == MenuState.kMenuStateTrackingTouch) {
+            MenuItem currentItem = itemForTouch(event);
 
-        if (currentItem != selectedItem) {
-            if (selectedItem != null) {
-                selectedItem.unselected();
+            if (currentItem != selectedItem) {
+                if (selectedItem != null) {
+                    selectedItem.unselected();
+                }
+                selectedItem = currentItem;
+                if (selectedItem != null) {
+                    selectedItem.selected();
+                }
             }
-            selectedItem = currentItem;
-            if (selectedItem != null) {
-                selectedItem.selected();
-            }
+            return TouchDispatcher.kEventHandled;
         }
-        return TouchDispatcher.kEventHandled;         
+
+        return TouchDispatcher.kEventIgnored;
     }
 
 

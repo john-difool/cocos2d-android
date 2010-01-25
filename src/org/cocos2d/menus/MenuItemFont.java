@@ -26,11 +26,11 @@ public class MenuItemFont extends MenuItemLabel {
     }
 
     public static MenuItemFont item(String value) {
-        return new MenuItemFont(Label.node(value, _fontName, _fontSize), null, null);
+        return new MenuItemFont(Label.label(value, _fontName, _fontSize), null, null);
     }
 
     public static MenuItemFont item(String value, CocosNode rec, String cb) {
-        Label lbl = Label.node(value, _fontName, _fontSize);
+        Label lbl = Label.label(value, _fontName, _fontSize);
         return new MenuItemFont(lbl, rec, cb);
     }
 
