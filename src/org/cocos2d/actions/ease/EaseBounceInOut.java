@@ -4,6 +4,10 @@ import org.cocos2d.actions.interval.IntervalAction;
 
 public class EaseBounceInOut extends EaseBounce {
 
+    public static EaseBounceInOut action(IntervalAction action) {
+        return new EaseBounceInOut(action);
+    }
+
     protected EaseBounceInOut(IntervalAction action) {
         super(action);
     }

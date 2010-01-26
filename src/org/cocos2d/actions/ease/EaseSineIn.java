@@ -3,13 +3,13 @@ package org.cocos2d.actions.ease;
 import android.util.FloatMath;
 import org.cocos2d.actions.interval.IntervalAction;
 
-public class EaseSinIn extends EaseAction {
+public class EaseSineIn extends EaseAction {
 
-    public static EaseSinIn action(IntervalAction action) {
-        return new EaseSinIn(action);
+    public static EaseSineIn action(IntervalAction action) {
+        return new EaseSineIn(action);
     }
 
-    protected EaseSinIn(IntervalAction action) {
+    protected EaseSineIn(IntervalAction action) {
         super(action);
     }
 

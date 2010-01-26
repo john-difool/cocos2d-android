@@ -4,7 +4,7 @@ import org.cocos2d.actions.interval.IntervalAction;
 import org.cocos2d.nodes.CocosNode;
 
 public class Speed extends Action {
-    protected IntervalAction other;
+    protected Action other;
     protected float speed;
 
     public float getSpeed() {
@@ -15,11 +15,11 @@ public class Speed extends Action {
         this.speed = speed;
     }
 
-    public static Speed action(IntervalAction action, float r) {
+    public static Speed action(Action action, float r) {
         return new Speed(action, r);
     }
 
-    protected Speed(IntervalAction action, float r) {
+    protected Speed(Action action, float r) {
         other = action;
         speed = r;
     }
@@ -53,7 +53,7 @@ public class Speed extends Action {
     }
 
     public Speed reverse() {
-        return new Speed(other.reverse(), speed);
+        return new Speed(((FiniteTimeAction)other).reverse(), speed);
     }
 
 }
