@@ -66,7 +66,7 @@ public class TextureManager {
         textures.values().remove(tex);
     }
 
-    private static Texture2D createTextureFromFilePath(String path) {
+    public static Texture2D createTextureFromFilePath(String path) {
         try {
             Bitmap bmp = BitmapFactory.decodeStream(Director.sharedDirector().getActivity().getAssets().open(path));
             return createTextureFromBitmap(bmp);
@@ -76,7 +76,7 @@ public class TextureManager {
         }
     }
 
-    private static Texture2D createTextureFromBitmap(Bitmap bmp) {
+    public static Texture2D createTextureFromBitmap(Bitmap bmp) {
         return new Texture2D(bmp);
     }
 
