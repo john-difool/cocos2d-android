@@ -1,6 +1,5 @@
 package org.cocos2d.actions.ease;
 
-import android.util.FloatMath;
 import org.cocos2d.actions.interval.IntervalAction;
 
 public class EaseSineInOut extends EaseAction {
@@ -15,7 +14,7 @@ public class EaseSineInOut extends EaseAction {
 
     @Override
     public void update(float t) {
-        other.update(-0.5f * (FloatMath.cos((float) Math.PI * t) - 1));
+        other.update(-0.5f * ((float)Math.cos(Math.PI * t) - 1));
     }
 
     @Override

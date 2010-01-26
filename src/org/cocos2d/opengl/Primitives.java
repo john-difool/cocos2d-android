@@ -1,6 +1,5 @@
 package org.cocos2d.opengl;
 
-import android.util.FloatMath;
 import org.cocos2d.types.CCPoint;
 import org.cocos2d.types.CCRect;
 

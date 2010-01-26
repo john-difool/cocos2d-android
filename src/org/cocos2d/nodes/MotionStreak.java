@@ -1,6 +1,5 @@
 package org.cocos2d.nodes;
 
-import android.util.FloatMath;
 import org.cocos2d.opengl.Texture2D;
 import org.cocos2d.types.CCBlendFunc;
 import org.cocos2d.types.CCColor4B;
@@ -57,7 +56,7 @@ public class MotionStreak extends CocosNode /*implements CocosNodeTexture*/ {
     public void update(float delta) {
         CCPoint location = convertToWorldSpace(0, 0);
         ribbon_.setPosition(-1 * location.x, -1 * location.y);
-        float len = FloatMath.sqrt((float) Math.pow(mLastLocation.x - location.x, 2) + (float) Math.pow(mLastLocation.y - location.y, 2));
+        float len = (float)Math.sqrt((float) Math.pow(mLastLocation.x - location.x, 2) + (float) Math.pow(mLastLocation.y - location.y, 2));
         if (len > mSegThreshold) {
             ribbon_.addPoint(location, mWidth);
             mLastLocation = location;

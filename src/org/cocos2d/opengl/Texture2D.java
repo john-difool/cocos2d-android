@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.opengl.GLUtils;
-import android.util.FloatMath;
 import org.cocos2d.nodes.Label;
 import org.cocos2d.types.CCAffineTransform;
 import org.cocos2d.types.CCPoint;
@@ -198,7 +197,7 @@ public class Texture2D {
 
         ascent = (int) Math.ceil(-textPaint.ascent());  // Paint.ascent is negative, so negate it
         descent = (int) Math.ceil(textPaint.descent());
-        measuredTextWidth = (int) FloatMath.ceil(textPaint.measureText(text));
+        measuredTextWidth = (int) Math.ceil(textPaint.measureText(text));
 
         int textWidth = measuredTextWidth;
         int textHeight = ascent + descent;

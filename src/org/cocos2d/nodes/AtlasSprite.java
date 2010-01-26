@@ -1,6 +1,5 @@
 package org.cocos2d.nodes;
 
-import android.util.FloatMath;
 import android.util.Log;
 import org.cocos2d.opengl.TextureAtlas;
 import org.cocos2d.types.*;
@@ -183,8 +182,8 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
             float y = getPositionY();
 
             float r = -CCMacros.CC_DEGREES_TO_RADIANS(getRotation());
-            float cr = FloatMath.cos(r);
-            float sr = FloatMath.sin(r);
+            float cr = (float)Math.cos(r);
+            float sr = (float)Math.sin(r);
             float ax = x1 * cr - y1 * sr + x;
             float ay = x1 * sr + y1 * cr + y;
             float bx = x2 * cr - y1 * sr + x;

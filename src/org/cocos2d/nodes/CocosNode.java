@@ -8,6 +8,7 @@ import org.cocos2d.actions.Scheduler;
 import org.cocos2d.actions.base.Action;
 import org.cocos2d.grid.GridBase;
 import org.cocos2d.opengl.Texture2D;
+import org.cocos2d.opengl.Camera;
 import org.cocos2d.types.*;
 
 import javax.microedition.khronos.opengles.GL10;

@@ -10,6 +10,7 @@ import org.cocos2d.actions.ActionManager;
 import org.cocos2d.actions.Scheduler;
 import org.cocos2d.opengl.Texture2D;
 import org.cocos2d.opengl.GLU;
+import org.cocos2d.opengl.Camera;
 import org.cocos2d.types.CCPoint;
 import org.cocos2d.types.CCRect;
 import org.cocos2d.types.CCSize;
@@ -401,6 +402,10 @@ public class Director implements GLSurfaceView.Renderer {
             setDeviceOrientation(CCDeviceOrientationLandscapeLeft);
         else
             setDeviceOrientation(CCDeviceOrientationPortrait);
+    }
+
+    public int getDeviceOrientation() {
+        return deviceOrientation_;
     }
 
     public void setDeviceOrientation(int orientation) {

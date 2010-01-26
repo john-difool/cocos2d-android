@@ -1,8 +1,9 @@
-package org.cocos2d.nodes;
+package org.cocos2d.opengl;
 
-import android.opengl.GLU;
 import org.cocos2d.types.CCSize;
 import org.cocos2d.utils.CCFormatter;
+import org.cocos2d.opengl.GLU;
+import org.cocos2d.nodes.Director;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -19,7 +20,7 @@ public class Camera {
     private float upY;
     private float upZ;
 
-    public boolean dirty;
+    private boolean dirty;
 
     public boolean getDirty() {
         return dirty;
@@ -41,12 +42,12 @@ public class Camera {
     public void restore() {
         CCSize s = Director.sharedDirector().displaySize();
 
-        eyeX = 0 /* s.width / 2 */;
-        eyeY = 0 /* s.height / 2 */;
+        eyeX = 0;//s.width / 2;
+        eyeY = 0;//s.height / 2;
         eyeZ = Camera.getZEye();
 
-        centerX = 0 /* s.width / 2 */;
-        centerY = 0 /* s.height / 2 */;
+        centerX = 0;//s.width / 2;
+        centerY = 0;//s.height / 2;
         centerZ = 0.0f;
 
         upX = 0.0f;
@@ -57,24 +58,41 @@ public class Camera {
     }
 
     public void locate(GL10 gl) {
-        if (dirty) {
-            boolean landscape = Director.sharedDirector().getLandscape();
+        if( dirty ) {
+            int orientation = Director.sharedDirector().getDeviceOrientation();
 
             gl.glLoadIdentity();
 
-//            if (landscape)
-//                gl.glRotatef(-90, 0, 0, 1);
+            switch( orientation ) {
+                case Director.CCDeviceOrientationPortrait:
+                    break;
+                case Director.CCDeviceOrientationPortraitUpsideDown:
+                    gl.glRotatef(-180,0,0,1);
+                    break;
+                case Director.CCDeviceOrientationLandscapeLeft:
+                    gl.glRotatef(-90,0,0,1);
+                    break;
+                case Director.CCDeviceOrientationLandscapeRight:
+                    gl.glRotatef(90,0,0,1);
+                    break;
+            }
 
             GLU.gluLookAt(gl, eyeX, eyeY, eyeZ,
                     centerX, centerY, centerZ,
                     upX, upY, upZ);
 
-// TODO FIX ME
-//            if (landscape) {
-//           if (LANDSCAPE_LEFT)
-//                gl.glTranslatef(-80, 80, 0);
-//            else
-//            }
+            switch( orientation ) {
+                case Director.CCDeviceOrientationPortrait:
+                case Director.CCDeviceOrientationPortraitUpsideDown:
+                    // none
+                    break;
+                case Director.CCDeviceOrientationLandscapeLeft:
+                    gl.glTranslatef(-80,80,0);
+                    break;
+                case Director.CCDeviceOrientationLandscapeRight:
+                    gl.glTranslatef(-80,80,0);
+                    break;
+            }
         }
     }
 

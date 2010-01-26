@@ -1,7 +1,7 @@
 package org.cocos2d.actions.camera;
 
 import org.cocos2d.actions.interval.IntervalAction;
-import org.cocos2d.nodes.Camera;
+import org.cocos2d.opengl.Camera;
 import org.cocos2d.nodes.CocosNode;
 import org.cocos2d.types.CCMacros;
 
@@ -64,9 +64,9 @@ public class OrbitCamera extends CameraAction {
         float za = radZ + radDeltaZ * t;
         float xa = radX + radDeltaX * t;
 
-        float i = (float) (Math.sin(za) * Math.cos(xa) * r + centerXOrig);
-        float j = (float) (Math.sin(za) * Math.sin(xa) * r + centerYOrig);
-        float k = (float) (Math.cos(za) * r + centerZOrig);
+        float i = (float) Math.sin(za) * (float) Math.cos(xa) * r + centerXOrig;
+        float j = (float) Math.sin(za) * (float) Math.sin(xa) * r + centerYOrig;
+        float k = (float) Math.cos(za) * r + centerZOrig;
 
         target.getCamera().setEye(i, j, k);
     }
@@ -85,8 +85,8 @@ public class OrbitCamera extends CameraAction {
         y = ey[0] - cy[0];
         z = ez[0] - cz[0];
 
-        r = (float) (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2)));
-        s = (float) (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
+        r = (float) Math.sqrt(Math.pow(x, 2) + (float) Math.pow(y, 2) + Math.pow(z, 2));
+        s = (float) Math.sqrt(Math.pow(x, 2) + (float) Math.pow(y, 2));
 
         if (s == 0.0f)
             s = 0.00000001f;
@@ -96,9 +96,9 @@ public class OrbitCamera extends CameraAction {
         zenith[0] = (float) Math.acos(z / r);
         
         if (x < 0)
-            azimuth[0] = (float) (Math.PI - Math.asin(y / s));
+            azimuth[0] = (float) Math.PI - (float) Math.asin(y / s);
         else
-            azimuth[0] = (float) (Math.asin(y / s));
+            azimuth[0] = (float) Math.asin(y / s);
 
         newRadius[0] = r / Camera.getZEye();
     }

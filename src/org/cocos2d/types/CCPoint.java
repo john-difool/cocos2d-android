@@ -1,7 +1,5 @@
 package org.cocos2d.types;
 
-import android.util.FloatMath;
-
 public class CCPoint {
     public float x, y;
 
@@ -169,7 +167,7 @@ public class CCPoint {
      * @return float
      */
     public static float ccpLength(final CCPoint v) {
-        return FloatMath.sqrt(ccpLengthSQ(v));
+        return (float)Math.sqrt(ccpLengthSQ(v));
     }
 
     /**
@@ -196,7 +194,7 @@ public class CCPoint {
      * @return CCPoint
      */
     public static CCPoint ccpForAngle(final float a) {
-        return ccp(FloatMath.cos(a), FloatMath.sin(a));
+        return ccp((float)Math.cos(a), (float)Math.sin(a));
     }
 
     /**

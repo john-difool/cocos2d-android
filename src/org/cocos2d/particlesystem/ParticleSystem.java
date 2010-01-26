@@ -1,6 +1,5 @@
 package org.cocos2d.particlesystem;
 
-import android.util.FloatMath;
 import org.cocos2d.nodes.CocosNode;
 import org.cocos2d.opengl.Texture2D;
 import org.cocos2d.types.CCColorF;
@@ -337,8 +336,8 @@ public abstract class ParticleSystem extends CocosNode {
 
         // direction
         float a = CC_DEGREES_TO_RADIANS(angle + angleVar * CCRANDOM_MINUS1_1());
-        v.y = FloatMath.sin(a);
-        v.x = FloatMath.cos(a);
+        v.y = (float)Math.sin(a);
+        v.x = (float)Math.cos(a);
         float s = speed + speedVar * CCRANDOM_MINUS1_1();
         particle.dir = CCPoint.ccpMult(v, s);
 

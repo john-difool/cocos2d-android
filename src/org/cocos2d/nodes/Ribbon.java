@@ -1,6 +1,5 @@
 package org.cocos2d.nodes;
 
-import android.util.FloatMath;
 import org.cocos2d.opengl.Texture2D;
 import org.cocos2d.types.*;
 
@@ -193,8 +192,8 @@ public class Ribbon extends CocosNode {
 
     // rotates a point around 0, 0
     private CCPoint rotatePoint(CCPoint vec, float a) {
-        float xtemp = (vec.x * FloatMath.cos(a)) - (vec.y * FloatMath.sin(a));
-        vec.y = (vec.x * FloatMath.sin(a)) + (vec.y * FloatMath.cos(a));
+        float xtemp = (vec.x * (float)Math.cos(a)) - (vec.y * (float)Math.sin(a));
+        vec.y = (vec.x * (float)Math.sin(a)) + (vec.y * (float)Math.cos(a));
         vec.x = xtemp;
         return vec;
     }
