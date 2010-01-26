@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Cocos2D</string>
-    <string name="activity_particletest">Motion Streak Test</string>
+    <string name="activity_easeactionstest">Ease Actions Test</string>
+    <string name="activity_particletest">Particle Test</string>
     <string name="activity_motionstreaktest">Motion Streak Test</string>
     <string name="activity_menutest">Menu Test</string>
     <string name="activity_atlastest">Atlas Test</string>

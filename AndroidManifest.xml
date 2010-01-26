@@ -19,6 +19,16 @@
         <!-- Activity Samples -->
         <!--  android:configChanges="orientation" android:screenOrientation="landscape" -->
 
+        <activity android:name=".tests.EaseActionsTest"
+                  android:debuggable="true"
+                  android:launchMode="singleInstance"
+                  android:label="@string/activity_easeactionstest">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.TEST"/>
+            </intent-filter>
+        </activity>
+
         <activity android:name=".tests.MotionStreakTest"
                   android:debuggable="true"
                   android:launchMode="singleInstance"
