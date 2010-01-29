@@ -107,9 +107,9 @@ public class MenuTest extends Activity {
             AtlasSpriteManager mgr = new AtlasSpriteManager("menuitemsprite.png");
             addChild(mgr);
 
-            AtlasSprite spriteNormal = new AtlasSprite(CCRect.make(0, 23 * 2, 115, 23), mgr);
-            AtlasSprite spriteSelected = new AtlasSprite(CCRect.make(0, 23 * 1, 115, 23), mgr);
-            AtlasSprite spriteDisabled = new AtlasSprite(CCRect.make(0, 23 * 0, 115, 23), mgr);
+            AtlasSprite spriteNormal = AtlasSprite.sprite(CCRect.make(0, 23 * 2, 115, 23), mgr);
+            AtlasSprite spriteSelected = AtlasSprite.sprite(CCRect.make(0, 23 * 1, 115, 23), mgr);
+            AtlasSprite spriteDisabled = AtlasSprite.sprite(CCRect.make(0, 23 * 0, 115, 23), mgr);
             mgr.addChild(spriteNormal);
             mgr.addChild(spriteSelected);
             mgr.addChild(spriteDisabled);

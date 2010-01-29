@@ -22,7 +22,7 @@ public class Camera {
 
     private boolean dirty;
 
-    public boolean getDirty() {
+    public boolean isDirty() {
         return dirty;
     }
 

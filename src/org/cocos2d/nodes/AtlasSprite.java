@@ -83,7 +83,11 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
     }
 
 
-    public AtlasSprite(CCRect rect, AtlasSpriteManager manager) {
+    public static AtlasSprite sprite(CCRect rect, AtlasSpriteManager manager) {
+        return new AtlasSprite(rect, manager);
+    }
+
+    protected AtlasSprite(CCRect rect, AtlasSpriteManager manager) {
         textureAtlas_ = manager.atlas();
 
         atlasIndex_ = kIndexNotInitialized;

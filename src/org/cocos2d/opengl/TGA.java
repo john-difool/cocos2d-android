@@ -165,9 +165,10 @@ public class TGA {
 
 
     private static void memcpy(byte[] dst, int to, byte[] src, int from, int len) {
-        for (int i = 0; i < len; i++) {
-            dst[i + to] = src[i + from];
-        }
+        System.arraycopy(src, from, dst, to, len);
+//        for (int i = 0; i < len; i++) {
+//            dst[i + to] = src[i + from];
+//        }
     }
 
     // this is the function to call when we want to load an image

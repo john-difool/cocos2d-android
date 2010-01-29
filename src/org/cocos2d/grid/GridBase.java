@@ -125,10 +125,10 @@ public abstract class GridBase {
         set3DProjection(gl);
         applyLandscape(gl);
 
-        boolean cDirty = camera.dirty;
-        camera.dirty = true;
+        boolean cDirty = camera.isDirty();
+        camera.setDirty(true);
         camera.locate(gl);
-        camera.dirty = cDirty;
+        camera.setDirty(cDirty);
 
         gl.glEnable(GL10.GL_TEXTURE_2D);
         gl.glBindTexture(GL10.GL_TEXTURE_2D, texture.name());
