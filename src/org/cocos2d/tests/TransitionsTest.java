@@ -1,6 +1,7 @@
 package org.cocos2d.tests;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,6 +29,13 @@ public class TransitionsTest extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        new AlertDialog.Builder(this)
+                .setTitle("Warning")
+                .setMessage("There are known problems with this demo.")
+                .setPositiveButton("Ok", null)
+                .show();
+
+        
         mGLSurfaceView = new CCGLSurfaceView(this);
         setContentView(mGLSurfaceView);
     }

@@ -21,6 +21,7 @@ import org.cocos2d.actions.interval.IntervalAction;
 import org.cocos2d.actions.base.RepeatForever;
 import org.cocos2d.utils.CCFormatter;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -39,6 +40,13 @@ public class ParticleTest extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        new AlertDialog.Builder(this)
+                .setTitle("Warning")
+                .setMessage("There are known problems with this demo.")
+                .setPositiveButton("Ok", null)
+                .show();
+
+        
         mGLSurfaceView = new CCGLSurfaceView(this);
         setContentView(mGLSurfaceView);
     }
