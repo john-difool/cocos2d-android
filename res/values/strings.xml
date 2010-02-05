@@ -8,6 +8,7 @@
     <string name="activity_menutest">Menu Test</string>
     <string name="activity_atlastest">Atlas Test</string>
     <string name="activity_atlasspritetest">Atlas Sprite Test</string>
+    <string name="activity_jbox2dtest">JBox2D Test</string>    
     <string name="activity_clickandmovetest">Click And Move Test</string>
     <string name="activity_cocosnodetest">Cocos Node Test</string>
     <string name="activity_drawprimitivestest">Draw Primitives Test</string>

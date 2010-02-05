@@ -3,7 +3,7 @@
           package="org.cocos2d"
           android:versionCode="1"
           android:versionName="1.0">
-    <application android:label="@string/app_name" android:icon="@drawable/icon">
+    <application android:label="@string/app_name" android:icon="@drawable/icon" android:debuggable="true">
         <activity android:name=".Cocos2D"
                   android:label="@string/app_name">
             <intent-filter>
@@ -99,6 +99,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".tests.JBox2DTest"
+                  android:debuggable="true"
+                  android:launchMode="singleInstance"
+                  android:label="@string/activity_jbox2dtest" android:configChanges="keyboardHidden|orientation" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.TEST"/>
+            </intent-filter>
+        </activity>
+
         <activity android:name=".tests.ClickAndMoveTest"
                   android:debuggable="true"
                   android:launchMode="singleInstance"
@@ -170,4 +180,6 @@
         </activity>
 
     </application>
+
+<uses-sdk android:minSdkVersion="4"></uses-sdk>
 </manifest> 
