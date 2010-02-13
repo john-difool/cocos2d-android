@@ -100,7 +100,7 @@ public class JBox2DTest extends Activity {
 
     static class JBox2DTestLayer extends Layer {
         public static final int kTagSpriteManager = 1;
-
+    	
 		// Pixel to meters ratio. Box2D uses meters as the unit for measurement.
 		// This ratio defines how many pixels correspond to 1 Box2D "meter"
 		// Box2D is optimized for objects of 1x1 meter therefore it makes sense
@@ -125,8 +125,6 @@ public class JBox2DTest extends Activity {
         	Vec2 gravity = new Vec2(0.0f, -10.0f);
         	
         	bxWorld = new World(new AABB(lower, upper), gravity, true);
-        	bxWorld.setContinuousPhysics(true);
-        	bxWorld.setPositionCorrection(true);
                     	
         	// TODO: JBox2D debug drawing is a bit different now.  We could add debug drawing the old way, but looks like that is going away soon.
         	/*
@@ -164,12 +162,25 @@ public class JBox2DTest extends Activity {
             label.setPosition(s.width / 2f, s.height - 50f);
             label.setColor(new CCColor3B(0, 0, 255));
             addChild(label);
-
-            // schedule the physics update processor
-            this.schedule("tick");
         }
 
-        private void addNewSpriteWithCoords(CCPoint pos) {
+		@Override
+		public void onEnter() {
+			super.onEnter();
+			
+			// start ticking (for physics simulation)
+			schedule("tick");
+		}
+
+		@Override
+		public void onExit() {
+			super.onExit();
+			
+			// stop ticking (for physics simulation)			
+			unschedule("tick");
+		}
+
+		private void addNewSpriteWithCoords(CCPoint pos) {
             AtlasSpriteManager mgr = (AtlasSpriteManager) getChild(kTagSpriteManager);
 
         	// We have a 64x64 sprite sheet with 4 different 32x32 images.  The following code is
@@ -194,16 +205,15 @@ public class JBox2DTest extends Activity {
         	bxSpritePolygonDef.density = 1.0f;
         	bxSpritePolygonDef.friction = 0.3f;
 
-        	synchronized(bxWorld) {
-        		Body bxSpriteBody = bxWorld.createBody(bxSpriteBodyDef);
-
+        	synchronized (bxWorld) {
         		// Define the dynamic body fixture and set mass so it's dynamic.
-        		bxSpriteBody.createShape(bxSpritePolygonDef);
-        		bxSpriteBody.setMassFromShapes();
+        		Body bxSpriteBody = bxWorld.createBody(bxSpriteBodyDef);
+	    		bxSpriteBody.createShape(bxSpritePolygonDef);
+	    		bxSpriteBody.setMassFromShapes();
         	}
         }
 
-        public void tick(float delta) {
+        public synchronized void tick(float delta) {
         	// It is recommended that a fixed time step is used with Box2D for stability
         	// of the simulation, however, we are using a variable time step here.
         	// You need to make an informed choice, the following URL is useful
@@ -211,7 +221,7 @@ public class JBox2DTest extends Activity {
         	
         	// Instruct the world to perform a simulation step. It is
         	// generally best to keep the time step and iterations fixed.
-        	synchronized(bxWorld) {
+        	synchronized (bxWorld) {
         		bxWorld.step(delta, 10);
         	}
 	        	
@@ -233,7 +243,7 @@ public class JBox2DTest extends Activity {
             CCPoint location = Director.sharedDirector().convertCoordinate(event.getX(), event.getY());
 
             addNewSpriteWithCoords(location);
-
+ 
             return TouchDispatcher.kEventHandled;
         }
 
