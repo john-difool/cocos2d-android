@@ -24,6 +24,22 @@ public class CCColorF {
         a = c.a;
     }
 
+    public CCColorF(CCColor4B c)
+    {
+    	r = c.r/0xFF;
+    	g = c.g/0xFF;
+    	b = c.b/0xFF;
+    	a = c.a/0xFF;
+    }
+
+    public CCColorF(CCColor3B c)
+    {
+    	r = c.r/0xFF;
+    	g = c.g/0xFF;
+    	b = c.b/0xFF;
+    	a = 1.0f;
+    }
+    
     public float[] ccColorF() {
         return new float[]{r, g, b, a};
     }
@@ -32,4 +48,5 @@ public class CCColorF {
         return "< r=" + r + ", g=" + g + ", b=" + b + ", a=" + a + " >";
     }
 
+    
 }
