@@ -81,7 +81,8 @@ public class LabelAtlas extends AtlasNode implements CocosNode.CocosNodeLabel, C
 
         gl.glEnable(GL10.GL_TEXTURE_2D);
 
-        gl.glColor4f(color_.r / 255f, color_.g / 255f, color_.b / 255f, opacity_ / 255f);
+        //fixed bug that can't show text on G1
+        //gl.glColor4f(color_.r / 255f, color_.g / 255f, color_.b / 255f, opacity_ / 255f);
 
         textureAtlas_.draw(gl, string.length());
 
