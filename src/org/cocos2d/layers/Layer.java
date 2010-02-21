@@ -21,6 +21,7 @@ public class Layer extends CocosNode implements TouchDelegate, SensorEventListen
 
     // used to control registration of Accelerometer events
     protected boolean isAccelerometerEnabled_;
+    protected int accelerometerUpdateRate = SensorManager.SENSOR_DELAY_GAME;
 
     protected final SensorManager sensorManager;
     protected final Sensor accelerometer;
@@ -93,7 +94,7 @@ public class Layer extends CocosNode implements TouchDelegate, SensorEventListen
     protected void registerWithAccelerometer()
     {
     	if (accelerometer != null) {
-    		boolean registered = sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+    		boolean registered = sensorManager.registerListener(this, accelerometer, accelerometerUpdateRate);
     		if (!registered) {
     	        Log.e("Layer", "Could not register accelerometer sensor listener!");
     		}
