@@ -228,7 +228,8 @@ public class AtlasTest extends Activity {
         float time;
 
         public Atlas2() {
-            label = LabelAtlas.label("123 Test", "tuffy_bold_italic-charmap.png", 48, 64, ' ');
+        	//The size of the texture should be a power of 2
+            label = LabelAtlas.label("123 Test", "tuffy_bold_italic-charmap_s.png", 16, 21, ' ');
 
             addChild(label);
 
