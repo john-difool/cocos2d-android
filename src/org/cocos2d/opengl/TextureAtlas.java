@@ -96,9 +96,10 @@ public class TextureAtlas {
     public void initColorArray() {
         if (!withColorArray_) {
             // default color: 255,255,255,255
-            ByteBuffer cbb = ByteBuffer.allocateDirect(4 * capacity_ * 1);
+        	// modify by zt: A Texture in TextureAtlas need four colors for four vertices
+            ByteBuffer cbb = ByteBuffer.allocateDirect(4 * capacity_ *CCColor4B.size* 1);
             colors = cbb;
-            for (int i = 0; i < CCColor4B.size * capacity_ * 1; i++) {
+            for (int i = 0; i < 4 * CCColor4B.size * capacity_ * 1; i++) {
                 colors.put(i, (byte) 0xff);
             }
             colors.position(0);
@@ -261,7 +262,7 @@ public class TextureAtlas {
         initIndices();
 
         if (withColorArray_) {
-            ByteBuffer cbb = ByteBuffer.allocateDirect(CCColor4B.size * newCapacity * 1);
+            ByteBuffer cbb = ByteBuffer.allocateDirect(4*CCColor4B.size * newCapacity * 1);
             ByteBuffer tmpColors = cbb;
             tmpColors.put(colors);
             colors = tmpColors;
@@ -320,16 +321,24 @@ public class TextureAtlas {
     }
 
     private byte[] getColor(ByteBuffer src, int index) {
-        byte[] color = new byte[CCColor4B.size];
-        for (int i = 0; i < CCColor4B.size; i++) {
-            color[i] = src.get(index * CCColor4B.size + i);
+        byte[] color = new byte[CCColor4B.size * 4];
+        for(int j=0; j<4; ++j)
+        {
+            for (int i = 0; i < CCColor4B.size; ++i) {
+                color[i] = src.get(index * CCColor4B.size *4 + 4*j + i);
+            }        	
         }
+
         return color;
     }
 
     private void putColor(ByteBuffer dst, byte[] color, int index) {
-        for (int i = 0; i < CCColor4B.size; i++) {
-            dst.put(index * CCColor4B.size + i, color[i]);
+    	for(int j=0; j<4; ++j)
+    	{
+    		for (int i = 0; i < CCColor4B.size; ++i)
+    		{
+        		dst.put(index * CCColor4B.size * 4 + 4*j + i, color[i]);
+        	}
         }
     }
 
@@ -351,9 +360,9 @@ public class TextureAtlas {
 
     private void arraycopyColor(ByteBuffer src, int srcPos, ByteBuffer dst, int dstPos, int length) {
         if (src == dst) {
-            memmoveByte(src, srcPos * CCColor4B.size, dst, dstPos * CCColor4B.size, length * CCColor4B.size);
+            memmoveByte(src, srcPos * CCColor4B.size * 4, dst, dstPos * CCColor4B.size*4, length * CCColor4B.size * 4);
         } else {
-            memcopyByte(src, srcPos * CCColor4B.size, dst, dstPos * CCColor4B.size, length * CCColor4B.size);
+            memcopyByte(src, srcPos * CCColor4B.size * 4, dst, dstPos * CCColor4B.size*4, length * CCColor4B.size * 4);
         }
     }
 

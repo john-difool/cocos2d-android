@@ -313,15 +313,15 @@ public class AtlasSpriteTest extends Activity {
             IntervalAction action_back = action.reverse();
             Action fade = RepeatForever.action(Sequence.actions(action, action_back));
 
-            IntervalAction tintred = TintBy.action(2, (byte) 0, (byte) 255, (byte) 255);
+            IntervalAction tintred = TintBy.action(2, 0, -255, -255);
             IntervalAction tintred_back = tintred.reverse();
             Action red = RepeatForever.action(Sequence.actions(tintred, tintred_back));
 
-            IntervalAction tintgreen = TintBy.action(2, (byte) 255, (byte) 0, (byte) -255);
+            IntervalAction tintgreen = TintBy.action(2,  -255 , 0,  -255);
             IntervalAction tintgreen_back = tintgreen.reverse();
             Action green = RepeatForever.action(Sequence.actions(tintgreen, tintgreen_back));
 
-            IntervalAction tintblue = TintBy.action(2, (byte) 255, (byte) 255, (byte) 0);
+            IntervalAction tintblue = TintBy.action(2, -255,  -255, 0);
             IntervalAction tintblue_back = tintblue.reverse();
             Action blue = RepeatForever.action(Sequence.actions(tintblue, tintblue_back));
 
