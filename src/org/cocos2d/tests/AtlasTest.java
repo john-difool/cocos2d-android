@@ -259,7 +259,7 @@ public class AtlasTest extends Activity {
             Texture2D.saveTexParameters();
             Texture2D.setAliasTexParameters();
 
-            TileMapAtlas tilemap = TileMapAtlas.tilemap("tiles.png", "levelmap.tga", 16, 16);
+            TileMapAtlas tilemap = TileMapAtlas.tilemap("tiles.png", "small.tga", 16, 16);
 
             Texture2D.restoreTexParameters();
 
