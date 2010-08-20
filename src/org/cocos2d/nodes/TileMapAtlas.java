@@ -23,7 +23,7 @@ public class TileMapAtlas extends AtlasNode {
     /// info about the map file
     public TGA.ImageTGA tgaInfo;
 
-    /// x,y to altas dicctionary
+    /// x,y to atlas dictionary
     private HashMap<String, Integer> posToAtlasIndex;
 
     /// numbers of tiles to render
