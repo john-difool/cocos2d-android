@@ -179,6 +179,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".tests.RenderTextureTest"
+                  android:debuggable="true"
+                  android:launchMode="singleInstance"
+                  android:label="@string/activity_rendertexturetest">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.TEST"/>
+            </intent-filter>
+        </activity>
+
     </application>
 
 <uses-sdk android:minSdkVersion="4"></uses-sdk>

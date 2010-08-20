@@ -133,13 +133,15 @@ public class Texture2D {
     }
 
     public Texture2D(Bitmap image, CCSize imageSize) {
-        Bitmap.Config config = Bitmap.Config.ARGB_8888;
-        Bitmap bitmap = Bitmap.createBitmap((int) imageSize.width, (int) imageSize.height, config);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawBitmap(image, 0, 0, new Paint());
-        image.recycle();
-
-        init(bitmap, imageSize);
+    	if (image.getWidth() != imageSize.width || image.getHeight() != imageSize.height || !image.hasAlpha()) {
+	        Bitmap.Config config = Bitmap.Config.ARGB_8888;
+	        Bitmap bitmap = Bitmap.createBitmap((int) imageSize.width, (int) imageSize.height, config);
+	        Canvas canvas = new Canvas(bitmap);
+	        canvas.drawBitmap(image, 0, 0, new Paint());
+	        image.recycle();
+            image = bitmap;
+    	}
+        init(image, imageSize);
     }
 
     private void init(Bitmap image, CCSize imageSize) {
