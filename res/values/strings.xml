@@ -16,5 +16,6 @@
     <string name="activity_spritestest">Sprites Test</string>
     <string name="activity_transitionstest">Transitions Test</string>
     <string name="activity_rotateworldtest">Rotate World Test</string>
+    <string name="activity_rendertexturetest">Render Texture Test</string>
     <string name="activity_parallaxtest">Parallax Test</string>
 </resources>
