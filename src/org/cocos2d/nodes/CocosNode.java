@@ -409,8 +409,8 @@ public class CocosNode {
 
     public void reorderChild(CocosNode child, int zOrder) {
         assert child != null : "Child must be non-null";
-        this.insertChild(child, zOrder);
         children.remove(child);
+        this.insertChild(child, zOrder);
     }
 
     public void draw(GL10 gl) {

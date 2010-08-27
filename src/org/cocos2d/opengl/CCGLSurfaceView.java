@@ -3,6 +3,7 @@ package org.cocos2d.opengl;
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.AttributeSet;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.WindowManager;
@@ -30,6 +31,17 @@ public class CCGLSurfaceView extends GLSurfaceView {
 
 //        mRenderer = new CCGLSquareRenderer(context);
 
+        init(context);
+    }
+
+    public CCGLSurfaceView(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+        init(context);
+    }
+
+    private void init(Context context)
+    {
         mRenderer = Director.sharedDirector();
         Director.me = (Activity) context;
 
