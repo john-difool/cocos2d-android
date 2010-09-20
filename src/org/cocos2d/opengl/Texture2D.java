@@ -121,7 +121,7 @@ public class Texture2D {
             imageSize.height *= 0.5f;
         }
 
-        if (imageSize.width != width && imageSize.height != height) {
+        if (imageSize.width != width || imageSize.height != height) {
             Bitmap bitmap = Bitmap.createBitmap(width, height,
                     image.hasAlpha() ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
             Canvas canvas = new Canvas(bitmap);
