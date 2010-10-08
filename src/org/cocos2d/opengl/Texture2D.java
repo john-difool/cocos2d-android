@@ -12,6 +12,9 @@ import org.cocos2d.types.CCSize;
 import org.cocos2d.types.CCTexParams;
 
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
+import javax.microedition.khronos.opengles.GL11Ext;
+
 import static javax.microedition.khronos.opengles.GL10.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -82,13 +85,12 @@ public class Texture2D {
 //    private ShortBuffer mIndices;
 
     private Bitmap mBitmap;
-    private int _name = -1;
+    private int _name = 0;
     private CCSize mSize;
     private int mWidth, mHeight;
     private Bitmap.Config _format;
     private float _maxS, _maxT;
     private CCTexParams _texParams;
-
 
     public Texture2D(Bitmap image) {
 
@@ -248,7 +250,8 @@ public class Texture2D {
     }
 
     public void loadTexture(GL10 gl) {
-        if (_name <= 0) {
+        if (_name == 0)
+		{
             int[] textures = new int[1];
             gl.glGenTextures(1, textures, 0);
 
@@ -260,6 +263,7 @@ public class Texture2D {
 //            gl.glTexEnvx(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
             GLUtils.texImage2D(GL_TEXTURE_2D, 0, mBitmap, 0);
+
             mBitmap.recycle();
         }
     }
