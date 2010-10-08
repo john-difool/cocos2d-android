@@ -12,8 +12,6 @@ import org.cocos2d.types.CCSize;
 import org.cocos2d.types.CCTexParams;
 
 import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
-import javax.microedition.khronos.opengles.GL11Ext;
 
 import static javax.microedition.khronos.opengles.GL10.*;
 import java.nio.ByteBuffer;
