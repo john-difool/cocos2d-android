@@ -220,4 +220,13 @@ public class CCRect {
                 break;
         }
     }
+
+	/** Returns true if aRect and bRect have non-zero intersection area
+	    (intersecting at a line or a point doesn't count). */
+	public static boolean intersectsRect(CCRect aRect, CCRect bRect)
+	{
+	  /* Note that intersecting at a line or a point doesn't count */
+	  return maxX(aRect) > minX(bRect) && maxX(bRect) > minX(aRect) && maxY(aRect) > minY(bRect) && maxY(bRect) > minY(aRect);
+	}
+
 }
