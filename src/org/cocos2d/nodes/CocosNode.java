@@ -612,7 +612,7 @@ public class CocosNode {
             isTransformDirty_ = false;
         }
 
-        return transform_;
+        return new CCAffineTransform(transform_);
     }
 
     private CCAffineTransform parentToNodeTransform() {
@@ -622,7 +622,7 @@ public class CocosNode {
             isInverseDirty_ = false;
         }
 
-        return inverse_;
+        return new CCAffineTransform(inverse_);
     }
 
     private CCAffineTransform nodeToWorldTransform() {

@@ -6,14 +6,14 @@ public class CCMacros {
 
     public static final int INT_MIN = -2147483648;
 
-    public static void CC_SWAP(int x, int y ) {
-    	int temp  = x;
-		x = y; y = temp;
+    public static void CC_SWAP(int[] vals ) {
+    	int temp  = vals[0];
+		vals[0] = vals[1]; vals[1] = temp;
     }
 
-    public static void CC_SWAP(float x, float y ) {
-    	float temp  = x;
-		x = y; y = temp;
+    public static void CC_SWAP(float[] vals ) {
+    	float temp  = vals[0];
+		vals[0] = vals[1]; vals[1] = temp;
     }    
 
     /// returns a random float between -1 and 1
