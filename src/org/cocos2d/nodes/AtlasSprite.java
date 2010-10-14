@@ -143,17 +143,15 @@ public class AtlasSprite extends CocosNode implements CocosNode.CocosNodeSize, C
 
         if( flipX_)
 		{
-			float[] vals = new float[]{left,right};
-			CCMacros.CC_SWAP(vals);
-			left = vals[0];
-			right = vals[1];
+			float temp = left;
+			left = right;
+			right = temp;
 		}
 		if( flipY_)
 		{
-			float[] vals = new float[]{top,bottom};
-			CCMacros.CC_SWAP(vals);
-			top = vals[0];
-			bottom = vals[1];
+			float temp = top;
+			top = bottom;
+			bottom = temp;
 		}
 
         CCQuad2 newCoords = new CCQuad2(

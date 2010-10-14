@@ -6,16 +6,6 @@ public class CCMacros {
 
     public static final int INT_MIN = -2147483648;
 
-    public static void CC_SWAP(int[] vals ) {
-    	int temp  = vals[0];
-		vals[0] = vals[1]; vals[1] = temp;
-    }
-
-    public static void CC_SWAP(float[] vals ) {
-    	float temp  = vals[0];
-		vals[0] = vals[1]; vals[1] = temp;
-    }    
-
     /// returns a random float between -1 and 1
     public static float CCRANDOM_MINUS1_1() {
         return (float) Math.random() * 2.0f - 1.0f;
