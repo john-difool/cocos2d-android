@@ -19,7 +19,7 @@ public class EaseExponentialOut extends EaseAction {
 
     @Override
     public IntervalAction reverse() {
-        return new EaseExponentialOut(other.reverse());
+        return new EaseExponentialIn(other.reverse());
     }
 
 }

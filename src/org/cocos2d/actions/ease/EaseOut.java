@@ -13,6 +13,11 @@ public class EaseOut extends EaseRateAction {
         super(action, rate);
     }
 
+	@Override
+    public EaseRateAction copy() {
+        return new EaseOut(other.copy(), rate);
+    }
+
     @Override
     public void update(float t) {
         other.update((float) Math.pow(t, 1 / rate));

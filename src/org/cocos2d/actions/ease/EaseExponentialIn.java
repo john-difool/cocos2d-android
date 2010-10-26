@@ -12,6 +12,11 @@ public class EaseExponentialIn extends EaseAction {
         super(action);
     }
 
+	@Override
+    public EaseAction copy() {
+        return new EaseExponentialIn(other.copy());
+    }
+
     @Override
     public void update(float t) {
         other.update((t == 0) ? 0 : (float) Math.pow(2, 10 * (t / 1 - 1)) - 1 * 0.001f);

@@ -21,8 +21,13 @@ public class FadeIn extends IntervalAction {
         ((CocosNode.CocosNodeRGBA) target).setOpacity((byte) (255.0f * t));
     }
 
+	@Override
+	public FadeIn copy() {
+		return new FadeIn(duration);
+	}
+
     @Override
     public IntervalAction reverse() {
-        return new FadeIn(duration);
+        return new FadeOut(duration);
     }
 }

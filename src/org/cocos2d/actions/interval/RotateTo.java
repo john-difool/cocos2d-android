@@ -7,8 +7,9 @@ import org.cocos2d.nodes.CocosNode;
 //
 
 public class RotateTo extends IntervalAction {
-    private float angle;
+    private float dstAngle;
     private float startAngle;
+	private float diffAngle;
 
 
     public static RotateTo action(float t, float a) {
@@ -17,32 +18,33 @@ public class RotateTo extends IntervalAction {
 
     protected RotateTo(float t, float a) {
         super(t);
-        angle = a;
+        dstAngle = a;
     }
 
     @Override
     public IntervalAction copy() {
-        return new RotateTo(duration, angle);
+        return new RotateTo(duration, dstAngle);
     }
 
     @Override
     public void start(CocosNode aTarget) {
         super.start(aTarget);
-        startAngle = target.getRotation();
-        if (startAngle > 0)
-            startAngle = (float) (startAngle % 360.0f);
-        else
-            startAngle = (float) (startAngle % -360.0f);
 
-        angle -= startAngle;
-        if (angle > 180)
-            angle = -360 + angle;
-        if (angle < -180)
-            angle = 360 + angle;
+		startAngle = target.getRotation();
+		if (startAngle > 0)
+			startAngle = startAngle % 360.0f;
+		else
+			startAngle = startAngle % -360.0f;
+
+		diffAngle = dstAngle - startAngle;
+		if (diffAngle > 180)
+			diffAngle -= 360;
+		if (diffAngle < -180)
+			diffAngle += 360;
     }
 
     @Override
     public void update(float t) {
-        target.setRotation(startAngle + angle * t);
+        target.setRotation(startAngle + diffAngle * t);
     }
 }

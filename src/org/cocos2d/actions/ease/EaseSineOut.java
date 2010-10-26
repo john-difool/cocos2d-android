@@ -12,6 +12,11 @@ public class EaseSineOut extends EaseAction {
         super(action);
     }
 
+	@Override
+    public EaseAction copy() {
+        return new EaseSineOut(other.copy());
+    }
+
     @Override
     public void update(float t) {
         other.update((float)Math.sin(t * (float) Math.PI / 2));
@@ -19,7 +24,7 @@ public class EaseSineOut extends EaseAction {
 
     @Override
     public IntervalAction reverse() {
-        return new EaseExponentialOut(other.reverse());
+        return new EaseSineIn(other.reverse());
     }
 
 }

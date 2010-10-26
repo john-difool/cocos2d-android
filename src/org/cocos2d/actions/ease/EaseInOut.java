@@ -12,6 +12,11 @@ public class EaseInOut extends EaseRateAction {
         super(action, rate);
     }
 
+	@Override
+    public EaseRateAction copy() {
+        return new EaseInOut(other.copy(), rate);
+    }
+
     @Override
     public void update(float t) {
         int sign = 1;
@@ -25,4 +30,9 @@ public class EaseInOut extends EaseRateAction {
             other.update(sign * 0.5f * ((float) Math.pow(t - 2, rate) + sign * 2));
     }
 
+	// InOut and OutIn are symmetrical
+	@Override
+    public IntervalAction reverse() {
+        return new EaseInOut(other.reverse(), rate);
+    }
 }

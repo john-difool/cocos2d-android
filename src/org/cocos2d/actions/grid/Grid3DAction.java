@@ -11,6 +11,10 @@ public class Grid3DAction extends GridAction {
         super(gSize, d);
     }
 
+	@Override
+	public Grid3DAction copy() {
+		return new Grid3DAction(gridSize, duration);
+	}
 
     public GridBase grid() {
         return new Grid3D(gridSize);

@@ -18,6 +18,11 @@ public class Hide extends InstantAction {
         target.setVisible(false);
     }
 
+	@Override
+    public Hide copy() {
+        return new Hide();
+    }
+
     @Override
     public FiniteTimeAction reverse() {
         return new Show();

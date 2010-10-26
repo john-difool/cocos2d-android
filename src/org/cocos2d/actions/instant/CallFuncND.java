@@ -1,5 +1,6 @@
 package org.cocos2d.actions.instant;
 
+import android.util.Log;
 import org.cocos2d.nodes.CocosNode;
 
 /**
@@ -17,7 +18,7 @@ public class CallFuncND extends CallFuncN {
      * creates the action with the callback and the data to pass as an argument
      */
     protected CallFuncND(Object t, String s, Object d) {
-        super(t, s);
+        init (t, s);
         data = d;
 
         try {
@@ -27,7 +28,13 @@ public class CallFuncND extends CallFuncN {
             partypes[1] = Object.class;
             invocation = cls.getMethod(selector, partypes);
         } catch (Exception e) {
+			Log.e("CallFuncND", "Exception " + e.toString());
         }
+    }
+
+	@Override
+    public CallFuncND copy() {
+        return new CallFuncND(targetCallback, selector, data);
     }
 
     /**
@@ -35,7 +42,7 @@ public class CallFuncND extends CallFuncN {
      */
     public void execute() {
         try {
-            invocation.invoke(targetCallback, new Object[]{target, data});
+            invocation.invoke(targetCallback, target, data);
         } catch (Exception e) {
         }
     }

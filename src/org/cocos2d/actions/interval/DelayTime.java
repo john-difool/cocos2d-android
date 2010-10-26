@@ -18,6 +18,11 @@ public class DelayTime extends IntervalAction {
     public void update(float t) {
     }
 
+	@Override
+	public DelayTime copy() {
+		return new DelayTime(duration);
+	}
+
     @Override
     public IntervalAction reverse() {
         return new DelayTime(duration);

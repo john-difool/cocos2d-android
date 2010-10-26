@@ -1,5 +1,6 @@
 package org.cocos2d.actions.instant;
 
+import android.util.Log;
 import org.cocos2d.nodes.CocosNode;
 
 
@@ -13,11 +14,13 @@ public class CallFuncN extends CallFunc {
         return new CallFuncN(t, s);
     }
 
+	protected CallFuncN() {}
+
     /**
      * creates the action with the callback
      */
     protected CallFuncN(Object t, String s) {
-        super(t, s);
+        init(t, s);
 
         try {
             Class cls = targetCallback.getClass();
@@ -25,7 +28,13 @@ public class CallFuncN extends CallFunc {
             partypes[0] = CocosNode.class;
             invocation = cls.getMethod(selector, partypes);
         } catch (NoSuchMethodException e) {
+			Log.e("CallFuncN", "Exception " + e.toString());
         }
+    }
+
+	@Override
+    public CallFuncN copy() {
+        return new CallFuncN(targetCallback, selector);
     }
 
     /**
@@ -33,7 +42,7 @@ public class CallFuncN extends CallFunc {
      */
     public void execute() {
         try {
-            invocation.invoke(targetCallback, new Object[]{target});
+            invocation.invoke(targetCallback, target);
         } catch (Exception e) {
         }
     }

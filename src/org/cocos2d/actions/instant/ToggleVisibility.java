@@ -17,5 +17,8 @@ public class ToggleVisibility extends InstantAction {
         target.setVisible(!target.isVisible());
     }
 
-
+	@Override
+    public ToggleVisibility copy() {
+        return new ToggleVisibility();
+    }
 }

@@ -21,5 +21,10 @@ public class EaseExponentialInOut extends EaseAction {
         other.update(t);
     }
 
+	@Override
+    public IntervalAction reverse() {
+        return new EaseExponentialInOut(other.reverse());
+    }
+
 }
 
