@@ -12,14 +12,19 @@ public class EaseExponentialOut extends EaseAction {
         super(action);
     }
 
+	@Override
+    public EaseAction copy() {
+        return new EaseExponentialOut(other.copy());
+    }
+
     @Override
     public void update(float t) {
-        other.update((t == 1) ? 1 : (-(float) (Math.pow(2, -10 * t / 1) + 1)));
+        other.update((t == 1) ? 1 : ((float) (-Math.pow(2, -10 * t / 1) + 1)));
     }
 
     @Override
     public IntervalAction reverse() {
-        return new EaseExponentialIn(other.reverse());
+        return new EaseExponentialOut(other.reverse());
     }
 
 }
