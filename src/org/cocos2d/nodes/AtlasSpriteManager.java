@@ -116,7 +116,7 @@ public class AtlasSpriteManager extends CocosNode {
 
         AtlasSprite child = (AtlasSprite) node;
 
-        if (totalSprites_ == textureAtlas_.capacity())
+        if (textureAtlas_.getTotalQuads() == textureAtlas_.capacity())
             resizeAtlas();
 
         int index = indexForNewChild(z);
