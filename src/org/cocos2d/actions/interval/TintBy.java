@@ -17,9 +17,9 @@ public class TintBy extends IntervalAction {
 
     protected TintBy(float t, int r, int g, int b) {
         super(t);
-        deltaR = r;
-        deltaG = g;
-        deltaB = b;
+        deltaR = r & 0xff;
+        deltaG = g & 0xff;
+        deltaB = b & 0xff;
     }
 
     @Override

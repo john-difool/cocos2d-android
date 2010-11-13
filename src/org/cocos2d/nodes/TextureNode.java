@@ -50,13 +50,13 @@ public class TextureNode extends CocosNode implements CocosNode.CocosNodeRGBA, C
     }
 
     public void setOpacity(int opacity) {
-        opacity_ = opacity;
+        opacity_ = opacity & 0xff;
     }
 
     public void setColor(CCColor3B color) {
-        color_.r = color.r;
-        color_.g = color.g;
-        color_.b = color.b;
+        color_.r = color.r & 0xff;
+        color_.g = color.g & 0xff;
+        color_.b = color.b & 0xff;
     }
 
     public CCColor3B getColor() {

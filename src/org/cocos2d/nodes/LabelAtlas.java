@@ -34,36 +34,68 @@ public class LabelAtlas extends AtlasNode implements CocosNode.CocosNodeLabel, C
 
         String s = string;
 
-        for (int i = 0; i < n; i++) {
+		int xpos = 0;
+		int ypos = 0;
+		int numLines = 1;
+		int maxLineWidth = 0;
 
-            int a = s.charAt(i) - mapStartChar;
-            float row = (a % itemsPerRow) * texStepX;
-            float col = (a / itemsPerRow) * texStepY;
+        for (int i = 0; i < n; i++)
+		{
+			// If we see a newline, reset the x-position back to zero
+			// and update our y-position. Since OpenGL is y=0 bottom,
+			// we negate numLines
+		    if (s.charAt(i) == '\n')
+			{
+				// Keep track of the longest line
+				if (xpos > maxLineWidth)
+				{
+					maxLineWidth = xpos;
+				}
+				xpos = 0;
+				ypos = -numLines * itemHeight;
+				numLines++;
+			}
+            else
+			{
+				int a = s.charAt(i) - mapStartChar;
+				float row = (a % itemsPerRow) * texStepX;
+				float col = (a / itemsPerRow) * texStepY;
 
-            texCoord.bl_x = row;                        // A - x
-            texCoord.bl_y = col;                        // A - y
-            texCoord.br_x = row + texStepX;                // B - x
-            texCoord.br_y = col;                        // B - y
-            texCoord.tl_x = row;                        // C - x
-            texCoord.tl_y = col + texStepY;                // C - y
-            texCoord.tr_x = row + texStepX;                // D - x
-            texCoord.tr_y = col + texStepY;                // D - y
+				texCoord.bl_x = row;                        // A - x
+				texCoord.bl_y = col;                        // A - y
+				texCoord.br_x = row + texStepX;             // B - x
+				texCoord.br_y = col;                        // B - y
+				texCoord.tl_x = row;                        // C - x
+				texCoord.tl_y = col + texStepY;             // C - y
+				texCoord.tr_x = row + texStepX;             // D - x
+				texCoord.tr_y = col + texStepY;             // D - y
 
-            vertex.bl_x = i * itemWidth;                // A - x
-            vertex.bl_y = 0;                            // A - y
-            vertex.bl_z = 0;                            // A - z
-            vertex.br_x = i * itemWidth + itemWidth;    // B - x
-            vertex.br_y = 0;                            // B - y
-            vertex.br_z = 0;                            // B - z
-            vertex.tl_x = i * itemWidth;                // C - x
-            vertex.tl_y = itemHeight;                    // C - y
-            vertex.tl_z = 0;                            // C - z
-            vertex.tr_x = i * itemWidth + itemWidth;    // D - x
-            vertex.tr_y = itemHeight;                    // D - y
-            vertex.tr_z = 0;                            // D - z
+				vertex.bl_x = xpos * itemWidth;             // A - x
+				vertex.bl_y = ypos;                         // A - y
+				vertex.bl_z = 0;                            // A - z
+				vertex.br_x = xpos * itemWidth + itemWidth; // B - x
+				vertex.br_y = ypos;                         // B - y
+				vertex.br_z = 0;                            // B - z
+				vertex.tl_x = xpos * itemWidth;             // C - x
+				vertex.tl_y = ypos + itemHeight;            // C - y
+				vertex.tl_z = 0;                            // C - z
+				vertex.tr_x = xpos * itemWidth + itemWidth; // D - x
+				vertex.tr_y = ypos + itemHeight;            // D - y
+				vertex.tr_z = 0;                            // D - z
 
-            textureAtlas_.updateQuad(texCoord, vertex, i);
+				textureAtlas_.updateQuad(texCoord, vertex, i);
+				xpos++;
+			}
         }
+
+		int numCharsWidth = n;
+		// If this is multi-line, use the max line width instead of the total string length
+		if (numLines > 1)
+		{
+			numCharsWidth = maxLineWidth;
+		}
+
+		setContentSize(itemWidth * numCharsWidth, itemHeight * numLines);
     }
 
     public void setString(String newString) {
@@ -82,7 +114,7 @@ public class LabelAtlas extends AtlasNode implements CocosNode.CocosNodeLabel, C
         gl.glEnable(GL10.GL_TEXTURE_2D);
 
         //fixed bug that can't show text on G1 by zt
-        //gl.glColor4f(color_.r / 255f, color_.g / 255f, color_.b / 255f, opacity_ / 255f);
+        gl.glColor4f(color_.r / 255f, color_.g / 255f, color_.b / 255f, opacity_ / 255f);
 
         textureAtlas_.draw(gl, string.length());
 

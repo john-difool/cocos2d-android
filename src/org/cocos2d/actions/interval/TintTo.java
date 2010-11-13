@@ -17,9 +17,9 @@ public class TintTo extends IntervalAction {
 
     protected TintTo(float t, int r, int g, int b) {
         super(t);
-        toR = r;
-        toG = g;
-        toB = b;
+        toR = r & 0xff;
+        toG = g & 0xff;
+        toB = b & 0xff;
     }
 
     @Override
