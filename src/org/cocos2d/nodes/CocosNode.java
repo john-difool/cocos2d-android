@@ -339,7 +339,7 @@ public class CocosNode {
     }
 
     public void removeChild(CocosNode child, boolean cleanup) {
-        if (child == null)
+        if (children == null || child == null)
             return;
 
         if (children.contains(child))
@@ -357,6 +357,9 @@ public class CocosNode {
     }
 
     public void removeAllChildren(boolean cleanup) {
+    	if (children == null)
+    		return;
+    	
         for (int i = 0; i < children.size(); i++) {
             CocosNode child = children.get(i);
             if (isRunning_)
@@ -367,6 +370,7 @@ public class CocosNode {
 
             child.setParent(null);
         }
+        
         children.clear();
     }
 
@@ -396,6 +400,9 @@ public class CocosNode {
     }
 
     private void detachChild(CocosNode child, boolean doCleanup) {
+    	if (children == null || child == null)
+    		return;
+
         if (isRunning_)
             child.onExit();
 
@@ -409,6 +416,7 @@ public class CocosNode {
 
     public void reorderChild(CocosNode child, int zOrder) {
         assert child != null : "Child must be non-null";
+        assert children != null : "Children must be non-null";
         children.remove(child);
         this.insertChild(child, zOrder);
     }
@@ -752,6 +760,9 @@ public class CocosNode {
     }
 
     private void insertChild(CocosNode node, int z) {
+    	if (children == null)
+    		childrenAlloc();
+    	
         boolean added = false;
         for (int i = 0; i < children.size(); i++) {
             CocosNode child = children.get(i);
@@ -761,8 +772,10 @@ public class CocosNode {
                 break;
             }
         }
+        
         if (!added)
             children.add(node);
+        
         node.setZOrder(z);
     }
 
