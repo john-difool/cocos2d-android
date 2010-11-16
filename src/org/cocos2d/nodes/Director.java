@@ -123,8 +123,8 @@ public class Director implements GLSurfaceView.Renderer {
      */
     private double animationInterval;
 
-    public void getAnimationInterval(double interval) {
-        animationInterval = interval;
+    public double getAnimationInterval() {
+        return animationInterval;
     }
 
     /**
